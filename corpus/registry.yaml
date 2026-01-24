@@ -1,0 +1,195 @@
+documents:
+- id: 2021-southeast-blueberry-guide
+  title: 2021 Southeast Regional Blueberry Integrated Management Guide
+  url: https://smallfruits.org/files/2021/01/2021-Blueberry-Spray-Guide.pdf
+  type: pdf
+  language: en
+  tags:
+  - arándano
+  - manejo integrado de plagas
+  - guía técnica
+  - Estados Unidos
+  - control fitosanitario
+  description: Guía anual de manejo integrado de plagas y enfermedades en arándano
+    para la región sureste de EE.UU. Incluye recomendaciones actualizadas de control
+    químico (con intervalos de reingreso – REI y periodos de carencia – PHI), métodos
+    biológicos y culturales, y listados de plaguicidas con sus eficacias. Es una publicación
+    conjunta de instituciones de extensión agrícola del sureste de EE.UU., liderada
+    por la Universidad de Georgia.
+  year: 2021
+  country: Estados Unidos
+  source: Southern Region Small Fruit Consortium (Univ. de Georgia)
+  doc_type: Guía técnica
+  checksum: a7040a7a4343d1da87b178d50624f8aea7a465ac81c5b614b5d1956799e9a981
+- id: boletin-inia-263
+  title: Manual de Arándano (Boletín INIA N° 263)
+  url: http://biblioteca.inia.cl/medios/biblioteca/boletines/NR39094.pdf
+  type: pdf
+  language: es
+  tags:
+  - arándano
+  - manejo agronómico
+  - plagas y enfermedades
+  - cosecha y poscosecha
+  - Chile
+  description: Manual técnico integral sobre el cultivo del arándano en Chile, publicado
+    por INIA. Cubre la instalación del huerto, manejo agronómico (suelo, riego, poda,
+    nutrición), control de plagas y enfermedades, y aspectos de cosecha y poscosecha
+    para exportación. Es una obra de referencia con aportes de especialistas, que
+    consta de ~120 páginas con recomendaciones adaptadas a condiciones chilenas.
+  year: 2013
+  country: Chile
+  source: Instituto de Investigaciones Agropecuarias (INIA Chile)
+  doc_type: Manual técnico
+  checksum: ''
+- id: lineamientos-sag-china-2015
+  title: Lineamientos para Exportación de Arándanos a China
+  url: https://www.sag.gob.cl/sites/default/files/lineamientos_exportacion_arandanos_a_china.pdf
+  type: pdf
+  language: es
+  tags:
+  - arándano
+  - exportación
+  - requisitos fitosanitarios
+  - China
+  - Chile
+  description: Guía oficial del Servicio Agrícola y Ganadero de Chile (SAG) que detalla
+    los requisitos fitosanitarios y procedimientos para exportar arándanos frescos
+    desde Chile a China. Incluye las obligaciones para inscribir huertos, packings
+    y frigoríficos, Buenas Prácticas Agrícolas requeridas, manejo fitosanitario del
+    huerto (por ejemplo, control de frutos caídos, monitoreo de plagas de importancia
+    cuarentenaria), procedimientos de inspección y certificación fitosanitaria, de
+    acuerdo al protocolo bilateral Chile–China firmado en 2015.
+  year: 2015
+  country: Chile
+  source: Servicio Agrícola y Ganadero (SAG Chile)
+  doc_type: Protocolo fitosanitario (guía de exportación)
+  checksum: 98b722ac01e3e0e75ec73bacbdb34382f90973ec6742a3f516531784d129ff56
+- id: protocolo-peru-china-2016
+  title: Protocolo de Trabajo para la Exportación de Arándano Fresco a China
+  url: https://www.senasa.gob.pe/senasa/descargasarchivos/2017/04/Protocolo-de-Trabajo-de-Arandano-a-China-2016_3.pdf
+  type: pdf
+  language: es
+  tags:
+  - arándano
+  - exportación
+  - requisitos fitosanitarios
+  - China
+  - Perú
+  description: Protocolo fitosanitario suscrito entre Perú y China (2016) que establece
+    las medidas cuarentenarias y requisitos que deben cumplir los lugares de producción
+    y las empacadoras peruanas para exportar arándanos frescos a China. El documento
+    describe el plan de trabajo acordado con la autoridad china (AQSIQ), incluyendo
+    registro oficial de campos y packing, supervisión de plagas cuarentenarias (como
+    moscas de la fruta), manejo fitosanitario en campo (monitoreos, controles y registros),
+    tratamientos poscosecha (cuando corresponda) y procedimientos de inspección/certificación
+    previos al envío. Este protocolo es obligatorio para acceder al mercado chino.
+  year: 2016
+  country: Perú
+  source: Servicio Nacional de Sanidad Agraria – SENASA Perú
+  doc_type: Protocolo fitosanitario
+  checksum: 315b33c395ac74ded29a222246c1cfb6ac4235426e1fe811ef84c0151ed6512a
+- id: lineamientos-mip-senasa
+  title: Lineamientos del Manejo Integrado de Plagas (MIP) en Lugares de Producción
+    (Anexo 1.1)
+  url: https://www.senasa.gob.pe/senasa/wp-content/uploads/2016/11/Anexo-1.1-Lineamientos-MIP.docx
+  type: docx
+  language: es
+  tags:
+  - manejo integrado de plagas
+  - MIP
+  - certificación fitosanitaria
+  - campo de exportación
+  - Perú
+  description: 'Documento normativo de SENASA Perú (Anexo 1.1 del procedimiento de
+    exportación) que establece las pautas de Manejo Integrado de Plagas en los lugares
+    de producción destinados a exportar. Detalla las consideraciones y buenas prácticas
+    que el productor debe implementar: monitoreo periódico de plagas, control cultural
+    (sanitación de campo, eliminación de hospederos), uso de control biológico, rotación
+    de plaguicidas según FRAC/IRAC para prevenir resistencia, registro de aplicaciones
+    y evaluación de efectividad. El cumplimiento de estos lineamientos de MIP es verificado
+    por SENASA como parte de la certificación del campo para exportación (por ejemplo,
+    en arándano u otros cultivos).'
+  year: 2016
+  country: Perú
+  source: Servicio Nacional de Sanidad Agraria – SENASA Perú
+  doc_type: Norma técnica MIP (guía de manejo integrado)
+  checksum: 80802802cd229e21a170a565f7a36b9b44ce3d6a3565ede253626e0a51c1b124
+- id: plan-manejo-fitosanitario-senasa
+  title: Plan de Manejo Fitosanitario para el Control de Plagas (Anexo 1.2)
+  url: https://www.senasa.gob.pe/senasa/wp-content/uploads/2016/11/Anexo-1.2-Plan-de-manejo-fitosanitario-para-control-de-plagas-en-LP.xlsx
+  type: xlsx
+  language: es
+  tags:
+  - plan fitosanitario
+  - plaguicidas
+  - formato
+  - exportación
+  - Perú
+  description: Formato en Excel (Anexo 1.2 de SENASA) que el productor debe completar
+    con su Plan de Manejo Fitosanitario en campo. En este plan se listan todas las
+    aplicaciones de plaguicidas (químicos y biológicos) programadas para el control
+    de plagas en el cultivo destinado a exportación, indicando producto/componente
+    activo, dosis, frecuencia, intervalo de reingreso (REI) y período de carencia
+    (PHI) correspondiente. Es un requisito obligatorio que refleja las estrategias
+    de control planificadas en el lugar de producción de arándano, asegurando el cumplimiento
+    de límites máximos de residuos y otras normativas. El plan firmado se presenta
+    a SENASA para la certificación del campo exportador.
+  year: 2016
+  country: Perú
+  source: Servicio Nacional de Sanidad Agraria – SENASA Perú
+  doc_type: Formato oficial (plan fitosanitario, Excel)
+  checksum: 8349eff378db8cb096762dca879617e5d2ab03dc082376688f9b3cfd3c01bcfc
+- id: formato-evaluacion-plagas-senasa
+  title: Formato de Evaluación de Plagas para Certificación de Lugar de Producción
+    (Anexo 1.3)
+  url: https://www.senasa.gob.pe/senasa/wp-content/uploads/2019/02/Anexo-1.3-Formato-evaluacion-de-plagas-para-certificaci%C3%B3n-de-lugar-de-producci%C3%B3n_01.xlsx
+  type: xlsx
+  language: es
+  tags:
+  - monitoreo de plagas
+  - certificación de campos
+  - formato
+  - SENASA
+  - Perú
+  description: 'Formato oficial en Excel (Anexo 1.3) utilizado por SENASA para registrar
+    la evaluación de plagas en un lugar de producción que solicita certificación para
+    exportar. En este formulario se consignan los datos de la inspección fitosanitaria
+    del campo: identificación del predio, fecha de evaluación, plagas encontradas
+    y porcentaje de infestación o incidencia por cada una, conforme a los muestreos
+    realizados. Sirve para determinar si el campo de arándano cumple con las tolerancias
+    de plagas establecidas (Anexo 1.6) previo a la cosecha y exportación. Este registro,
+    validado por el inspector, es parte del expediente de certificación del huerto
+    exportador.'
+  year: 2019
+  country: Perú
+  source: Servicio Nacional de Sanidad Agraria – SENASA Perú
+  doc_type: Formato de registro (Excel)
+  checksum: ''
+- id: enfermedades-fungosas-arandano-2023
+  title: Prospección y alternativas de manejo de enfermedades fungosas asociadas en
+    el cultivo de arándano (Vaccinium corymbosum L.)
+  url: https://revistas.unitru.edu.pe/index.php/agroindscience/article/download/5777/5821/21952
+  type: pdf
+  language: es
+  tags:
+  - enfermedades fúngicas
+  - arándano
+  - manejo integrado
+  - investigación
+  - Perú
+  description: Artículo científico publicado en *Agroindustrial Science* (Univ. Nacional
+    de Trujillo, Perú) en 2023, que caracteriza las principales enfermedades fúngicas
+    del arándano en la zona de Trujillo y propone estrategias de manejo. Se identificaron
+    patógenos como *Pestalotia* sp. (mancha foliar, tizón de tallos), *Thekopsora
+    minima* (roya de la hoja), *Botrytis cinerea* (moho gris) y *Lasiodiplodia theobromae*
+    (muerte regresiva). El estudio recomienda implementar un plan de manejo integrado
+    para controlar estas enfermedades (medidas culturales, fungicidas específicos,
+    controles biológicos) a fin de reducir pérdidas y cumplir estándares fitosanitarios
+    de exportación. Es un ejemplo de investigación aplicada al manejo fitosanitario
+    en arándano peruano.
+  year: 2023
+  country: Perú
+  source: Revista Agroindustrial Science (Univ. Nac. de Trujillo)
+  doc_type: Artículo científico
+  checksum: acca4266bfb483234082dc1b8d74571d785e1efb9d91e6d3a716741e6f67af5e
