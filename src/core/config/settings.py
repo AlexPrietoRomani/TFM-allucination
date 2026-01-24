@@ -16,7 +16,8 @@ class AppSettings(BaseSettings):
 
     # Defaults
     default_provider: str = "gemini"
-    default_model: str = "gemini-1.5-flash"
+    default_model_google: str = "gemini-3-flash-preview"
+    default_model_openrouter: str = "openai/gpt-oss-120b:free"
     
     # Qdrant
     qdrant_url: str = "http://localhost:6333"

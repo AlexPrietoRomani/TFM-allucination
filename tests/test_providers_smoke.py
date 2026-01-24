@@ -10,7 +10,10 @@ SKIP_OPENROUTER = not settings.openrouter_api_key
 @pytest.mark.skipif(SKIP_GEMINI, reason="GOOGLE_API_KEY not set")
 def test_gemini_smoke():
     try:
-        llm = ProviderFactory.get_provider("gemini", "gemini-1.5-flash")
+        # Use configured default model for Gemini
+        model = settings.default_model_google
+        print(f"Testing Gemini with model: {model}")
+        llm = ProviderFactory.get_provider("gemini", model)
         response = llm.invoke("Hello, answer with PONG")
         assert response is not None
         assert response.content is not None
@@ -21,9 +24,10 @@ def test_gemini_smoke():
 @pytest.mark.skipif(SKIP_OPENROUTER, reason="OPENROUTER_API_KEY not set")
 def test_openrouter_smoke():
     try:
-        # Use a cheap/free model for testing if possible, or standard one
-        llm = ProviderFactory.get_provider("openrouter", "google/gemini-pro-1.5-exp") 
-        # Using a model likely to exist on OpenRouter. Ideally should come from registry.
+        # Use configured default model for OpenRouter
+        model = settings.default_model_openrouter
+        print(f"Testing OpenRouter with model: {model}")
+        llm = ProviderFactory.get_provider("openrouter", model) 
         
         response = llm.invoke("Hello, answer with PONG")
         assert response is not None
