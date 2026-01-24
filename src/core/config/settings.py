@@ -19,6 +19,10 @@ class AppSettings(BaseSettings):
     default_model_google: str = "gemini-3-flash-preview"
     default_model_openrouter: str = "openai/gpt-oss-120b:free"
     
+    # Embeddings
+    default_embedding_provider: str = "gemini" 
+    default_embedding_model: str = "models/text-embedding-004"
+
     # Qdrant
     qdrant_url: str = "http://localhost:6333"
     qdrant_api_key: Optional[str] = None
