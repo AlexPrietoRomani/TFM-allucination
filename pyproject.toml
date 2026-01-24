@@ -1,0 +1,32 @@
+[project]
+name = "tfm-allucination"
+version = "0.1.0"
+description = "Chatbot con RAG y Métricas de Alucinación (TFM)"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "langchain",
+    "langchain-community",
+    "langchain-google-genai",
+    "langchain-openai",
+    "langchain-qdrant",
+    "python-dotenv",
+    "pydantic-settings",
+    "pydantic",
+    "streamlit",
+    "qdrant-client",
+    "httpx",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
