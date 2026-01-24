@@ -16,6 +16,14 @@ dependencies = [
     "streamlit",
     "qdrant-client",
     "httpx",
+    "pandas>=2.3.3",
+    "pyarrow>=21.0.0",
+    "pyyaml>=6.0.3",
+    "tqdm>=4.67.1",
+    "openpyxl>=3.1.5",
+    "python-docx>=1.2.0",
+    "docx2txt>=0.9",
+    "pypdf>=6.6.0",
 ]
 
 [project.optional-dependencies]
