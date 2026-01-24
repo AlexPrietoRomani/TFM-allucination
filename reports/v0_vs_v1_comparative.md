@@ -1,0 +1,116 @@
+# Reporte Comparativo V0 (Baseline) vs V1 (RAG)
+
+**Fecha Ejecución**: 2026-01-24T18:44:30.831036
+**Modelo**: gpt-oss:20b
+**Total Preguntas**: 2
+
+## 1. Métricas de Desempeño
+
+| Métrica | V0 (Baseline) | V1 (RAG) | Delta |
+|---|---|---|---|
+| **Latencia Promedio** | 130.71s | 42.23s | -88.48s |
+| **Tasa de Citación** | N/A | 0.0% | - |
+
+## 2. Detalle de Respuestas
+
+### Q1: Según los Lineamientos MIP de SENASA, ¿qué debe especificarse obligatoriamente en el “Plan de Manejo Fitosanitario para el control de plagas” (Anexo 1.2) y qué instrucción operativa indica el documento sobre cómo usar ese mismo formato durante la campaña y para auditorías?
+
+**🤖 V0 (Baseline)** (159.15s)
+> **Lineamientos MIP de SENASA – Anexo 1.2 Plan de Manejo Fitosanitario (PMF) para el control de plagas**
+> 
+> ---
+> 
+> ## 1. Contenido que debe incluirse obligatoriamente
+> 
+> | # | Sección | Información requerida (obligatoria) |
+> |---|---------|-------------------------------------|
+> | 1 | **Identificación del cultivo** | • Nombre de la zona de producción (nombre de la finca, departamento, latitud‑longitud). <br>• Nombre del cultivo (nombre científico y denominación local). <br>• Área total a tratar (ha, m²). <br>• Fecha de siembra o inicio de la campaña. |
+> | 2 | **Identificación del responsable** | • Nombre y cargo del responsable de la aplicación. <br>• Número de contacto y correo electrónico. |
+> | 3 | **Descripción de la plaga** | • Identificación del insecto, hongo, bacteria, nematodo, etc. <br>• Nivel de infestación (bajo, medio, alto). <br>• Registro de la fase de desarrollo de la plaga. |
+> | 4 | **Producto fitosanitario** | • Nombre comercial y número de registro sanitario. <br>• Principio activo y concentración. <br>• Forma de presentación (spray, fumigación, etc.). <br>• Dosis recomendada (L / ha, g / m², etc.). <br>• Número de aplicaciones previstas y intervalos. |
+> | 5 | **Modo de aplicación** | • Tipo de equipo (pistola, pulverizador, fumigador, etc.). <br>• Velocidad de aplicación y flujo. <br>• Altura de aplicación y zona de cobertura. |
+> | 6 | **Condiciones ambientales** | • Temperatura, humedad, viento, previsión de lluvia. <br>• Requisitos de tiempo de espera antes de cosechar. |
+> | 7 | **Medidas de seguridad y protección** | • Equipo de protección personal obligatorio (guantes, mascarilla, gafas, etc.). <br>• Precauciones de manejo (diferenciación de zonas de riesgo, señalización). |
+> | 8 | **Registro de aplicación** | • Fecha y hora de cada aplicación. <br>• Identificación del aplicador (nombre, número de certificado). <br>• Cantidad de producto aplicado (L, kg). <br>• Observaciones sobre el resultado de la aplicación (señal de daño, efecto observacional). |
+> | 9 | **Control de calidad** | • Verificación del cumplimiento de la dosis. <br>• Confirmación de la correcta mezcla y dilución. |
+> |10 | **Plan de seguimiento** | • Indicadores de éxito (recogida de muestras, inspección visual). <br>• Plan de acción si la plaga persiste. |
+> |11 | **Firma y sello** | • Firma del responsable de la campaña. <br>• Sello de la empresa o del productor. |
+> 
+> > **Nota**: La información debe ser clara, legible y mantenerse actualizada durante toda la campaña. Cualquier cambio (por ejemplo, ajuste de dosis o adición de una nueva aplicación) debe registrarse inmediatamente en el mismo documento.
+> 
+> ---
+> 
+> ## 2. Instrucción operativa sobre el uso del formato
+> 
+> > **“El plan debe ser utilizado como documento de trazabilidad durante toda la campaña de aplicación y debe conservarse, con todas sus anotaciones y firmas, para ser presentado en auditorías internas o externas de SENASA.”**
+> 
+> ### Resumen de la instrucción
+> 
+> 1. **Aplicación continua**  
+>    - Cada vez que se realice una aplicación se debe rellenar la sección de “Registro de aplicación” del mismo PMF.  
+>    - No se debe crear un documento nuevo; todas las entradas deben ir en la misma hoja o folio del plan.
+> 
+> 2. **Actualización inmediata**  
+>    - Cualquier cambio de dosis, de producto o de frecuencia debe anotarse y firmarse en el PMF antes de iniciar la siguiente aplicación.
+> 
+> 3. **Conservación**  
+>    - El PMF completo (plan base + registros de aplicación) debe guardarse en el lugar de trabajo (archivador o caja de seguridad) durante la campaña y por al menos **3 años** tras su finalización.
+> 
+> 4. **Disponibilidad para auditorías**  
+>    - En cualquier momento de una auditoría de SENASA, el responsable de la campaña debe poder presentar el PMF completo y cualquier dato asociado (por ejemplo, facturas de compra del producto, fichas de seguridad, etc.) para demostrar cumplimiento de la normativa.
+> 
+> 5. **Firma y verificación**  
+>    - Al final de la campaña, el responsable debe firmar una copia de cierre del PMF, confirmando que todas las aplicaciones se realizaron según lo programado y que el plan se cumplió en su totalidad.
+> 
+> ---
+> 
+> ### En pocas palabras
+> 
+> - **Obligatorio**: El PMF debe contener la identificación completa del cultivo, del responsable, de la plaga, del producto y del modo de aplicación, así como un registro detallado de cada aplicación y las medidas de seguridad.
+> - **Instrucción operativa**: Se debe usar el mismo PMF durante toda la campaña, completándolo con cada aplicación, y conservarlo como documento de trazabilidad y auditoría.
+> 
+> Con esta información tendrás un plan de manejo fitosanitario alineado con los Lineamientos MIP de SENASA y listo para ser auditado sin inconvenientes.
+
+**📚 V1 (RAG)** (66.46s) ❌
+> **Información obligatoria que debe aparecer en el “Plan de Manejo Fitosanitario para el control de plagas” (Anexo 1.2)**  
+> - Nombre del ingrediente activo utilizado.  
+> - Fecha de aplicación.  
+> - Dosis (cantidad) del agroquímico aplicado durante el período de crecimiento.  
+> 
+> (Conforme a lo exigido en el registro de control de plagas que debe contener “nombre de ingrediente activo, fecha de aplicación y dosis del agroquímico” – *Lineamientos para Exportación de Arándanos a China* ID lineamientos‑sag‑china‑2015).
+> 
+> ---
+> 
+> **Instrucción operativa sobre el uso de ese mismo formato durante la campaña y para auditorías**  
+> - El plan debe ser llenado y validado con el nombre y la firma de un profesional o técnico con conocimientos fitosanitarios.  
+> - Se debe mantener como registro durante toda la campaña (desde la floración hasta la cosecha) y entregarlo a AQSIQ cuando sea solicitado, para auditoría de la autoridad de control fitosanitario (AQSIQ).  
+> - Además, el plan sirve para el monitoreo continuo de plagas y enfermedades de preocupación, asegurando que todas las actividades de control se documenten y estén disponibles para revisión.  
+> 
+> (Indicaciones contenidas en el mismo *Lineamientos para Exportación de Arándanos a China* ID lineamientos‑sag‑china‑2015).
+
+---
+
+### Q2: En los Lineamientos MIP de SENASA (Control cultural/mecánico), ¿cada cuántos días como mínimo debe realizarse el recojo de frutos caídos y a qué profundidad (cm) deben enterrarse, específicamente para cultivos hospedantes de moscas de la fruta?
+
+**🤖 V0 (Baseline)** (102.26s)
+> **Según los Lineamientos de Manejo Integrado de Plagas (MIP) de SENASA – apartado “Control cultural/mecánico”**
+> 
+> | Acción | Frecuencia mínima recomendada | Profundidad de enterramiento (cm) |
+> |--------|------------------------------|-----------------------------------|
+> | Recojo de frutos caídos (para cultivos hospedantes de moscas de la fruta) | **Una vez cada 7 días** (como mínimo) | **30 cm** (mínimo) |
+> 
+> > **Interpretación práctica**  
+> > - **Recojo**: Se debe revisar y remover los frutos caídos al menos una vez por semana. Si la incidencia de moscas es alta o las condiciones climáticas favorecen la rápida descomposición, se aconseja adelantar el recojo (por ejemplo, cada 5 días).  
+> > - **Enterrado**: Los frutos recogidos deben enterrarse a **una profundidad de 30 cm** para asegurar la muerte de los larvas y evitar que emerjan adultos. En la práctica, se recomienda compactar bien el suelo encima del hoyo para impedir la entrada de aire y la posible ascensión de la mosca.
+> 
+> > **Fuente**  
+> > SENASA – *Lineamientos de Manejo Integrado de Plagas (MIP) – Control Cultural y Mecánico*, sección 3.2.1, 2018 (pág. 28‑31).  
+> > (El número exacto de página puede variar según la edición, pero el contenido sigue siendo el mismo en todas las publicaciones oficiales disponibles en la página de SENASA.)
+> 
+> Con esta práctica, los productores reducen significativamente la población de moscas de la fruta en el huerto y minimizan la incidencia de plagas sin depender exclusivamente de controles químicos.
+
+**📚 V1 (RAG)** (18.00s) ❌
+> I don't have enough information in my documents to answer this.
+
+---
+

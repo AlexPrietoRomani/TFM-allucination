@@ -2,80 +2,100 @@ import pandas as pd
 from pathlib import Path
 from glob import glob
 
-RESULTS_DIR = Path("eval/results/V0")
+RESULTS_DIR = Path("eval/results/Comparison")
 
-def load_latest_results(variant):
-    files = sorted(glob(str(RESULTS_DIR / f"eval_{variant}_*.csv"))) # Using csv as they are readable/safe
+def load_latest_comparison():
+    # Find latest parquet or csv in Comparison folder
+    files = sorted(glob(str(RESULTS_DIR / "eval_comparison_*.parquet")))
     if not files:
-        # Try parquet
-        files = sorted(glob(str(RESULTS_DIR / f"eval_{variant}_*.parquet")))
+        files = sorted(glob(str(RESULTS_DIR / "eval_comparison_*.csv")))
     
     if not files:
-        print(f"No results found for {variant}")
+        print("No comparative results found.")
         return None
         
     latest = files[-1]
-    print(f"Loading latest {variant}: {latest}")
+    print(f"Loading latest comparison: {latest}")
     try:
-        return pd.read_parquet(latest)
-    except:
-        return pd.read_csv(latest)
+        if latest.endswith(".parquet"):
+            return pd.read_parquet(latest)
+        else:
+            return pd.read_csv(latest)
+    except Exception as e:
+        print(f"Error loading file: {e}")
+        return None
 
-def generate_comparison():
-    v0 = load_latest_results("V0")
-    v1 = load_latest_results("V1")
+def generate_report():
+    df = load_latest_comparison()
     
-    if v0 is None or v1 is None:
-        print("Could not load both variants.")
+    if df is None:
         return
 
-    # Merge
-    merged = pd.merge(
-        v0[["question_id", "question", "response", "latency_seconds"]],
-        v1[["question_id", "response", "latency_seconds"]],
-        on="question_id",
-        suffixes=("_v0", "_v1")
-    )
-    
+    # Ensure columns exist (backwards compatibility or typo check)
+    required_cols = ["response_v0", "response_v1", "latency_v0", "latency_v1", "question", "question_id"]
+    for col in required_cols:
+        if col not in df.columns:
+            print(f"Missing column '{col}' in results.")
+            return
+
     report = "# Reporte Comparativo V0 (Baseline) vs V1 (RAG)\n\n"
-    report += f"**Total Preguntas**: {len(merged)}\n\n"
+    report += f"**Fecha Ejecución**: {df['timestamp'].iloc[0] if 'timestamp' in df else 'N/A'}\n"
+    report += f"**Modelo**: {df['model'].iloc[0] if 'model' in df else 'Unknown'}\n"
+    report += f"**Total Preguntas**: {len(df)}\n\n"
     
-    # Latency Stats
-    avg_lat_v0 = merged['latency_seconds_v0'].mean()
-    avg_lat_v1 = merged['latency_seconds_v1'].mean()
-    report += "## Latencia Promedio\n"
-    report += f"- V0: {avg_lat_v0:.2f}s\n"
-    report += f"- V1: {avg_lat_v1:.2f}s\n"
-    report += f"- Impacto RAG: +{avg_lat_v1 - avg_lat_v0:.2f}s\n\n"
+    # --- Metrics ---
+    avg_lat_v0 = df['latency_v0'].mean()
+    avg_lat_v1 = df['latency_v1'].mean()
     
-    # Heuristic Quality Check (Citation Presence)
-    # We check if V1 response contains brackets like "[Source:" or "ID:"
-    merged["v1_has_citation"] = merged["response_v1"].apply(lambda x: "[Source:" in str(x) or "ID:" in str(x))
-    citation_rate = merged["v1_has_citation"].mean() * 100
-    
-    report += "## Calidad Heurística\n"
-    report += f"- Tasa de Citación en V1: {citation_rate:.1f}%\n\n"
-    
-    report += "## Detalle por Pregunta\n\n"
-    for idx, row in merged.iterrows():
-        report += f"### Q{row['question_id']}: {row['question']}\n\n"
+    # Heuristic: Check for Citation in V1
+    # Check for [Source: or ID: or typical citation markers
+    def has_citation(text):
+        t = str(text)
+        return "[Source:" in t or "ID:" in t or "Source:" in t
         
-        report += "**V0 (Baseline)**\n"
-        report += f"> {str(row['response_v0'])[:300]}...\n\n"
+    df["v1_cited"] = df["response_v1"].apply(has_citation)
+    citation_rate = df["v1_cited"].mean() * 100
+    
+    report += "## 1. Métricas de Desempeño\n\n"
+    report += "| Métrica | V0 (Baseline) | V1 (RAG) | Delta |\n"
+    report += "|---|---|---|---|\n"
+    report += f"| **Latencia Promedio** | {avg_lat_v0:.2f}s | {avg_lat_v1:.2f}s | {avg_lat_v1 - avg_lat_v0:+.2f}s |\n"
+    report += f"| **Tasa de Citación** | N/A | {citation_rate:.1f}% | - |\n\n"
+
+    report += "## 2. Detalle de Respuestas\n\n"
+    
+    for idx, row in df.iterrows():
+        q_id = row['question_id']
+        question = row['question']
         
-        report += "**V1 (RAG)**\n"
-        # Escape markdown chars if needed, but simple block quote is usually fine
-        report += f"> {str(row['response_v1'])[:500]}...\n\n"
+        report += f"### Q{q_id}: {question}\n\n"
         
-        report += f"*Cita detectada: {'✅' if row['v1_has_citation'] else '❌'}*\n"
+        # V0
+        v0_text = str(row['response_v0']).replace("\n", "\n> ")
+        if not v0_text or v0_text == "nan":
+            v0_text = f"*(Error or Empty)*: {row.get('error_v0', 'N/A')}"
+            
+        report += f"**🤖 V0 (Baseline)** ({row['latency_v0']:.2f}s)\n"
+        report += f"> {v0_text}\n\n"
+        
+        # V1
+        v1_text = str(row['response_v1']).replace("\n", "\n> ")
+        if not v1_text or v1_text == "nan":
+            v1_text = f"*(Error or Empty)*: {row.get('error_v1', 'N/A')}"
+            
+        cited_icon = "✅" if row['v1_cited'] else "❌"
+        
+        report += f"**📚 V1 (RAG)** ({row['latency_v1']:.2f}s) {cited_icon}\n"
+        report += f"> {v1_text}\n\n"
+        
         report += "---\n\n"
-        
-    output_path = Path("reports/v0_vs_v1.md")
+
+    output_path = Path("reports/v0_vs_v1_comparative.md")
     output_path.parent.mkdir(exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(report)
         
-    print(f"Report generated at {output_path}")
+    print(f"Report generated successfully: {output_path}")
 
 if __name__ == "__main__":
-    generate_comparison()
+    generate_report()
