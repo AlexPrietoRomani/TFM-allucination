@@ -1,0 +1,23 @@
+run_id,timestamp,question_id,question,provider,model,response,latency_seconds,error,variant
+default,2026-01-24T16:44:01.800926,1,¿Cuál es el REI para Abamectina en arándanos?,openrouter,openai/gpt-oss-120b:free,I don't have enough information in my documents to answer this.,3.7678377628326416,,V1
+default,2026-01-24T16:44:04.767142,2,¿Qué grupo FRAC tiene el uso de Captan?,openrouter,openai/gpt-oss-120b:free,Captan está clasificado en el **grupo FRAC M4 (Ftalimidas)**【Source: 2021 Southeast Regional Blueberry Integrated Management Guide (ID: 2021-southeast-blueberry-guide)】.,2.9662156105041504,,V1
+default,2026-01-24T16:44:07.826411,3,¿Cuál es el PHI del Espinosad en arándano para exportación a USA?,openrouter,openai/gpt-oss-120b:free,I don't have enough information in my documents to answer this.,3.0582659244537354,,V1
+default,2026-01-24T16:44:11.676363,4,¿Está permitido el uso de Clorpirifos en arándanos orgánicos?,openrouter,openai/gpt-oss-120b:free,No tengo suficiente información en mis documentos para responder si el clorpirifos está permitido o no en la producción de arándanos orgánicos.,3.849951982498169,,V1
+default,2026-01-24T16:44:17.981719,5,¿Qué fungicidas se recomiendan para Botrytis en floración?,openrouter,openai/gpt-oss-120b:free,"Los productos que aparecen como opciones de manejo para el **Botrytis (floración)** son:
+
+| Producto (ingredientes activos) | Código FRAC | Dosis recomendada | Momento de aplicación |
+|--------------------------------|-------------|-------------------|-----------------------|
+| **Cyprodinil + Fludioxonil** (Switch 62.5 WG) | FRAC 9 + 12 | 11 – 14 oz / acre | Primera aplicación al inicio de la floración; aplicaciones subsecuentes cada 7‑10 días durante la floración. No superar 56 oz / acre/año y no más de dos aplicaciones consecutivas sin cambiar de MOA. |
+| **Fenhexamid** (Elevate 50 WDG) | FRAC 17 | 1.5 lb / acre | Iniciar a 10 % de floración; repetir cada 7 días cuando las condiciones favorezcan la enfermedad. No más de dos aplicaciones consecutivas sin cambiar de MOA y no superar 6 lb / acre/año. |
+| **Fenhexamid + Captan** (CaptEvate 68 WDG) | FRAC 17 + M4 | 3.5 – 4.7 lb / acre | Aplicar según el mismo esquema que el fenhexamid solo (cada 7 días bajo condiciones favorables). |
+
+**Fuentes**  
+- Guía de Manejo Integrado de Arándano del Sureste 2021, sección “Botrytis flower blight” (ID: 2021-southeast-blueberry-guide).  
+- La tabla de “Management Options” muestra los productos, dosis, REI, PHI y comentarios de aplicación.  
+
+No se menciona otro fungicida específico para Botrytis en floración en los documentos proporcionados.",6.304855585098267,,V1
+default,2026-01-24T16:44:22.006615,6,¿Cuál es el límite máximo de residuos (MRL) de Azoxistrobina en la UE?,openrouter,openai/gpt-oss-120b:free,I don't have enough information in my documents to answer this.,4.0248963832855225,,V1
+default,2026-01-24T16:44:24.326095,7,¿El Fenhexamid tiene efecto curativo o preventivo?,openrouter,openai/gpt-oss-120b:free,I don't have enough information in my documents to answer this.,2.3189799785614014,,V1
+default,2026-01-24T16:44:27.984041,8,¿Cuántas aplicaciones máximas de Switch 62.5 WG se permiten por temporada?,openrouter,openai/gpt-oss-120b:free,"Se pueden hacer **máximo dos aplicaciones** de Switch 62.5 WG en una temporada, ya que el manual indica que “no se deben hacer más de dos aplicaciones secuenciales antes de usar otro fungicida con un MOA diferente” y limita el uso a 56 oz / acre por año【Source: 2021 Southeast Regional Blueberry Integrated Management Guide】.",3.6579456329345703,,V1
+default,2026-01-24T16:44:31.290832,9,¿Es compatible mezclar Fosetil-Al con cobre?,openrouter,openai/gpt-oss-120b:free,No. El fosetil‑Al **no debe mezclarse en tanque con cobre**; la guía indica que “no se debe mezclar en tanque con cobre y fertilizantes foliares” porque puede producir daño al follaje o al fruto【Source: 2021 Southeast Regional Blueberry Integrated Management Guide (ID: 2021-southeast-blueberry-guide)】.,3.3063197135925293,,V1
+default,2026-01-24T16:44:34.792640,10,¿Qué ingrediente activo controla mejor la Drosophila suzukii?,openrouter,openai/gpt-oss-120b:free,I don't have enough information in my documents to answer this.,3.500805139541626,,V1
