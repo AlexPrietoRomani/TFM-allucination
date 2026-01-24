@@ -17,8 +17,8 @@ def load_questions():
         raise FileNotFoundError(f"Question bank not found at {INPUT_FILE}")
     return pd.read_csv(INPUT_FILE)
 
-async def run_evaluation(provider: str, model: str, run_label: str = "default"):
-    print(f"Starting evaluation V0 with {provider}/{model}...")
+async def run_evaluation(provider: str, model: str, variant: str, run_label: str = "default"):
+    print(f"Starting evaluation {variant} with {provider}/{model}...")
     
     # 1. Load Data
     df = load_questions()
@@ -27,11 +27,16 @@ async def run_evaluation(provider: str, model: str, run_label: str = "default"):
     # 2. Prepare Results storage
     results = []
     
-    # 3. Initialize LLM
+    # 3. Initialize Engine
     try:
         llm = ProviderFactory.get_provider(provider, model)
+        rag_engine = None
+        if variant == "V1":
+            from src.chat.rag import RAGEngine
+            rag_engine = RAGEngine()
+            rag_chain = rag_engine.get_chain(llm)
     except Exception as e:
-        print(f"Failed to initialize provider: {e}")
+        print(f"Failed to initialize engine: {e}")
         return
 
     # 4. Iterate
@@ -43,10 +48,14 @@ async def run_evaluation(provider: str, model: str, run_label: str = "default"):
         
         start_time = time.time()
         try:
-            # Simple synchronous invocation for V0 harness
-            # (Can be async'd later for speed, but sequential is better for rate limits now)
-            response = llm.invoke(question)
-            content = response.content
+            if variant == "V0":
+                # Baseline
+                response = llm.invoke(question)
+                content = response.content
+            else:
+                # RAG V1
+                content = rag_chain.invoke(question)
+            
             error = None
         except Exception as e:
             content = ""
@@ -66,7 +75,7 @@ async def run_evaluation(provider: str, model: str, run_label: str = "default"):
             "response": content,
             "latency_seconds": latency,
             "error": error,
-            "variant": "V0"
+            "variant": variant
         })
         print(f"Done ({latency:.2f}s)")
 
@@ -74,7 +83,7 @@ async def run_evaluation(provider: str, model: str, run_label: str = "default"):
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"eval_V0_{provider}_{timestamp}.parquet"
+    filename = f"eval_{variant}_{provider}_{timestamp}.parquet"
     output_path = RESULTS_DIR / filename
     
     results_df = pd.DataFrame(results)
@@ -97,9 +106,10 @@ async def run_evaluation(provider: str, model: str, run_label: str = "default"):
     results_df.to_csv(readable_csv, index=False)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run V0 Evaluation")
+    parser = argparse.ArgumentParser(description="Run Evaluation (V0 or V1)")
     parser.add_argument("--provider", type=str, default=settings.default_provider, help="Provider name")
     parser.add_argument("--model", type=str, default=None, help="Model name (defaults to env settings)")
+    parser.add_argument("--variant", type=str, default="V0", choices=["V0", "V1"], help="Evaluation variant")
     
     args = parser.parse_args()
     
@@ -110,4 +120,4 @@ if __name__ == "__main__":
         elif args.provider == "openrouter":
             args.model = settings.default_model_openrouter
             
-    asyncio.run(run_evaluation(args.provider, args.model))
+    asyncio.run(run_evaluation(args.provider, args.model, args.variant))
