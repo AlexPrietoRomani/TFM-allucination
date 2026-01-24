@@ -1,0 +1,11 @@
+id,question,ground_truth,category,difficulty,source_doc
+1,¿Cuál es el REI para Abamectina en arándanos?,,REI,Easy,
+2,¿Qué grupo FRAC tiene el uso de Captan?,,FRAC,Medium,
+3,¿Cuál es el PHI del Espinosad en arándano para exportación a USA?,,PHI,Hard,
+4,¿Está permitido el uso de Clorpirifos en arándanos orgánicos?,,Regulatory,Medium,
+5,¿Qué fungicidas se recomiendan para Botrytis en floración?,,Recommendation,Hard,
+6,¿Cuál es el límite máximo de residuos (MRL) de Azoxistrobina en la UE?,,MRL,Hard,
+7,¿El Fenhexamid tiene efecto curativo o preventivo?,,ModeOfAction,Medium,
+8,¿Cuántas aplicaciones máximas de Switch 62.5 WG se permiten por temporada?,,Label,Medium,
+9,¿Es compatible mezclar Fosetil-Al con cobre?,,Mixing,Hard,
+10,¿Qué ingrediente activo controla mejor la Drosophila suzukii?,,Efficacy,Medium,
