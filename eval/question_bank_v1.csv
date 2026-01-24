@@ -1,11 +1,13 @@
 id,question,ground_truth,category,difficulty,source_doc
-1,¿Cuál es el REI para Abamectina en arándanos?,,REI,Easy,
-2,¿Qué grupo FRAC tiene el uso de Captan?,,FRAC,Medium,
-3,¿Cuál es el PHI del Espinosad en arándano para exportación a USA?,,PHI,Hard,
-4,¿Está permitido el uso de Clorpirifos en arándanos orgánicos?,,Regulatory,Medium,
-5,¿Qué fungicidas se recomiendan para Botrytis en floración?,,Recommendation,Hard,
-6,¿Cuál es el límite máximo de residuos (MRL) de Azoxistrobina en la UE?,,MRL,Hard,
-7,¿El Fenhexamid tiene efecto curativo o preventivo?,,ModeOfAction,Medium,
-8,¿Cuántas aplicaciones máximas de Switch 62.5 WG se permiten por temporada?,,Label,Medium,
-9,¿Es compatible mezclar Fosetil-Al con cobre?,,Mixing,Hard,
-10,¿Qué ingrediente activo controla mejor la Drosophila suzukii?,,Efficacy,Medium,
+1,"Según los Lineamientos MIP de SENASA, ¿qué debe especificarse obligatoriamente en el “Plan de Manejo Fitosanitario para el control de plagas” (Anexo 1.2) y qué instrucción operativa indica el documento sobre cómo usar ese mismo formato durante la campaña y para auditorías?",,Normativa,Medium,lineamientos-mip-senasa
+2,"En los Lineamientos MIP de SENASA (Control cultural/mecánico), ¿cada cuántos días como mínimo debe realizarse el recojo de frutos caídos y a qué profundidad (cm) deben enterrarse, específicamente para cultivos hospedantes de moscas de la fruta?",,MIP,Medium,lineamientos-mip-senasa
+3,"Según los Lineamientos SAG 2015 para exportación de arándanos a China, ¿cuál es el tamaño máximo permitido de perforaciones en las cajas (mm) y cuál(es) son las dos alternativas explícitas para cubrir los orificios de ventilación?",,Regulación,Medium,lineamientos-sag-china-2015
+4,"En los Lineamientos SAG 2015, ¿cada cuántos días debe realizarse el monitoreo para Diaporthe vaccinii, Fusicoccum putrefasciens y Pestalotia vaccinii, y desde qué etapa fenológica hasta cuál debe aplicarse ese monitoreo?",,Regulación,Hard,lineamientos-sag-china-2015
+5,"En el Protocolo Perú–China 2016, ¿qué tipos de trampas y cebos se exigen para el monitoreo oficial de Ceratitis capitata y Anastrepha fraterculus, y con qué periodicidad (días) debe hacerse la inspección de trampas?",,Exportación,Medium,protocolo-peru-china-2016
+6,"En el Protocolo Perú–China 2016, ¿cuáles son las tres combinaciones aceptadas de tratamiento de frío (temperatura máxima en °C y días de exposición) y qué anexos corresponden al procedimiento en origen vs en tránsito?",,Exportación,Hard,protocolo-peru-china-2016
+7,"En la guía 2021 Southeast Regional Blueberry Integrated Management Guide, para fenbuconazole (Indar 2F) en la tabla de manejo (incluyendo REI/PHI), ¿cuál es: dosis por acre, efectividad (letra), REI, PHI, número máximo de aplicaciones y máximo total anual permitido (fl oz por acre por año)?",,Fungicidas,Hard,2021-southeast-blueberry-guide
+8,"Según la guía 2021 Southeast, ¿qué advertencia explícita se hace sobre aplicar Indar solo respecto a pudriciones tipo anthracnose (ripe rot) y qué mezcla en tanque indica como requerida durante aplicaciones en bloom para mitigar ese problema?",,Fungicidas,Medium,2021-southeast-blueberry-guide
+9,"Según el Boletín INIA 263 (sección de riego/evapotranspiración), ¿cuál es la ecuación de ETc y cuáles son las dos ecuaciones para calcular Pc y Fc (incluyendo los coeficientes numéricos y las variables definidas)?",,Riego,Medium,boletin-inia-263
+10,"En el Boletín INIA 263 (Cuadro 5.1), ¿cuáles son los valores de Kc del arándano para Noviembre, Diciembre y Marzo en la zona central de Chile?",,Riego,Hard,boletin-inia-263
+11,"En el estudio de enfermedades fungosas en arándano (Trujillo, 2023), para la roya por Thekopsora minima, ¿cuál es el rango de tamaño de las uredosporas (µm × µm) y cómo se describen (forma y color) en la caracterización morfológica?",,Investigación,Medium,enfermedades-fungosas-arandano-2023
+12,"En el estudio de enfermedades fungosas (Trujillo, 2023), en la prueba de patogenicidad de Lasiodiplodia theobromae en plántulas, ¿a los cuántos días post-inoculación se observó una mancha necrótica de 1.5 cm y a los cuántos días se reporta que la enfermedad cubrió aproximadamente el 50% de la longitud del tallo?",,Investigación,Hard,enfermedades-fungosas-arandano-2023

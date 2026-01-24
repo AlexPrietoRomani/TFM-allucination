@@ -7,64 +7,80 @@ from pathlib import Path
 from datetime import datetime
 from src.core.providers.factory import ProviderFactory
 from src.core.config.settings import settings
+from src.chat.rag import RAGEngine
 
 # Configuration
 INPUT_FILE = Path("eval/question_bank_v1.csv")
-RESULTS_DIR = Path("eval/results/V0")
+RESULTS_DIR = Path("eval/results/Comparison")
 
 def load_questions():
     if not INPUT_FILE.exists():
         raise FileNotFoundError(f"Question bank not found at {INPUT_FILE}")
-    return pd.read_csv(INPUT_FILE)
+    # Ensure ID is treated as string to avoid type mismatches
+    df = pd.read_csv(INPUT_FILE, dtype={'id': str})
+    return df
 
-async def run_evaluation(provider: str, model: str, variant: str, run_label: str = "default"):
-    print(f"Starting evaluation {variant} with {provider}/{model}...")
+async def run_comparative_evaluation(provider: str, model: str, run_label: str = "default", limit: int = 0):
+    print(f"Starting COMPARATIVE evaluation (V0 vs V1) with {provider}/{model}...")
     
     # 1. Load Data
     df = load_questions()
+    if limit > 0:
+        print(f"Limiting to first {limit} questions.")
+        df = df.head(limit)
+        
     print(f"Loaded {len(df)} questions.")
     
-    # 2. Prepare Results storage
-    results = []
-    
-    # 3. Initialize Engine
+    # 2. Initialize Engines
+    print("Initializing LLM and RAG Engine...")
     try:
+        # Shared LLM
         llm = ProviderFactory.get_provider(provider, model)
-        rag_engine = None
-        if variant == "V1":
-            from src.chat.rag import RAGEngine
-            rag_engine = RAGEngine()
-            rag_chain = rag_engine.get_chain(llm)
+        
+        # RAG Engine (V1)
+        rag_engine = RAGEngine()
+        rag_chain = rag_engine.get_chain(llm)
+        
     except Exception as e:
-        print(f"Failed to initialize engine: {e}")
+        print(f"Failed to initialize engines: {e}")
         return
 
-    # 4. Iterate
+    # 3. Iterate & Evaluate
+    results = []
+    
     for index, row in df.iterrows():
-        q_id = row['id']
+        q_id = str(row['id'])
         question = row['question']
         
         print(f"[{index+1}/{len(df)}] Processing Q{q_id}...", end=" ", flush=True)
         
-        start_time = time.time()
+        # --- V0 Execution (Baseline) ---
+        start_v0 = time.time()
         try:
-            if variant == "V0":
-                # Baseline
-                response = llm.invoke(question)
-                content = response.content
-            else:
-                # RAG V1
-                content = rag_chain.invoke(question)
-            
-            error = None
+            resp_v0 = llm.invoke(question).content
+            error_v0 = None
         except Exception as e:
-            content = ""
-            error = str(e)
-            print(f"Error: {e}")
+            resp_v0 = ""
+            error_v0 = str(e)
+            print(f"  [ERROR V0]: {e}")
+        time_v0 = time.time() - start_v0
         
-        end_time = time.time()
-        latency = end_time - start_time
+        # --- V1 Execution (RAG) ---
+        start_v1 = time.time()
+        try:
+            # RAG returns a string directly from the chain defined in rag.py
+            resp_v1 = rag_chain.invoke(question)
+            error_v1 = None
+        except Exception as e:
+            resp_v1 = ""
+            error_v1 = str(e)
+            print(f"  [ERROR V1]: {e}")
+        time_v1 = time.time() - start_v1
         
+        # Rate limiting pause (Aggressive for free tier)
+        time.sleep(15)
+        
+        # Store combined result
         results.append({
             "run_id": run_label,
             "timestamp": datetime.now().isoformat(),
@@ -72,52 +88,64 @@ async def run_evaluation(provider: str, model: str, variant: str, run_label: str
             "question": question,
             "provider": provider,
             "model": model,
-            "response": content,
-            "latency_seconds": latency,
-            "error": error,
-            "variant": variant
+            
+            # V0 Data
+            "response_v0": resp_v0,
+            "latency_v0": time_v0,
+            "error_v0": error_v0,
+            
+            # V1 Data
+            "response_v1": resp_v1,
+            "latency_v1": time_v1,
+            "error_v1": error_v1
         })
-        print(f"Done ({latency:.2f}s)")
+        print(f"Done (V0: {time_v0:.2f}s | V1: {time_v1:.2f}s)")
 
-    # 5. Save Results
+    # 4. Save Combined Results
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"eval_{variant}_{provider}_{timestamp}.parquet"
-    output_path = RESULTS_DIR / filename
+    filename_base = f"eval_comparison_{provider}_{timestamp}"
     
     results_df = pd.DataFrame(results)
     
-    # Needs pyarrow or fastparquet. 'uv run' should handle it if installed.
-    # Check if we need to install 'fastparquet' or 'pyarrow'. 
-    # Usually pandas needs one for parquet. We'll default to csv if parquet fails, or assume environment is good.
-    # Let's write both for safety now.
-    
+    # Save Parquet
+    parquet_path = RESULTS_DIR / f"{filename_base}.parquet"
     try:
-        results_df.to_parquet(output_path)
-        print(f"Saved parquet results to {output_path}")
+        results_df.to_parquet(parquet_path)
+        print(f"Saved parquet results to {parquet_path}")
     except ImportError:
-        csv_path = str(output_path).replace(".parquet", ".csv")
-        results_df.to_csv(csv_path, index=False)
-        print(f"Saved CSV results (parquet missing) to {csv_path}")
+        print("Parquet support missing, skipping parquet save.")
         
-    # Also save a readable CSV for quick check
-    readable_csv = RESULTS_DIR / f"eval_V0_{provider}_{timestamp}_readable.csv"
-    results_df.to_csv(readable_csv, index=False)
+    # Save CSV (always useful for quick debug)
+    csv_path = RESULTS_DIR / f"{filename_base}.csv"
+    results_df.to_csv(csv_path, index=False)
+    print(f"Saved CSV results to {csv_path}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run Evaluation (V0 or V1)")
+    parser = argparse.ArgumentParser(description="Run Comparative Evaluation (V0 vs V1)")
     parser.add_argument("--provider", type=str, default=settings.default_provider, help="Provider name")
-    parser.add_argument("--model", type=str, default=None, help="Model name (defaults to env settings)")
-    parser.add_argument("--variant", type=str, default="V0", choices=["V0", "V1"], help="Evaluation variant")
+    parser.add_argument("--model", type=str, default=None, help="Model name")
+    parser.add_argument("--limit", type=int, default=0, help="Limit number of questions to process (0 for all)")
+    parser.add_argument("--clean", action="store_true", help="Clean previous results before running")
     
     args = parser.parse_args()
     
-    # Determine model default if not provided
+    # Defaults
     if not args.model:
         if args.provider == "gemini":
             args.model = settings.default_model_google
         elif args.provider == "openrouter":
             args.model = settings.default_model_openrouter
+        # For ollama, user must usually specify, or we could default to something common
+        elif args.provider == "ollama":
+            args.model = "llama3" # Example default
             
-    asyncio.run(run_evaluation(args.provider, args.model, args.variant))
+    # Clean logic
+    if args.clean:
+        import shutil
+        if RESULTS_DIR.exists():
+            print(f"Cleaning results directory: {RESULTS_DIR}")
+            shutil.rmtree(RESULTS_DIR)
+            
+    asyncio.run(run_comparative_evaluation(args.provider, args.model, limit=args.limit))
