@@ -79,13 +79,17 @@ async def main():
     # 1. Get OpenRouter models
     openrouter_models = await fetch_openrouter_models()
     
-    # 2. Combine with Gemini models
-    all_models = GEMINI_MODELS + openrouter_models
+    # 2. Group by provider
+    # GEMINI_MODELS is already a list of dicts with "provider": "gemini"
+    # openrouter_models is a list of dicts with "provider": "openrouter"
     
     # 3. Create registry structure
     registry = {
         "updated_at": os.popen("date /t").read().strip() if os.name == 'nt' else "now",
-        "models": all_models
+        "providers": {
+            "gemini": GEMINI_MODELS,
+            "openrouter": openrouter_models
+        }
     }
     
     # 4. Save to file
@@ -93,7 +97,9 @@ async def main():
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(registry, f, indent=2)
     
-    print(f"Successfully saved {len(all_models)} models to {OUTPUT_FILE}")
+    print(f"Successfully saved models to {OUTPUT_FILE}")
+    print(f"  Gemini: {len(GEMINI_MODELS)}")
+    print(f"  OpenRouter: {len(openrouter_models)}")
 
 if __name__ == "__main__":
     asyncio.run(main())
