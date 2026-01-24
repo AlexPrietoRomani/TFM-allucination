@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any, List, Dict
 from src.core.providers.gemini import GeminiProvider
 from src.core.providers.openrouter import OpenRouterProvider
+from src.core.providers.ollama import OllamaProvider
 
 REGISTRY_PATH = Path("src/core/config/model_registry.json")
 
@@ -19,8 +20,6 @@ class ProviderFactory:
             try:
                 with open(REGISTRY_PATH, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    # Index by model ID for fast lookup
-                    # Structure is now {"providers": {"gemini": [...], "openrouter": [...]}}
                     providers_data = data.get("providers", {})
                     for provider_key, models_list in providers_data.items():
                         for m in models_list:
@@ -35,12 +34,11 @@ class ProviderFactory:
         """Checks if model exists in registry. Returns True if found or registry missing."""
         cls._load_registry()
         if not cls._models_cache:
-            # If registry is missing/empty, allow all (fail open) or fail closed. 
-            # Given dynamic nature, fail open with warning is safer for dev.
             return True
         
         if model_name not in cls._models_cache:
-            print(f"Warning: Model '{model_name}' not found in registry.")
+            # Log warning but allow proceeding (useful for custom/local models)
+            # print(f"Warning: Model '{model_name}' not found in registry.")
             return False
         return True
 
@@ -56,5 +54,7 @@ class ProviderFactory:
             return GeminiProvider.get_chat_model(model_name, **kwargs)
         elif provider_name == "openrouter":
             return OpenRouterProvider.get_chat_model(model_name, **kwargs)
+        elif provider_name == "ollama":
+            return OllamaProvider.get_chat_model(model_name, **kwargs)
         else:
             raise ValueError(f"Unknown provider: {provider_name}")
