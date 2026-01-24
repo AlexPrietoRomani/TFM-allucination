@@ -69,28 +69,32 @@ for msg in st.session_state.messages:
         with st.chat_message("user"):
             st.markdown(msg["content"])
     else:
-        # Comparison response is stored specially or just generic assistant
-        # For this view, let's keep it simple: we print proper blocks
+        # Comparison response
         with st.chat_message("assistant"):
             if "v0" in msg:
-                 with st.expander(f"⚖️ Comparativa: {msg.get('model', 'model')}", expanded=True):
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        st.subheader("V0 (Sin RAG)")
-                        st.markdown(msg["v0"])
-                        st.caption(f"⏱️ {msg['time_v0']:.2f}s")
-                    with col2:
-                        st.subheader("V1 (Con RAG)")
-                        st.markdown(msg["v1"])
-                        st.caption(f"⏱️ {msg['time_v1']:.2f}s")
+                st.markdown("### ⚖️ Comparativa Histórica")
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.markdown("#### V0 (Sin RAG)")
+                    st.caption(f"⏱️ {msg['time_v0']:.2f}s")
+                    st.markdown(
+                        f"""<div style="height: 300px; overflow-y: auto; background-color: #262730; padding: 10px; border-radius: 5px; border: 1px solid #4a4a4a;">{msg['v0']}</div>""",
+                        unsafe_allow_html=True
+                    )
+                with col2:
+                    st.markdown("#### V1 (Con RAG)")
+                    st.caption(f"⏱️ {msg['time_v1']:.2f}s")
+                    st.markdown(
+                        f"""<div style="height: 300px; overflow-y: auto; background-color: #1e1e1e; padding: 10px; border-radius: 5px; border: 1px solid #4a4a4a;">{msg['v1']}</div>""",
+                        unsafe_allow_html=True
+                    )
                     
                     if "sources" in msg and msg["sources"]:
-                        st.divider()
-                        st.markdown("**📄 Fuentes recuperadas (RAG):**")
+                        st.markdown("**Fuentes (V1):**")
                         for i, doc in enumerate(msg["sources"]):
                             with st.expander(f"{i+1}. {doc.metadata.get('title', 'Doc')}"):
-                                st.markdown(f"**ID:** `{doc.metadata.get('source_id')}`")
-                                st.text(doc.page_content)
+                                st.caption(f"ID: {doc.metadata.get('source_id')}")
+                                st.markdown(f"*{doc.page_content[:300]}...*")
 
 # Input
 if prompt := st.chat_input("Pregunta sobre manejo de arándanos..."):
@@ -124,24 +128,45 @@ if prompt := st.chat_input("Pregunta sobre manejo de arándanos..."):
             
             status.update(label="¡Completado!", state="complete", expanded=False)
             
-            # Render Comparison
-            with st.expander("⚖️ Resultados de Comparativa", expanded=True):
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.subheader("V0 (Sin RAG)")
-                    st.write(resp_v0)
-                    st.caption(f"⏱️ {time_v0:.2f}s")
-                with col2:
-                    st.subheader("V1 (Con RAG)")
-                    st.write(resp_v1)
-                    st.caption(f"⏱️ {time_v1:.2f}s")
+            # Render Comparison with Scrollable Containers
+            st.markdown("### ⚖️ Resultados de Comparativa")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown(f"#### V0 (Sin RAG) - Baseline")
+                st.caption(f"⏱️ Tiempo: {time_v0:.2f}s")
+                # Scrollable container for V0
+                st.markdown(
+                    f"""
+                    <div style="height: 400px; overflow-y: auto; background-color: #262730; padding: 15px; border-radius: 5px; border: 1px solid #4a4a4a;">
+                        {resp_v0}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+            with col2:
+                st.markdown(f"#### V1 (Con RAG) - Aumentado")
+                st.caption(f"⏱️ Tiempo: {time_v1:.2f}s")
+                # Scrollable container for V1
+                st.markdown(
+                    f"""
+                    <div style="height: 400px; overflow-y: auto; background-color: #1e1e1e; padding: 15px; border-radius: 5px; border: 1px solid #4a4a4a;">
+                        {resp_v1}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
                 
+                # Sources specifically for V1
                 st.divider()
-                st.caption(f"Fuentes utilizadas: {len(retrieved_docs)}")
+                st.markdown("**📄 Fuentes utilizadas (RAG V1):**")
+                st.caption(f"Documentos recuperados: {len(retrieved_docs)}")
                 for i, doc in enumerate(retrieved_docs):
                     with st.expander(f"Fuente {i+1}: {doc.metadata.get('title', 'Unknown')}"):
                         st.caption(f"ID: {doc.metadata.get('source_id')}")
-                        st.text(doc.page_content[:500] + "...")
+                        st.markdown(f"*{doc.page_content[:400]}...*")
 
             # Save to history
             st.session_state.messages.append({
