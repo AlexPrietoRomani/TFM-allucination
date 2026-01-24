@@ -10,6 +10,5 @@ class GeminiProvider:
         return ChatGoogleGenerativeAI(
             model=model_name,
             google_api_key=settings.google_api_key,
-            convert_system_message_to_human=True, # Often needed for Gemini
             **kwargs
         )
