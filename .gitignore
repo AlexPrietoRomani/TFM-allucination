@@ -146,3 +146,15 @@ dmypy.json
 
 # Qdrant local storage
 qdrant_storage/
+
+# Docker volumes & Local Data
+ollama_data/
+runs/
+
+# IDE/System
+.vscode/
+.idea/
+.DS_Store
+
+# Eval Results (Optional: keep if you want to track benchmarks, otherwise ignore)
+# eval/results/
