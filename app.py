@@ -12,9 +12,11 @@ from langchain_core.messages import HumanMessage, AIMessage
 try:
     from src.metrics.faithfulness import FaithfulnessMetric
     from src.metrics.context_relevance import ContextRelevanceMetric
+    from src.metrics.factscore import FactScoreMetric
 except ImportError:
     FaithfulnessMetric = None
     ContextRelevanceMetric = None
+    FactScoreMetric = None
 
 # Configuración de página
 st.set_page_config(
@@ -111,11 +113,19 @@ for msg in st.session_state.messages:
                     # Metrics History
                     if "metrics" in msg and msg["metrics"]:
                         with st.expander("📊 Métricas Calculadas"):
-                            mc1, mc2 = st.columns(2)
-                            mc1.metric("Fidelidad", f"{msg['metrics']['faith_score']:.2f}")
-                            mc2.metric("Relevancia", f"{msg['metrics']['rel_score']:.2f}")
-                            st.caption(f"**Fe**: {msg['metrics']['faith_reason']}")
-                            st.caption(f"**Rel**: {msg['metrics']['rel_reason']}")
+                            mc1, mc2, mc3 = st.columns(3)
+                            mc1.metric("Fidelidad", f"{msg['metrics'].get('faith_score', 0):.2f}")
+                            mc2.metric("Relevancia", f"{msg['metrics'].get('rel_score', 0):.2f}")
+                            mc3.metric("FactScore", f"{msg['metrics'].get('factscore', 0):.2f}")
+                            
+                            st.caption(f"**Fe (Juez)**: {msg['metrics'].get('faith_reason', 'N/A')}")
+                            
+                            if "fs_breakdown" in msg['metrics']:
+                                st.markdown("---")
+                                st.markdown("**Desglose FactScore:**")
+                                for item in msg['metrics']['fs_breakdown']:
+                                    icon = "✅" if item['label'] == 'Soportado' else "❌"
+                                    st.markdown(f"{icon} {item['claim']}")
                     
                     if "sources" in msg and msg["sources"]:
                         st.markdown("**Fuentes (V1):**")
@@ -152,7 +162,7 @@ if prompt := st.chat_input("Pregunta sobre manejo de arándanos..."):
             status.write("📚 Buscando documentos (RAG)...")
             retrieved_docs = rag_engine.retrieve_context(prompt)
             
-            status.write("🧠 Generando V1 (RAG Augmented)...")
+            status.write("🧠 Generando V1 (RAG Aumentado)...")
             start_v1 = time.time()
             try:
                 rag_chain = rag_engine.get_chain(llm)
@@ -167,30 +177,33 @@ if prompt := st.chat_input("Pregunta sobre manejo de arándanos..."):
                 status.write("⚖️ Calculando Métricas (Juez LLM)...")
                 try:
                     # Instantiate with default judge (Ollama/Gemini defined in judges.py)
-                    # Note: You might want to allow selecting judge, but for now it uses default in judges.py (Ollama gpt-oss:20b)
                     faith_metric = FaithfulnessMetric()
                     rel_metric = ContextRelevanceMetric()
                     
                     # relevance
                     rel_res = rel_metric.evaluate(prompt, retrieved_docs)
                     # faithfulness
+                    print("Evaluando Fidelidad...")
                     faith_res = faith_metric.evaluate(resp_v1, retrieved_docs)
                     
-                            # Calcular FactScore si es posible
-                            # Nota: FactScore es lento porque hace N llamadas al LLM (1 extract + N verify)
-                            if metrics_data:
-                                from src.metrics.factscore import FactScoreMetric
-                                try:
-                                    status.write("🔍 Calculando FactScore (Granularidad Atómica)...")
-                                    fact_metric = FactScoreMetric()
-                                    fs_res = fact_metric.calculate(resp_v1, retrieved_docs)
-                                    metrics_data["factscore"] = fs_res.get("score", 0.0)
-                                    metrics_data["fs_breakdown"] = fs_res.get("breakdown", [])
-                                except Exception as e:
-                                    print(f"Error FactScore: {e}")
-
-                        except Exception as e:
-                            st.error(f"Error métricas: {e}")
+                    metrics_data = {
+                        "faith_score": faith_res.get("score", 0.0),
+                        "faith_reason": faith_res.get("reason", "N/A"),
+                        "rel_score": rel_res.get("score", 0.0),
+                        "rel_reason": rel_res.get("reason", "N/A")
+                    }
+                    
+                    # FactScore Check
+                    if FactScoreMetric:
+                         status.write("🔍 Calculando FactScore (Granularidad Atómica)...")
+                         print("Evaluando FactScore...")
+                         fact_metric = FactScoreMetric()
+                         fs_res = fact_metric.calculate(resp_v1, retrieved_docs)
+                         metrics_data["factscore"] = fs_res.get("score", 0.0)
+                         metrics_data["fs_breakdown"] = fs_res.get("breakdown", [])
+                         
+                except Exception as e:
+                    st.error(f"Error calculando métricas: {e}")
             
             status.update(label="¡Completado!", state="complete", expanded=False)
             
@@ -250,7 +263,6 @@ if prompt := st.chat_input("Pregunta sobre manejo de arándanos..."):
                 # Sources
                 st.divider()
                 st.markdown("**📄 Fuentes utilizadas (RAG V1):**")
-                # ...
                 st.caption(f"Documentos recuperados: {len(retrieved_docs)}")
                 for i, doc in enumerate(retrieved_docs):
                     with st.expander(f"Fuente {i+1}: {doc.metadata.get('title', 'Unknown')}"):
