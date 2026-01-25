@@ -24,7 +24,7 @@ def calculate_checksum(file_path):
     return sha256_hash.hexdigest()
 
 async def download_file(url, valid_path):
-    # Disable SSL verification to handle some institutional sites with legacy certs
+    # Deshabilitar verificación SSL para manejar algunos sitios institucionales con certificados antiguos
     async with httpx.AsyncClient(follow_redirects=True, timeout=60.0, verify=False) as client:
         try:
             resp = await client.get(url)
@@ -40,23 +40,23 @@ async def process_document(doc):
     url = doc["url"]
     file_path = RAW_DIR / f"{doc_id}.pdf"
     
-    # Check if exists and calculate checksum if needed (optimization: skip if checksum matches)
-    # For now, we force download/verify if checksum missing or file missing.
+    # Verificar si existe y calcular checksum si es necesario (optimización: saltar si coincide)
+    # Por ahora, forzamos descarga/verificación si checksum falta o archivo falta.
     
     if file_path.exists() and doc.get("checksum"):
-        # Verify existing
+        # Verificar existente
         current_checksum = calculate_checksum(file_path)
         if current_checksum == doc["checksum"]:
-            return doc, "skipped (up to date)"
+            return doc, "saltado (actualizado)"
     
     success, error = await download_file(url, file_path)
     if success:
         chk = calculate_checksum(file_path)
         doc["checksum"] = chk
-        return doc, "downloaded"
+        return doc, "descargado"
     else:
-        print(f"Failed to download {doc_id}: {error}")
-        return doc, f"failed: {error}"
+        print(f"Falló la descarga de {doc_id}: {error}")
+        return doc, f"falló: {error}"
 
 async def main():
     RAW_DIR.mkdir(parents=True, exist_ok=True)
@@ -64,7 +64,7 @@ async def main():
     registry_data = load_registry()
     docs = registry_data.get("documents", [])
     
-    print(f"Processing {len(docs)} documents...")
+    print(f"Procesando {len(docs)} documentos...")
     
     updated_docs = []
     tasks = [process_document(doc) for doc in docs]
@@ -75,10 +75,10 @@ async def main():
         print(f"[{doc['id']}] -> {status}")
         updated_docs.append(doc)
     
-    # Update registry with new checksums
+    # Actualizar registro con nuevos checksums
     registry_data["documents"] = updated_docs
     update_registry(registry_data)
-    print("Registry updated.")
+    print("Registro actualizado.")
 
 if __name__ == "__main__":
     asyncio.run(main())
