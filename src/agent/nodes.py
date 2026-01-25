@@ -12,9 +12,13 @@ class AgentNodes:
     def __init__(self):
         # Inicializar componentes
         # Usamos un modelo potente por defecto para el agente (Gemini o OpenRouter si se prefiere)
-        # O podemos inyectarlo. Por ahora hardcodeamos uno bueno para V2, o usamos configuración.
         # Vamos a usar el default provider configurado.
-        self.llm = ProviderFactory.get_provider(settings.default_provider, settings.default_model_google if settings.default_provider == "gemini" else settings.default_model_openrouter)
+        
+        # Override for testing: Force Ollama
+        provider_override = "ollama"
+        model_override = "gpt-oss:20b"
+        
+        self.llm = ProviderFactory.get_provider(provider_override, model_override)
         self.rag_engine = RAGEngine()
         self.grader = FaithfulnessMetric() # Usa su propio juez interno
 
