@@ -5,24 +5,24 @@ from glob import glob
 RESULTS_DIR = Path("eval/results/Comparison")
 
 def load_latest_comparison():
-    # Find latest parquet or csv in Comparison folder
+    # Buscar el último parquet o csv en la carpeta de comparación
     files = sorted(glob(str(RESULTS_DIR / "eval_comparison_*.parquet")))
     if not files:
         files = sorted(glob(str(RESULTS_DIR / "eval_comparison_*.csv")))
     
     if not files:
-        print("No comparative results found.")
+        print("No se encontraron resultados comparativos.")
         return None
         
     latest = files[-1]
-    print(f"Loading latest comparison: {latest}")
+    print(f"Cargando última comparación: {latest}")
     try:
         if latest.endswith(".parquet"):
             return pd.read_parquet(latest)
         else:
             return pd.read_csv(latest)
     except Exception as e:
-        print(f"Error loading file: {e}")
+        print(f"Error cargando archivo: {e}")
         return None
 
 def generate_report():
@@ -31,27 +31,27 @@ def generate_report():
     if df is None:
         return
 
-    # Ensure columns exist (backwards compatibility or typo check)
+    # Asegurar que existan columnas (compatibilidad hacia atrás)
     required_cols = ["response_v0", "response_v1", "latency_v0", "latency_v1", "question", "question_id"]
     for col in required_cols:
         if col not in df.columns:
-            print(f"Missing column '{col}' in results.")
+            print(f"Falta la columna '{col}' en los resultados.")
             return
 
     report = "# Reporte Comparativo V0 (Baseline) vs V1 (RAG)\n\n"
     report += f"**Fecha Ejecución**: {df['timestamp'].iloc[0] if 'timestamp' in df else 'N/A'}\n"
-    report += f"**Modelo**: {df['model'].iloc[0] if 'model' in df else 'Unknown'}\n"
+    report += f"**Modelo**: {df['model'].iloc[0] if 'model' in df else 'Desconocido'}\n"
     report += f"**Total Preguntas**: {len(df)}\n\n"
     
-    # --- Metrics ---
+    # --- Métricas ---
     avg_lat_v0 = df['latency_v0'].mean()
     avg_lat_v1 = df['latency_v1'].mean()
     
-    # Heuristic: Check for Citation in V1
-    # Check for [Source: or ID: or typical citation markers
+    # Heurística: Verificar si hay Citación en V1
+    # Buscar [Fuente: o ID: o marcadores típicos de citación
     def has_citation(text):
         t = str(text)
-        return "[Source:" in t or "ID:" in t or "Source:" in t
+        return "[Source:" in t or "ID:" in t or "Source:" in t or "[Fuente:" in t
         
     df["v1_cited"] = df["response_v1"].apply(has_citation)
     citation_rate = df["v1_cited"].mean() * 100
@@ -95,7 +95,7 @@ def generate_report():
     with open(output_path, "w", encoding="utf-8") as f:
         f.write(report)
         
-    print(f"Report generated successfully: {output_path}")
+    print(f"Reporte generado exitosamente: {output_path}")
 
 if __name__ == "__main__":
     generate_report()
