@@ -1,20 +1,29 @@
 import streamlit as st
 import json
 import time
+import asyncio
 from pathlib import Path
 from src.core.providers.factory import ProviderFactory
 from src.core.config.settings import settings
 from src.chat.rag import RAGEngine
 from langchain_core.messages import HumanMessage, AIMessage
 
-# Page Config
+# Import Metrics (lazy load or safe import)
+try:
+    from src.metrics.faithfulness import FaithfulnessMetric
+    from src.metrics.context_relevance import ContextRelevanceMetric
+except ImportError:
+    FaithfulnessMetric = None
+    ContextRelevanceMetric = None
+
+# Configuración de página
 st.set_page_config(
     page_title="TFM Chatbot (V0 vs V1)",
     page_icon="🫐",
     layout="wide"
 )
 
-# Load Registry
+# Cargar Registro
 REGISTRY_PATH = Path("src/core/config/model_registry.json")
 
 @st.cache_data
@@ -26,26 +35,23 @@ def load_model_registry():
 
 registry = load_model_registry()
 
-# Initialize RAG Engine
+# Inicializar Motor RAG
 @st.cache_resource
 def get_rag_engine():
     return RAGEngine()
 
 rag_engine = get_rag_engine()
 
-# Session State
+# Estado de Sesión
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Sidebar
+# Barra Lateral (Sidebar)
 with st.sidebar:
     st.header("⚙️ Configuración")
     
-    # Provider/Model Selector
-    # providers = list(registry.get("providers", {}).keys()) if registry else ["gemini", "openrouter"]
-    # Add manual Ollama support
+    # Selector de Proveedor/Modelo
     providers = ["gemini", "openrouter", "ollama"]
-    
     provider = st.selectbox("Proveedor", providers, index=0)
     
     if provider == "ollama":
@@ -62,6 +68,11 @@ with st.sidebar:
             def_index = 0
             
         model_id = st.selectbox("Modelo", available_models, index=def_index)
+    
+    st.divider()
+    
+    # Metrics Toggle
+    use_metrics = st.checkbox("📊 Calcular Métricas (Lento)", value=False, help="Evalúa Fidelidad y Relevancia usando un Juez LLM (Ollama/Gemini)")
     
     st.divider()
     if st.button("🗑️ Limpiar Historial"):
@@ -97,6 +108,15 @@ for msg in st.session_state.messages:
                         unsafe_allow_html=True
                     )
                     
+                    # Metrics History
+                    if "metrics" in msg and msg["metrics"]:
+                        with st.expander("📊 Métricas Calculadas"):
+                            mc1, mc2 = st.columns(2)
+                            mc1.metric("Fidelidad", f"{msg['metrics']['faith_score']:.2f}")
+                            mc2.metric("Relevancia", f"{msg['metrics']['rel_score']:.2f}")
+                            st.caption(f"**Fe**: {msg['metrics']['faith_reason']}")
+                            st.caption(f"**Rel**: {msg['metrics']['rel_reason']}")
+                    
                     if "sources" in msg and msg["sources"]:
                         st.markdown("**Fuentes (V1):**")
                         for i, doc in enumerate(msg["sources"]):
@@ -121,7 +141,11 @@ if prompt := st.chat_input("Pregunta sobre manejo de arándanos..."):
             # 1. V0 Execution (Baseline)
             status.write("🧠 Generando V0 (Baseline)...")
             start_v0 = time.time()
-            resp_v0 = llm.invoke(prompt).content
+            try:
+                # Invoke LLM directly
+                resp_v0 = llm.invoke(prompt).content
+            except Exception as e:
+                resp_v0 = f"Error V0: {str(e)}"
             time_v0 = time.time() - start_v0
             
             # 2. V1 Execution (RAG)
@@ -130,9 +154,43 @@ if prompt := st.chat_input("Pregunta sobre manejo de arándanos..."):
             
             status.write("🧠 Generando V1 (RAG Augmented)...")
             start_v1 = time.time()
-            rag_chain = rag_engine.get_chain(llm)
-            resp_v1 = rag_chain.invoke(prompt)
+            try:
+                rag_chain = rag_engine.get_chain(llm)
+                resp_v1 = rag_chain.invoke(prompt)
+            except Exception as e:
+                resp_v1 = f"Error V1: {str(e)}"
             time_v1 = time.time() - start_v1
+            
+            # 3. Metrics Calculation
+            metrics_data = {}
+            if use_metrics and FaithfulnessMetric:
+                status.write("⚖️ Calculando Métricas (Juez LLM)...")
+                try:
+                    # Instantiate with default judge (Ollama/Gemini defined in judges.py)
+                    # Note: You might want to allow selecting judge, but for now it uses default in judges.py (Ollama gpt-oss:20b)
+                    faith_metric = FaithfulnessMetric()
+                    rel_metric = ContextRelevanceMetric()
+                    
+                    # relevance
+                    rel_res = rel_metric.evaluate(prompt, retrieved_docs)
+                    # faithfulness
+                    faith_res = faith_metric.evaluate(resp_v1, retrieved_docs)
+                    
+                            # Calcular FactScore si es posible
+                            # Nota: FactScore es lento porque hace N llamadas al LLM (1 extract + N verify)
+                            if metrics_data:
+                                from src.metrics.factscore import FactScoreMetric
+                                try:
+                                    status.write("🔍 Calculando FactScore (Granularidad Atómica)...")
+                                    fact_metric = FactScoreMetric()
+                                    fs_res = fact_metric.calculate(resp_v1, retrieved_docs)
+                                    metrics_data["factscore"] = fs_res.get("score", 0.0)
+                                    metrics_data["fs_breakdown"] = fs_res.get("breakdown", [])
+                                except Exception as e:
+                                    print(f"Error FactScore: {e}")
+
+                        except Exception as e:
+                            st.error(f"Error métricas: {e}")
             
             status.update(label="¡Completado!", state="complete", expanded=False)
             
@@ -153,7 +211,7 @@ if prompt := st.chat_input("Pregunta sobre manejo de arándanos..."):
                     """,
                     unsafe_allow_html=True
                 )
-
+            
             with col2:
                 st.markdown(f"#### V1 (Con RAG) - Aumentado")
                 st.caption(f"⏱️ Tiempo: {time_v1:.2f}s")
@@ -167,9 +225,32 @@ if prompt := st.chat_input("Pregunta sobre manejo de arándanos..."):
                     unsafe_allow_html=True
                 )
                 
-                # Sources specifically for V1
+                # Display Metrics
+                if metrics_data:
+                    st.divider()
+                    st.markdown("##### 📊 Métricas de Alucinación")
+                    m_col1, m_col2, m_col3 = st.columns(3)
+                    m_col1.metric("Fidelidad", f"{metrics_data.get('faith_score', 0):.2f}", help="¿La respuesta se basa 100% en el contexto?")
+                    m_col2.metric("Relevancia", f"{metrics_data.get('rel_score', 0):.2f}", help="¿El contexto recuperado es útil?")
+                    
+                    fs_val = metrics_data.get('factscore', 0.0)
+                    m_col3.metric("FactScore", f"{fs_val:.2f}", help="% de afirmaciones atómicas verificadas")
+                    
+                    with st.expander("🔍 Detalles del Juez (Fidelidad/Relevancia)"):
+                        st.markdown(f"**Fidelidad:** {metrics_data.get('faith_reason', 'N/A')}")
+                        st.markdown(f"**Relevancia:** {metrics_data.get('rel_reason', 'N/A')}")
+                        
+                    if "fs_breakdown" in metrics_data and metrics_data["fs_breakdown"]:
+                        with st.expander("atom ⚛️ Desglose FactScore (Hechos Atómicos)"):
+                            for item in metrics_data["fs_breakdown"]:
+                                icon = "✅" if item['label'] == 'Soportado' else "❌" if item['label'] == 'Contradicho' else "⚠️"
+                                st.markdown(f"{icon} **{item['claim']}**")
+                                st.caption(f"Razón: {item['reason']}")
+                
+                # Sources
                 st.divider()
                 st.markdown("**📄 Fuentes utilizadas (RAG V1):**")
+                # ...
                 st.caption(f"Documentos recuperados: {len(retrieved_docs)}")
                 for i, doc in enumerate(retrieved_docs):
                     with st.expander(f"Fuente {i+1}: {doc.metadata.get('title', 'Unknown')}"):
@@ -184,8 +265,9 @@ if prompt := st.chat_input("Pregunta sobre manejo de arándanos..."):
                 "time_v0": time_v0,
                 "v1": resp_v1,
                 "time_v1": time_v1,
-                "sources": retrieved_docs
+                "sources": retrieved_docs,
+                "metrics": metrics_data
             })
             
         except Exception as e:
-            st.error(f"Error: {e}")
+            st.error(f"Error general: {e}")
