@@ -24,9 +24,17 @@ graph TD
         App -->|Tab V2| Agent[Agente LangGraph]
     end
     
+    subgraph "Procesamiento Asíncrono"
+        App -.->|Encolar Job| Redis[Redis Queue]
+        Redis --> Worker[RQ Worker]
+        Worker -->|Cálculo Pesado| FactScore[Métrica FactScore]
+        Worker -.->|Resultado| Redis
+    end
+
     subgraph "Componentes Compartidos"
         RAG & Agent --> VectorDB[Qdrant (Documentos)]
         RAG & Agent --> Metrics[Sistema de Métricas]
+        Worker --> Metrics
     end
 ```
 
@@ -53,6 +61,9 @@ stateDiagram-v2
 ```
 
 ## 3. Estructura de Archivos
+
+### `Dockerfile` & `docker-compose.yml`
+Definición de infraestructura contenerizada (App, Worker, Qdrant, Redis, Ollama).
 
 ### `src/` (Código Fuente)
 
@@ -82,29 +93,33 @@ Sistema de Evaluación "Triple Capa".
 -   `context_relevance.py`: ¿La recuperación fue útil?
 -   `factscore.py`: **Granularidad Atómica**. Descompone la respuesta en hechos simples y verifica cada uno.
 
+#### `services/` (Backend Asíncrono)
+-   `worker/tasks.py`: Definición de tareas pesadas (FactScore) para ejecución en background.
+
 ### `eval/` (Benchmarking)
 -   `question_bank_v1.csv`: 12 Preguntas "Gold Standard" de alta complejidad técnica.
 -   `run_eval.py`: Generación batch de respuestas V0/V1.
 -   `run_metrics.py` & `run_factscore.py`: Cálculo masivo de métricas.
 
 ### `app.py` (Frontend)
-Aplicación unificada en **Streamlit** con pestañas para comparar V0, V1 y V2 en tiempo real, visualizar métricas y trazas de ejecución del agente.
+Aplicación unificada en **Streamlit** con pestañas para comparar V0, V1 y V2.
+- **Nueva Pestaña**: "📊 Reportes & Eval" para ejecución autómata de benchmarks y generación de informes Markdown.
 
-## 4. Flujo de Trabajo Típico
+## 4. Flujo de Trabajo Típico (Docker)
 
-1.  **Ingesta de Documentos**: 
+1.  **Despliegue Completo**:
+    ```bash
+    docker-compose up -d --build
+    ```
+
+2.  **Ingesta de Documentos** (Solo primera vez): 
     -   Colocar PDFs en `corpus/raw`.
-    -   Ejecutar `uv run src/knowledge/indexer.py`.
+    -   `docker exec -it tfm-app uv run src/knowledge/indexer.py`.
 
-2.  **Evaluación Científica**:
-    -   Correr `uv run eval/run_eval.py` (Generar respuestas).
-    -   Correr `uv run eval/run_metrics.py` (Calcular scores).
-    -   Generar reporte: `uv run reports/generate_report.py`.
-
-3.  **Demo Interactiva**:
-    -   `uv run streamlit run app.py`
-    -   Navegar entre pestañas V0/V1/V2.
-    -   Activar checkbox "Calcular Métricas" para ver FactScore en vivo.
+3.  **Demo y Evaluación**:
+    -   Acceder a `http://localhost:8501`.
+    -   Usar pestaña **"📊 Reportes & Eval"** para correr benchmarks completos.
+    -   Descargar reporte final en Markdown.
 
 ## 5. Tecnologías Clave
 -   **LangGraph**: Orquestación de agentes cíclicos (Stateful).
