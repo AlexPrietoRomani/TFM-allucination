@@ -42,18 +42,26 @@ with st.sidebar:
     st.header("⚙️ Configuración")
     
     # Provider/Model Selector
-    providers = list(registry.get("providers", {}).keys()) if registry else ["gemini", "openrouter"]
+    # providers = list(registry.get("providers", {}).keys()) if registry else ["gemini", "openrouter"]
+    # Add manual Ollama support
+    providers = ["gemini", "openrouter", "ollama"]
+    
     provider = st.selectbox("Proveedor", providers, index=0)
     
-    available_models = [m["id"] for m in registry.get("providers", {}).get(provider, [])]
-    
-    default_model = settings.default_model_google if provider == "gemini" else settings.default_model_openrouter
-    try:
-        def_index = available_models.index(default_model)
-    except ValueError:
-        def_index = 0
+    if provider == "ollama":
+        model_id = st.text_input("Modelo Ollama", value="gpt-oss:20b", help="Nombre exacto del modelo (ej: gpt-oss:20b, llama3)")
+    else:
+        # Load from registry for others
+        available_models = [m["id"] for m in registry.get("providers", {}).get(provider, [])]
         
-    model_id = st.selectbox("Modelo", available_models, index=def_index)
+        # Default logic
+        default_model = settings.default_model_google if provider == "gemini" else settings.default_model_openrouter
+        try:
+            def_index = available_models.index(default_model)
+        except ValueError:
+            def_index = 0
+            
+        model_id = st.selectbox("Modelo", available_models, index=def_index)
     
     st.divider()
     if st.button("🗑️ Limpiar Historial"):
