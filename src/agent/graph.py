@@ -3,8 +3,8 @@ from src.agent.state import AgentState
 from src.agent.nodes import AgentNodes
 
 class AgentGraph:
-    def __init__(self):
-        self.nodes = AgentNodes()
+    def __init__(self, provider: str = None, model_id: str = None):
+        self.nodes = AgentNodes(provider, model_id)
         self.workflow = StateGraph(AgentState)
         
         # 1. Añadir Nodos
