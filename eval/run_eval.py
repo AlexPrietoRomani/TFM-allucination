@@ -49,57 +49,14 @@ async def run_comparative_evaluation(provider: str, model: str, run_label: str =
     results = []
     
     for index, row in df.iterrows():
-        q_id = str(row['id'])
-        question = row['question']
+        print(f"[{index+1}/{len(df)}] Processing Q{row['id']}...", end=" ", flush=True)
         
-        print(f"[{index+1}/{len(df)}] Processing Q{q_id}...", end=" ", flush=True)
-        
-        # --- V0 Execution (Baseline) ---
-        start_v0 = time.time()
-        try:
-            resp_v0 = llm.invoke(question).content
-            error_v0 = None
-        except Exception as e:
-            resp_v0 = ""
-            error_v0 = str(e)
-            print(f"  [ERROR V0]: {e}")
-        time_v0 = time.time() - start_v0
-        
-        # --- V1 Execution (RAG) ---
-        start_v1 = time.time()
-        try:
-            # RAG returns a string directly from the chain defined in rag.py
-            resp_v1 = rag_chain.invoke(question)
-            error_v1 = None
-        except Exception as e:
-            resp_v1 = ""
-            error_v1 = str(e)
-            print(f"  [ERROR V1]: {e}")
-        time_v1 = time.time() - start_v1
+        res = evaluate_row_v0_v1(row, llm, rag_chain, provider, model, run_label)
+        results.append(res)
         
         # Rate limiting pause (Aggressive for free tier)
         time.sleep(15)
-        
-        # Store combined result
-        results.append({
-            "run_id": run_label,
-            "timestamp": datetime.now().isoformat(),
-            "question_id": q_id,
-            "question": question,
-            "provider": provider,
-            "model": model,
-            
-            # V0 Data
-            "response_v0": resp_v0,
-            "latency_v0": time_v0,
-            "error_v0": error_v0,
-            
-            # V1 Data
-            "response_v1": resp_v1,
-            "latency_v1": time_v1,
-            "error_v1": error_v1
-        })
-        print(f"Done (V0: {time_v0:.2f}s | V1: {time_v1:.2f}s)")
+        print(f"Done (V0: {res['latency_v0']:.2f}s | V1: {res['latency_v1']:.2f}s)")
 
     # 4. Save Combined Results
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -121,6 +78,48 @@ async def run_comparative_evaluation(provider: str, model: str, run_label: str =
     csv_path = RESULTS_DIR / f"{filename_base}.csv"
     results_df.to_csv(csv_path, index=False)
     print(f"Saved CSV results to {csv_path}")
+
+def evaluate_row_v0_v1(row, llm, rag_chain, provider, model, run_label="default"):
+    q_id = str(row['id'])
+    question = row['question']
+    
+    # --- V0 Execution (Baseline) ---
+    start_v0 = time.time()
+    try:
+        resp_v0 = llm.invoke(question).content
+        error_v0 = None
+    except Exception as e:
+        resp_v0 = ""
+        error_v0 = str(e)
+        print(f"  [ERROR V0]: {e}")
+    time_v0 = time.time() - start_v0
+    
+    # --- V1 Execution (RAG) ---
+    start_v1 = time.time()
+    try:
+        # RAG returns a string directly from the chain defined in rag.py
+        resp_v1 = rag_chain.invoke(question)
+        error_v1 = None
+    except Exception as e:
+        resp_v1 = ""
+        error_v1 = str(e)
+        print(f"  [ERROR V1]: {e}")
+    time_v1 = time.time() - start_v1
+    
+    return {
+        "run_id": run_label,
+        "timestamp": datetime.now().isoformat(),
+        "question_id": q_id,
+        "question": question,
+        "provider": provider,
+        "model": model,
+        "response_v0": resp_v0,
+        "latency_v0": time_v0,
+        "error_v0": error_v0,
+        "response_v1": resp_v1,
+        "latency_v1": time_v1,
+        "error_v1": error_v1
+    }
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Ejecutar Evaluación Comparativa (V0 vs V1)")
