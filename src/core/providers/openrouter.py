@@ -5,7 +5,7 @@ class OpenRouterProvider:
     @staticmethod
     def get_chat_model(model_name: str, **kwargs):
         """
-        Returns a configured ChatOpenAI instance pointing to OpenRouter.
+        Retorna una instancia configurada de ChatOpenAI apuntando a OpenRouter.
         """
         extra_headers = {}
         if settings.openrouter_http_referer:

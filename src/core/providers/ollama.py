@@ -6,7 +6,7 @@ class OllamaProvider:
     @staticmethod
     def get_chat_model(model_name: str, **kwargs):
         """
-        Returns a configured ChatOllama instance.
+        Retorna una instancia configurada de ChatOllama.
         """
         base_url = getattr(settings, "ollama_base_url", "http://localhost:11434")
         return ChatOllama(
@@ -18,12 +18,13 @@ class OllamaProvider:
     @staticmethod
     def unload_model(model_name: str):
         """
-        Forces the model to unload from memory by setting keep_alive to 0.
+        Fuerza la descarga del modelo de la memoria estableciendo keep_alive a 0.
+        Útil para ahorrar RAM en evaluaciones secuenciales.
         """
         base_url = getattr(settings, "ollama_base_url", "http://localhost:11434")
         try:
-            print(f"Unloading model {model_name} from memory...")
-            # We send a generate request with empty prompt and keep_alive=0
+            print(f"Descargando modelo {model_name} de memoria...")
+            # Enviamos una petición de generación vacía con keep_alive=0
             requests.post(
                 f"{base_url}/api/generate",
                 json={
@@ -32,6 +33,6 @@ class OllamaProvider:
                     "keep_alive": 0
                 }
             )
-            print(f"Model {model_name} unloaded successfully.")
+            print(f"Modelo {model_name} descargado correctamente.")
         except Exception as e:
-            print(f"Warning: Failed to unload Ollama model: {e}")
+            print(f"Advertencia: Falló al descargar modelo Ollama: {e}")

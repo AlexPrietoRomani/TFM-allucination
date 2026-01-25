@@ -5,7 +5,7 @@ class GeminiProvider:
     @staticmethod
     def get_chat_model(model_name: str = "gemini-1.5-flash", **kwargs):
         """
-        Returns a configured ChatGoogleGenerativeAI instance.
+        Retorna una instancia configurada de ChatGoogleGenerativeAI (Gemini).
         """
         return ChatGoogleGenerativeAI(
             model=model_name,
