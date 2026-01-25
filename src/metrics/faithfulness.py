@@ -2,22 +2,22 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from src.metrics.judges import JudgeFactory
 
-FAITHFULNESS_PROMPT = """You are an impartial judge evaluating the "Faithfulness" of an AI Assistant's response.
-Faithfulness measures if the response is purely derived from the provided context without hallucinations.
+FAITHFULNESS_PROMPT = """Eres un juez imparcial evaluando la "Fidelidad" de la respuesta de un Asistente IA.
+La Fidelidad mide si la respuesta se deriva puramente del contexto proporcionado, sin alucinaciones.
 
-Context:
+Contexto:
 {context}
 
-Response:
+Respuesta:
 {response}
 
-Task:
-1. Identify all claims made in the Response.
-2. For each claim, check if it is supported by the Context.
-3. Assign a score from 0.0 to 1.0 (1.0 = All claims supported, 0.0 = Pure hallucination).
-4. Provide a brief reason.
+Tarea:
+1. Identifica todas las afirmaciones hechas en la Respuesta.
+2. Para cada afirmación, verifica si está soportada por el Contexto.
+3. Asigna un puntaje de 0.0 a 1.0 (1.0 = Todas las afirmaciones soportadas, 0.0 = Alucinación pura).
+4. Provee una razón breve.
 
-Output JSON format:
+Formato de salida JSON:
 {{
     "score": <float>,
     "reason": "<string>"
@@ -32,13 +32,13 @@ class FaithfulnessMetric:
 
     def evaluate(self, response: str, context_docs: list) -> dict:
         if not context_docs or not response:
-            return {"score": 0.0, "reason": "No context or response provided."}
+            return {"score": 0.0, "reason": "No se proporcionó contexto o respuesta."}
             
-        # Flatten context
+        # Aplanar contexto
         context_text = "\n\n".join([f"[{doc.metadata.get('source_id', 'Doc')}]: {doc.page_content}" for doc in context_docs])
         
         try:
             result = self.chain.invoke({"response": response, "context": context_text})
             return result
         except Exception as e:
-            return {"score": 0.0, "reason": f"Evaluation error: {e}"}
+            return {"score": 0.0, "reason": f"Error de evaluación: {e}"}
