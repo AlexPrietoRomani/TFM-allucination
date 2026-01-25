@@ -1,24 +1,45 @@
 # Protocolo Experimental y Criterios de Éxito
 
 ## 1. Variantes Experimentales
-- **V0: Chat Baseline**
-  - Prompt directo al LLM.
-  - Sin RAG.
-  - Sin métricas de mitigación.
-- **V1: Chat RAG**
-  - Retrieval de chunks relevantes.
-  - Prompt con contexto.
-  - Citas obligatorias.
-- **V2: RAG Agéntico con Mitigación**
-  - Gating por incertidumbre (Semantic Entropy).
-  - Verificación factual (FactScore).
-  - Abstención activa ("No tengo suficiente información").
+- **V0: Chat Baseline (Control)**
+  - Prompt directo al LLM (Zero-shot).
+  - Sin acceso a documentación externa.
+  - Representa el riesgo de usar LLMs "out-of-the-box".
+- **V1: Chat RAG (Experimental)**
+  - Recuperación Vectorial (Dense Retrieval) con Qdrant.
+  - Inyección de contexto en prompt.
+  - Citas obligatorias en respuesta.
+- **V2: Agente RAG Autónomo (Mitigación Activa)**
+  - Orquestación con **LangGraph**.
+  - **Self-Correction Loop**: Verifica fidelidad (Faithfulness) antes de responder.
+  - **Routing**: Clasifica intención (Query vs Chitchat) para optimizar recursos.
+  - Reescritura iterativa si se detecta alucinación.
 
 ## 2. Dataset y Ground Truth
-- **Question Bank**: 30-60 preguntas sobre "Manejo fitosanitario en arándano".
-- **Ground Truth**: Respuesta ideal verificada para cada pregunta.
+- **Question Bank**: 12 Preguntas "Gold Standard" de alta complejidad validadas manualmente.
+- **Fuentes**: 
+  - Normativa SENASA (Perú) y SAG (Chile).
+  - Manuales técnicos (MIP, Fungicidas).
+  - Papers científicos recientes (2023).
 
-## 3. Métricas
-- **Factualidad**: FactScore (proporción de afirmaciones atómicas soportadas).
-- **Incertidumbre**: Entropía Semántica (consistencia entre generaciones estocásticas).
-- **Operativas**: Latencia, Costo, Número de llamadas.
+## 3. Métricas de Evaluación
+Se usa un enfoque de "Triple Capa" (LLM-as-a-Judge):
+
+1.  **Fidelidad (Faithfulness)**: 
+    -   Métrica estilo DeepEval/G-Eval.
+    -   Evalúa si la respuesta se deriva **exclusivamente** del contexto recuperado.
+    -   Escala: 0.0 - 1.0.
+
+2.  **Relevancia Contextual (Context Relevance)**:
+    -   Evalúa si los documentos recuperados por el Retriever responden realmente a la pregunta del usuario.
+    -   Detecta fallos en la etapa de Búsqueda Vectorial.
+
+3.  **FactScore (Factualidad Atómica)**:
+    -   Descompone la respuesta en afirmaciones atómicas (ej: "La dosis es 5ml").
+    -   Verifica cada afirmación individualmente contra la evidencia.
+    -   Score: % de afirmaciones soportadas.
+
+4.  **Operativas**:
+    -   Latencia (Tiempo de respuesta).
+    -   Tasa de abstención (V2).
+
