@@ -6,11 +6,11 @@ class JudgeFactory:
     @staticmethod
     def get_judge():
         """
-        Returns a strong LLM to act as a judge.
-        Defaults to Gemini Flash/Pro or OpenRouter GPT-4o depending on settings.
-        We prefer Gemini 1.5 Pro or Flash for speed/cost balance in this project.
+        Retorna un LLM potente para actuar como juez.
+        Por defecto usa Ollama gpt-oss:20b para ejecución local sin límites,
+        pero podría cambiarse a GPT-4o o Gemini Pro en producción.
         """
-        # Default to Ollama as requested for local execution without rate limits
+        # Por defecto Ollama para ejecución local
         provider = "ollama"
         model = "gpt-oss:20b"
         
