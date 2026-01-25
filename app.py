@@ -94,14 +94,70 @@ with st.sidebar:
 
 # --- Helper Functions ---
 
+# Redis Connection (Lazy)
+def get_redis_queue():
+    try:
+        from redis import Redis
+        from rq import Queue
+        r = Redis(host="localhost", port=6379, socket_connect_timeout=1)
+        # Check connection
+        r.ping()
+        return Queue(connection=r)
+    except Exception as e:
+        print(f"Redis not available: {e}")
+        return None
+
+def submit_async_metric(response, docs):
+    q = get_redis_queue()
+    if not q: return None
+    
+    # Serialize docs
+    docs_data = [{"page_content": d.page_content, "metadata": d.metadata} for d in docs]
+    
+    try:
+        job = q.enqueue('services.worker.tasks.calculate_factscore_task', response, docs_data, result_ttl=3600)
+        return job.id
+    except Exception as e:
+        print(f"Job submit failed: {e}")
+        return None
+
+def check_async_job(job_id):
+    if not job_id: return None
+    try:
+        from redis import Redis
+        from rq.job import Job
+        r = Redis(host="localhost", port=6379)
+        job = Job.fetch(job_id, connection=r)
+        if job.is_finished:
+            return job.result
+        return None
+    except:
+        return None
+
 def render_metrics(metrics_data):
     if not metrics_data: return
     
     with st.expander("📊 Métricas de Calidad"):
+        # Check if we have async job pending
+        if "job_id" in metrics_data and "factscore" not in metrics_data:
+            job_id = metrics_data["job_id"]
+            res = check_async_job(job_id)
+            if res:
+                metrics_data["factscore"] = res.get("score", 0.0)
+                metrics_data["fs_breakdown"] = res.get("breakdown", [])
+                st.toast("¡Cálculo FactScore completado!")
+            else:
+                st.caption("⏳ Calculando FactScore en background...")
+                if st.button("🔄 Actualizar Status", key=f"btn_{job_id}"):
+                    st.rerun()
+
         mc1, mc2, mc3 = st.columns(3)
         mc1.metric("Fidelidad", f"{metrics_data.get('faith_score', 0):.2f}")
         mc2.metric("Relevancia", f"{metrics_data.get('rel_score', 0):.2f}")
-        mc3.metric("FactScore", f"{metrics_data.get('factscore', 0):.2f}")
+        
+        fs_display = f"{metrics_data.get('factscore', 0):.2f}" if "factscore" in metrics_data else "..."
+        mc3.metric("FactScore", fs_display)
+        
         st.caption(f"Reason: {metrics_data.get('faith_reason', 'N/A')}")
         
         if "fs_breakdown" in metrics_data and metrics_data["fs_breakdown"]:
@@ -114,11 +170,12 @@ def render_metrics(metrics_data):
 def calculate_metrics_sync(prompt, response, retrieved_docs, status_container):
     metrics = {}
     if use_metrics and FaithfulnessMetric:
-        status_container.write("⚖️ Calculando Métricas...")
+        # Launch Async if possible for FactScore
+        # Calculate fast metrics here
+        status_container.write("⚖️ Calculando Métricas Rápidas (Fidelidad)...")
         try:
             faith_metric = FaithfulnessMetric()
             rel_metric = ContextRelevanceMetric()
-            fact_metric = FactScoreMetric() if FactScoreMetric else None
             
             # Relevance
             rel_res = rel_metric.evaluate(prompt, retrieved_docs)
@@ -132,12 +189,15 @@ def calculate_metrics_sync(prompt, response, retrieved_docs, status_container):
                 "rel_reason": rel_res.get("reason", "N/A")
             }
             
-            # FactScore
-            if fact_metric:
-                 status_container.write("🔍 Calculando FactScore...")
-                 fs_res = fact_metric.calculate(response, retrieved_docs)
-                 metrics["factscore"] = fs_res.get("score", 0.0)
-                 metrics["fs_breakdown"] = fs_res.get("breakdown", [])
+            # Async FactScore
+            status_container.write("🚀 Enviando FactScore a Worker...")
+            jid = submit_async_metric(response, retrieved_docs)
+            if jid:
+                metrics["job_id"] = jid
+                status_container.write(f"✅ Job enviado: {jid}")
+            else:
+                 # Fallback Sync
+                 pass
                  
         except Exception as e:
             st.error(f"Error métricas: {e}")
