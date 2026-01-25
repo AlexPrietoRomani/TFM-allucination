@@ -10,6 +10,14 @@ from src.core.config.settings import settings
 from src.chat.rag import RAGEngine
 from src.agent.graph import AgentGraph
 from langchain_core.messages import HumanMessage, AIMessage
+import pandas as pd
+# Eval Imports
+try:
+    from eval.run_eval import evaluate_row_v0_v1
+    from eval.run_eval_v2 import evaluate_row_v2
+    from reports.generate_report import generate_report
+except ImportError:
+    pass
 
 # Import Metrics
 try:
@@ -44,12 +52,12 @@ def get_rag_engine():
     return RAGEngine()
 
 @st.cache_resource
-def get_agent_v2():
-    return AgentGraph()
+def get_agent_v2(provider_name=None, model_name=None):
+    return AgentGraph(provider=provider_name, model_id=model_name)
 
 registry = load_model_registry()
 rag_engine = get_rag_engine()
-agent_v2 = get_agent_v2()
+# agent_v2 removed from global scope to support dynamic provider switching
 
 # --- Session State ---
 if "messages_v0" not in st.session_state: st.session_state.messages_v0 = []
@@ -203,13 +211,13 @@ def calculate_metrics_sync(prompt, response, retrieved_docs, status_container):
             st.error(f"Error métricas: {e}")
     return metrics
 
-async def run_agent_v2(prompt, status_box):
+async def run_agent_v2(agent_instance, prompt, status_box):
     log = []
     final_resp = ""
     docs = []
     
     # Listen to events
-    async for event in agent_v2.app.astream_events({"question": prompt}, version="v1"):
+    async for event in agent_instance.app.astream_events({"question": prompt}, version="v1"):
         kind = event["event"]
         name = event["name"]
         
@@ -224,14 +232,14 @@ async def run_agent_v2(prompt, status_box):
                  docs = data["documents"]
 
     # Final result
-    final_state = await agent_v2.app.ainvoke({"question": prompt})
+    final_state = await agent_instance.app.ainvoke({"question": prompt})
     final_resp = final_state.get("generation", "")
     return final_resp, docs, log
 
 # --- Main Tabs ---
 st.title("🍇 Plataforma TFM: Arándanos AI")
 
-tab_comp, tab_v0, tab_v1, tab_v2 = st.tabs(["⚔️ Comparativa", "🧠 V0 (Baseline)", "📚 V1 (RAG)", "🤖 V2 (Agente)"])
+tab_comp, tab_v0, tab_v1, tab_v2, tab_reports = st.tabs(["⚔️ Comparativa", "🧠 V0 (Baseline)", "📚 V1 (RAG)", "🤖 V2 (Agente)", "📊 Reportes & Eval"])
 
 # === TAB V0 (Baseline) ===
 with tab_v0:
@@ -326,7 +334,9 @@ if st.session_state.messages_v2 and st.session_state.messages_v2[-1]["role"] == 
         with st.chat_message("assistant"):
             status = st.status("Agente V2 Pensando...")
             try:
-                resp, docs, steps = asyncio.run(run_agent_v2(prompt, status))
+                # Get specific agent for current provider settings
+                current_agent = get_agent_v2(provider, model_id)
+                resp, docs, steps = asyncio.run(run_agent_v2(current_agent, prompt, status))
                 status.update(label="Listo", state="complete")
                 st.markdown(resp)
                 st.session_state.messages_v2.append({
@@ -403,7 +413,9 @@ if st.session_state.messages_comp and st.session_state.messages_comp[-1]["role"]
                     name_b = "V2 (Agente)"
                     t0 = time.time()
                     # V2 Async
-                    resp_b, docs_b, steps_b = asyncio.run(run_agent_v2(prompt, status))
+                    # V2 Async
+                    current_agent = get_agent_v2(provider, model_id)
+                    resp_b, docs_b, steps_b = asyncio.run(run_agent_v2(current_agent, prompt, status))
                     # V2 usually has self-eval in steps, but we can re-calc external metrics if wanted
                     # Let's rely on internal V2 grading steps for metric or recalc? 
                     # Recalc consistent metrics for comparison
@@ -433,3 +445,116 @@ if st.session_state.messages_comp and st.session_state.messages_comp[-1]["role"]
                 
             except Exception as e:
                 st.error(f"Error Comparativa: {e}")
+
+# === TAB REPORTES ===
+with tab_reports:
+    st.subheader("📊 Centro de Control de Evaluación")
+    
+    c1, c2 = st.columns([1, 2])
+    
+    with c1:
+        st.markdown("### Configuración")
+        q_bank_path = st.text_input("Banco de Preguntas", value="eval/question_bank_v1.csv")
+        limit_q = st.slider("Límite de Preguntas", 1, 20, 5)
+        
+        st.markdown("#### Versiones a Evaluar")
+        run_v0_v1 = st.checkbox("Ejecutar V0 (Base) y V1 (RAG)", value=True)
+        run_v2 = st.checkbox("Ejecutar V2 (Agente)", value=True)
+        
+        st.info(f"Proveedor Activo: **{provider}**\nModelo: **{model_id}**")
+        
+        if st.button("🚀 Iniciar Benchmark", type="primary"):
+            if not Path(q_bank_path).exists():
+                st.error("No se encuentra el archivo de preguntas.")
+            else:
+                st.session_state['run_eval'] = True
+    
+    with c2:
+        st.markdown("### Progreso en Tiempo Real")
+        status_container = st.container()
+        progress_bar = st.progress(0)
+        log_area = st.empty()
+        
+        if st.session_state.get('run_eval', False):
+            st.session_state['run_eval'] = False # Reset trigger
+            
+            try:
+                # 1. Load Data
+                df_q = pd.read_csv(q_bank_path, dtype={'id': str})
+                if limit_q > 0:
+                    df_q = df_q.head(limit_q)
+                
+                total_steps = len(df_q)
+                results_v0_v1 = []
+                results_v2 = []
+                
+                # 2. Init Resources
+                llm = ProviderFactory.get_provider(provider, model_id)
+                rag_engine_inst = get_rag_engine()
+                rag_chain = rag_engine_inst.get_chain(llm)
+                
+                # Agent init
+                agent_instance = None
+                if run_v2:
+                    agent_instance = get_agent_v2(provider, model_id)
+                
+                # 3. Loop
+                for i, row in df_q.iterrows():
+                    q_id = row.get('id', str(i))
+                    q_text = row.get('question', '')
+                    
+                    status_container.markdown(f"**Procesando Q{q_id}:** _{q_text}_")
+                    
+                    # RUN V0/V1
+                    if run_v0_v1:
+                        log_area.text(f"Evaluando V0/V1 para Q{q_id}...")
+                        res_1 = evaluate_row_v0_v1(row, llm, rag_chain, provider, model_id, run_label="ui_run")
+                        results_v0_v1.append(res_1)
+                    
+                    # RUN V2 (Async wrapper)
+                    if run_v2 and agent_instance:
+                        log_area.text(f"Evaluando V2 (Agente) para Q{q_id}...")
+                        # Run async inside sync streamlit
+                        res_2 = asyncio.run(evaluate_row_v2(row, agent_instance))
+                        results_v2.append(res_2)
+                    
+                    progress_bar.progress((i + 1) / total_steps)
+                
+                st.success("✅ Evaluación Completada")
+                
+                # 4. Save results (compatibility with generate_report)
+                timestamp = time.strftime("%Y%m%d_%H%M%S")
+                
+                if results_v0_v1:
+                    df_1 = pd.DataFrame(results_v0_v1)
+                    path_1 = Path(f"eval/results/Comparison/eval_comparison_{provider}_{timestamp}.csv")
+                    path_1.parent.mkdir(parents=True, exist_ok=True)
+                    df_1.to_csv(path_1, index=False)
+                    st.toast(f"Resultados V0/V1 guardados en {path_1.name}")
+
+                if results_v2:
+                    # Save V2 json
+                    path_2 = Path(f"eval/results/V2/eval_v2_{timestamp}.json")
+                    path_2.parent.mkdir(parents=True, exist_ok=True)
+                    with open(path_2, "w", encoding="utf-8") as f:
+                        json.dump(results_v2, f, indent=2, ensure_ascii=False)
+                    st.toast(f"Resultados V2 guardados en {path_2.name}")
+                
+            except Exception as e:
+                st.error(f"Error durante evaluación: {e}")
+
+    st.divider()
+    
+    st.subheader("📄 Generación de Reportes")
+    c_rep1, c_rep2 = st.columns(2)
+    with c_rep1:
+        rep_mode = st.selectbox("Versión del Reporte", ["all", "v0", "v1", "v2"])
+        if st.button("Generar Informe Final Markdown"):
+            try:
+                out_path = generate_report(rep_mode)
+                if out_path:
+                    st.success(f"Reporte generado: {out_path}")
+                    with open(out_path, "rb") as f:
+                        st.download_button("⬇️ Descargar Reporte (.md)", f, file_name=Path(out_path).name)
+            except Exception as e:
+                st.error(f"Error generando reporte: {e}")
