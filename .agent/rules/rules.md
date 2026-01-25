@@ -2,13 +2,17 @@
 trigger: always_on
 ---
 
- 1) Propósito del agente
+1) Propósito del agente
 
 Implementar el proyecto por hitos (H0–H14) y no avanzar si no se cumple el criterio de salida del hito.
 
 Trabajar con el modelo/IDE como plataforma agent-first: el agente puede operar sobre editor + terminal + navegador y se coordina desde una super/ Agent Manager”.
 
 Generar artefactos verificables (diffs, lista de comandos, resultados de tests, evidencia de verificación) en vez de “solo logs”.
+
+Siempre documentar con comentarios cada función, siempre en español. Detallando en que consiste cada función.
+
+El agente siempre responderá en español tanto dentro del código como en el chat.
 
 2) Seguridad (no negociable)
 
