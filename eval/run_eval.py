@@ -123,29 +123,35 @@ async def run_comparative_evaluation(provider: str, model: str, run_label: str =
     print(f"Saved CSV results to {csv_path}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run Comparative Evaluation (V0 vs V1)")
-    parser.add_argument("--provider", type=str, default=settings.default_provider, help="Provider name")
-    parser.add_argument("--model", type=str, default=None, help="Model name")
-    parser.add_argument("--limit", type=int, default=0, help="Limit number of questions to process (0 for all)")
-    parser.add_argument("--clean", action="store_true", help="Clean previous results before running")
+    parser = argparse.ArgumentParser(description="Ejecutar Evaluación Comparativa (V0 vs V1)")
+    parser.add_argument("--provider", type=str, default=settings.default_provider, help="Nombre del proveedor")
+    parser.add_argument("--model", type=str, default=None, help="Nombre del modelo")
+    parser.add_argument("--limit", type=int, default=0, help="Limitar número de preguntas (0 para todas)")
+    parser.add_argument("--clean", action="store_true", help="Limpiar resultados anteriores antes de ejecutar")
     
     args = parser.parse_args()
     
-    # Defaults
+    # Valores por defecto
     if not args.model:
         if args.provider == "gemini":
             args.model = settings.default_model_google
         elif args.provider == "openrouter":
             args.model = settings.default_model_openrouter
-        # For ollama, user must usually specify, or we could default to something common
+        # Para ollama, el usuario suele especificarlo, o usamos default
         elif args.provider == "ollama":
-            args.model = "llama3" # Example default
+            args.model = "gpt-oss:20b" 
             
-    # Clean logic
+    # Lógica de limpieza
     if args.clean:
         import shutil
         if RESULTS_DIR.exists():
-            print(f"Cleaning results directory: {RESULTS_DIR}")
+            print(f"Limpiando directorio de resultados: {RESULTS_DIR}")
             shutil.rmtree(RESULTS_DIR)
             
-    asyncio.run(run_comparative_evaluation(args.provider, args.model, limit=args.limit))
+    try:
+        asyncio.run(run_comparative_evaluation(args.provider, args.model, limit=args.limit))
+    finally:
+        # Limpieza para Ollama para liberar RAM
+        if args.provider == "ollama" and args.model:
+            from src.core.providers.ollama import OllamaProvider
+            OllamaProvider.unload_model(args.model)
