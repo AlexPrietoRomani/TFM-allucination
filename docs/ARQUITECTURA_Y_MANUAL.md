@@ -1,97 +1,114 @@
 # Arquitectura y Manual del Proyecto TFM Allucination
 
 ## 1. Propósito del Proyecto
-Este proyecto es un Trabajo de Fin de Máster (TFM) enfocado en **mitigar y medir alucinaciones** en Modelos de Lenguaje (LLMs) aplicados a la agricultura (específicamente manejo de arándanos).
+Este proyecto es un Trabajo de Fin de Máster (TFM) enfocado en **mitigar y medir alucinaciones** en Modelos de Lenguaje (LLMs) aplicados a la agricultura (manejo de arándanos).
 
-El sistema compara dos enfoques:
-1.  **V0 (Baseline)**: El LLM responde usando solo su conocimiento pre-entrenado (zero-shot).
-2.  **V1 (RAG)**: Retrieval-Augmented Generation. El LLM responde usando documentos oficiales indexados (SENASA, SAG, etc.).
+El sistema compara tres niveles de sofisticación:
+1.  **V0 (Baseline)**: Chat básico. El LLM responde usando solo su entrenamiento (zero-shot). Alta propensión a alucinar.
+2.  **V1 (RAG)**: Retrieval-Augmented Generation. El LLM recibe contexto validado de documentos oficiales (SENASA, SAG, Manuales).
+3.  **V2 (Agente RAG)**: Sistema autónomo con **Mitigación Activa**. Usa ciclos de feedback y auto-corrección para verificar sus propias respuestas antes de entregarlas.
 
 ## 2. Arquitectura del Sistema
 
-El sistema sigue una arquitectura modular "Agentic" simplificada:
+El sistema implementa una arquitectura incremental:
+
+### Diagrama General
 
 ```mermaid
 graph TD
-    User[Usuario / Streamlit] --> Router
+    User[Usuario / Streamlit] --> App[App Unificada]
     
-    subgraph "V0: Baseline (Control)"
-        Router --> LLM_Base[LLM Standard]
+    subgraph "Niveles de Inteligencia"
+        App -->|Tab V0| Baseline[LLM Standard]
+        App -->|Tab V1| RAG[Motor RAG]
+        App -->|Tab V2| Agent[Agente LangGraph]
     end
     
-    subgraph "V1: RAG (Experimental)"
-        Router --> Retriever[Qdrant Vector DB]
-        Retriever --> Context[Documentos Relevantes]
-        Context --> LLM_RAG[LLM Aumentado]
+    subgraph "Componentes Compartidos"
+        RAG & Agent --> VectorDB[Qdrant (Documentos)]
+        RAG & Agent --> Metrics[Sistema de Métricas]
     end
+```
+
+### Detalle del Agente V2 (LangGraph)
+
+El Agente V2 implementa un grafo de estados para auto-corrección:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Clasificar
+    Clasificar --> Chitchat: Saludo
+    Clasificar --> Recuperar: Consulta Técnica
+    Recuperar --> Generar
+    Generar --> Evaluar: (Self-Reflection)
     
-    subgraph "Evaluación (Jueces)"
-        V1_Output --> Metrics[G-Eval / Juez LLM]
-        Metrics --> Faithfulness[Fidelidad]
-        Metrics --> Relevance[Relevancia]
-    end
+    state Evaluar {
+        direction LR
+        JuezLLM --> Fidelidad
+        Fidelidad --> Decision
+    }
+    
+    Evaluar --> Generar: Alucinación Detectada (Loop)
+    Evaluar --> [*]: Respuesta Validada
 ```
 
 ## 3. Estructura de Archivos
 
 ### `src/` (Código Fuente)
-El núcleo de la lógica del negocio.
 
 #### `src/core/`
-Configuración base y proveedores de modelos.
--   `config/settings.py`: Variables de entorno y configuración global (Pydantic).
--   `config/model_registry.json`: Base de datos local de modelos soportados (Gemini, OpenRouter, etc.).
--   `providers/factory.py`: Patrón Factory para instanciar LLMs dinámicamente.
--   `providers/gemini.py`, `ollama.py`, `openrouter.py`: Adaptadores para cada API.
--   `providers/embeddings.py`: Generación de embeddings (Gemini Text-Embedding-004).
+Infraestructura base.
+-   `config/`: `settings.py` (ENV) y `model_registry.json`.
+-   `providers/`: Factory para LLMs (Gemini, Ollama, OpenRouter).
 
 #### `src/knowledge/`
-Gestión del conocimiento e ingestión de documentos.
--   `loaders.py`: Cargadores robustos para PDF, DOCX (Word) y XLSX (Excel). Conversión a Markdown.
--   `indexer.py`: Script para leer `corpus/raw`, dividir en chunks e indexar en Qdrant.
+Gestión del conocimiento (RAG).
+-   `loaders.py`: Extracción robusta de texto (PDF/Word/Excel) con limpieza de cabeceras.
+-   `indexer.py`: Segmentación (chunking) e indexación vectorial en Qdrant.
 
 #### `src/chat/`
-Lógica de conversación.
--   `rag.py`: Motor RAG. Define la cadena de procesamiento: `Pregunta -> Retrieval -> Prompt -> Generación`.
+Lógica conversacional V1.
+-   `rag.py`: Pipeline lineal `Retrieve -> Synthesize`.
+
+#### `src/agent/` (NUEVO V2)
+Lógica agéntica V2.
+-   `graph.py`: Definición del grafo de estados (LangGraph).
+-   `nodes.py`: Funciones de los nodos (Clasificar, Generar, Evaluar).
+-   `state.py`: Definición del estado compartido del agente (`AgentState`).
 
 #### `src/metrics/`
-Evaluación automática (LLM-as-a-Judge).
--   `judges.py`: Factory para el LLM que actúa como juez (suelen ser modelos potentes).
--   `faithfulness.py`: Mide si la respuesta inventó algo fuera del contexto.
--   `context_relevance.py`: Mide si lo recuperado sirve para la pregunta.
+Sistema de Evaluación "Triple Capa".
+-   `faithfulness.py` (G-Eval): ¿La respuesta es fiel al contexto recuperado?
+-   `context_relevance.py`: ¿La recuperación fue útil?
+-   `factscore.py`: **Granularidad Atómica**. Descompone la respuesta en hechos simples y verifica cada uno.
 
 ### `eval/` (Benchmarking)
-Scripts para ejecutar pruebas masivas.
--   `question_bank_v1.csv`: Banco de preguntas "Gold Standard" con fuentes esperadas.
--   `run_eval.py`: Ejecuta el banco de preguntas en V0 y V1 y guarda latencia/respuestas.
--   `run_metrics.py`: Toma las respuestas y calcula puntajes de alucinación (0.0 a 1.0).
+-   `question_bank_v1.csv`: 12 Preguntas "Gold Standard" de alta complejidad técnica.
+-   `run_eval.py`: Generación batch de respuestas V0/V1.
+-   `run_metrics.py` & `run_factscore.py`: Cálculo masivo de métricas.
 
-### `corpus/`
-Datos crudos.
--   `raw/`: Archivos PDF, DOCX, XLSX originales.
--   `registry.yaml`: Metadatos de los documentos (título, país, año).
-
-### Raíz
--   `app.py`: Interfaz de usuario (Frontend) construida con **Streamlit**. Permite chat interactivo y ver métricas en tiempo real.
+### `app.py` (Frontend)
+Aplicación unificada en **Streamlit** con pestañas para comparar V0, V1 y V2 en tiempo real, visualizar métricas y trazas de ejecución del agente.
 
 ## 4. Flujo de Trabajo Típico
 
-1.  **Ingesta**: 
-    -   Se añaden archivos a `corpus/raw`.
-    -   Se añade entrada a `corpus/registry.yaml`.
-    -   Se ejecuta `uv run src/knowledge/indexer.py` para actualizar la base vectorial.
+1.  **Ingesta de Documentos**: 
+    -   Colocar PDFs en `corpus/raw`.
+    -   Ejecutar `uv run src/knowledge/indexer.py`.
 
-2.  **Evaluación (Batch)**:
-    -   Se edita `eval/question_bank_v1.csv` con nuevas preguntas.
-    -   Se ejecuta `uv run eval/run_eval.py` para generar respuestas.
-    -   Se ejecuta `uv run eval/run_metrics.py` para calificar.
+2.  **Evaluación Científica**:
+    -   Correr `uv run eval/run_eval.py` (Generar respuestas).
+    -   Correr `uv run eval/run_metrics.py` (Calcular scores).
+    -   Generar reporte: `uv run reports/generate_report.py`.
 
-3.  **Uso Interactivo**:
-    -   Se lanza `uv run streamlit run app.py`.
-    -   Se chatea validando V0 vs V1 en caliente.
+3.  **Demo Interactiva**:
+    -   `uv run streamlit run app.py`
+    -   Navegar entre pestañas V0/V1/V2.
+    -   Activar checkbox "Calcular Métricas" para ver FactScore en vivo.
 
 ## 5. Tecnologías Clave
--   **LangChain**: Orquestación de cadenas y RAG.
--   **Qdrant**: Base de datos vectorial (Persistencia local en `qdrant_storage`).
--   **Streamlit**: UI rápida.
--   **Google Gemini / Ollama / OpenRouter**: Proveedores de Inteligencia Artificial.
+-   **LangGraph**: Orquestación de agentes cíclicos (Stateful).
+-   **LangChain**: Cadenas base y prompts.
+-   **Qdrant**: Base de datos vectorial persistente.
+-   **Ollama / Gemini**: Modelos de lenguaje.
+-   **Streamlit**: Interfaz de usuario.
