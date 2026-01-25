@@ -9,3 +9,10 @@ services:
     volumes:
       - ./qdrant_storage:/qdrant/storage:z
     restart: unless-stopped
+
+  redis:
+    image: redis:alpine
+    container_name: tfm-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
