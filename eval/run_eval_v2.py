@@ -17,46 +17,16 @@ async def run_v2_eval():
     df = pd.read_csv(INPUT_FILE, dtype={'id': str})
     
     # Inicializar Agente
-    agent = AgentGraph()
+    # Configuración explícita para el Benchmark final (Ollama)
+    agent = AgentGraph(provider="ollama", model_id="gpt-oss:20b")
     
     results = []
     
     for idx, row in df.iterrows():
-        q_id = row['id']
-        question = row['question']
-        print(f"[{idx+1}/{len(df)}] Procesando Q{q_id}...")
-        
-        start_time = time.time()
-        try:
-            # Ejecutar Agente
-            state = await agent.app.ainvoke({"question": question})
-            response = state.get("generation", "")
-            final_faith = state.get("faithfulness_score", 0.0)
-            retries = state.get("retry_count", 0)
-            
-            latency = time.time() - start_time
-            
-            # Guardar
-            results.append({
-                "question_id": q_id,
-                "question": question,
-                "response": response,
-                "latency": latency,
-                "faithfulness_score": final_faith,
-                "retries": retries,
-                "model": "Agente V2"
-            })
-            print(f"  -> Latency: {latency:.2f}s | Score: {final_faith} | Retries: {retries}")
-            
-        except Exception as e:
-            print(f"  ❌ Error: {e}")
-            results.append({
-                "question_id": q_id,
-                "question": question,
-                "response": f"Error: {e}",
-                "latency": 0,
-                "error": str(e)
-            })
+        print(f"[{idx+1}/{len(df)}] Procesando Q{row['id']}...", end=" ", flush=True)
+        res = await evaluate_row_v2(row, agent)
+        results.append(res)
+        print(f"  -> Latency: {res['latency']:.2f}s | Score: {res.get('faithfulness_score', 0)}")
 
     # Guardar Resultados
     timestamp = time.strftime("%Y%m%d_%H%M%S")
@@ -66,6 +36,40 @@ async def run_v2_eval():
         json.dump(results, f, indent=2, ensure_ascii=False)
         
     print(f"\n✅ Evaluación V2 completada. Resultados en {out_file}")
+
+async def evaluate_row_v2(row, agent):
+    q_id = str(row['id'])
+    question = row['question']
+    
+    start_time = time.time()
+    try:
+        # Ejecutar Agente
+        # Usamos context manager para timeout si fuera necesario, o simple await
+        state = await agent.app.ainvoke({"question": question})
+        response = state.get("generation", "")
+        final_faith = state.get("faithfulness_score", 0.0)
+        retries = state.get("retry_count", 0)
+        
+        latency = time.time() - start_time
+        
+        return {
+            "question_id": q_id,
+            "question": question,
+            "response": response,
+            "latency": latency,
+            "faithfulness_score": final_faith,
+            "retries": retries,
+            "model": "Agente V2"
+        }
+    except Exception as e:
+        print(f"  ❌ Error: {e}")
+        return {
+            "question_id": q_id,
+            "question": question,
+            "response": f"Error: {e}",
+            "latency": 0,
+            "error": str(e)
+        }
 
 if __name__ == "__main__":
     asyncio.run(run_v2_eval())
