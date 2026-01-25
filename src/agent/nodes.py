@@ -9,16 +9,11 @@ from src.metrics.faithfulness import FaithfulnessMetric
 from src.core.config.settings import settings
 
 class AgentNodes:
-    def __init__(self):
+    def __init__(self, provider: str = None, model_id: str = None):
         # Inicializar componentes
-        # Usamos un modelo potente por defecto para el agente (Gemini o OpenRouter si se prefiere)
-        # Vamos a usar el default provider configurado.
+        # Usamos el provider configurado dinámicamente o por defecto
         
-        # Override for testing: Force Ollama
-        provider_override = "ollama"
-        model_override = "gpt-oss:20b"
-        
-        self.llm = ProviderFactory.get_provider(provider_override, model_override)
+        self.llm = ProviderFactory.get_provider(provider, model_id)
         self.rag_engine = RAGEngine()
         self.grader = FaithfulnessMetric() # Usa su propio juez interno
 
