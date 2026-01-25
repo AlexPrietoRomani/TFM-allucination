@@ -43,3 +43,9 @@ Se usa un enfoque de "Triple Capa" (LLM-as-a-Judge):
     -   Latencia (Tiempo de respuesta).
     -   Tasa de abstención (V2).
 
+## 4. Ejecución de Pruebas
+Las pruebas se ejecutan de forma automatizada mediante la interfaz unificada (Tab "Reportes & Eval"):
+- **Selección de Corpus**: `eval/question_bank_v1.csv`
+- **Configuración**: Selección de versiones (V0/V1/V2) y proveedor LLM.
+- **Reporting**: Generación automática de tablas comparativas y archivos Markdown para la memoria final.
+
