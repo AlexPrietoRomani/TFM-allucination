@@ -1,17 +1,21 @@
-from typing import Any
 from src.core.providers.factory import ProviderFactory
 from src.core.config.settings import settings
+
 
 class JudgeFactory:
     @staticmethod
     def get_judge():
         """
-        Retorna un LLM potente para actuar como juez.
-        Por defecto usa Ollama gpt-oss:20b para ejecución local sin límites,
-        pero podría cambiarse a GPT-4o o Gemini Pro en producción.
+        Retorna un LLM para actuar como juez evaluador de métricas.
+        
+        Usa Ollama local por defecto para:
+          - Sin límites de API / cuota
+          - Evaluación reproducible
+          - Costo cero
+        
+        El modelo se puede cambiar con DEFAULT_OLLAMA_MODEL en .env
         """
-        # Por defecto Ollama para ejecución local
         provider = "ollama"
-        model = "gpt-oss:20b"
+        model = settings.default_ollama_model  # qwen2.5:3b por defecto
         
         return ProviderFactory.get_provider(provider, model)

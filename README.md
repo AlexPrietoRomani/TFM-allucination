@@ -15,6 +15,14 @@ El sistema implementa y compara tres enfoques:
 | **V1** | RAG | Retrieval-Augmented Generation con base vectorial |
 | **V2** | Agente Autónomo | Sistema con LangGraph, auto-corrección y ciclos de razonamiento |
 
+### Métricas de Calidad
+
+| Métrica | Descripción | Rango |
+|---------|-------------|-------|
+| **⚖️ Fidelidad** | Mide si la respuesta se deriva exclusivamente del contexto proporcionado, sin inventar datos | 0.0 – 1.0 |
+| **🎯 Relevancia** | Mide si los documentos recuperados contienen la información necesaria para responder la pregunta | 0.0 – 1.0 |
+| **🔬 FactScore** | Descompone la respuesta en hechos atómicos y verifica cada uno contra el contexto | 0.0 – 1.0 |
+
 ---
 
 ## 📂 Estructura del Proyecto
@@ -26,6 +34,7 @@ TFM-allucination/
 ├── Dockerfile                      # Imagen de la aplicación
 ├── pyproject.toml                  # Dependencias (uv)
 ├── .env.example                    # Variables de entorno (plantilla)
+├── PLAN_HITOS_TFM.md               # Plan de hitos detallado del TFM
 │
 ├── corpus/                         # Corpus de conocimiento
 │   ├── registry.yaml               # Registro de metadatos de documentos
@@ -36,10 +45,15 @@ TFM-allucination/
 │
 ├── src/
 │   ├── core/                       # Configuración, proveedores, embeddings
+│   │   └── providers/embeddings.py # EmbeddingFactory (Ollama nomic-embed-text)
 │   ├── knowledge/                  # Indexador y cargadores de documentos
 │   ├── chat/                       # Motor RAG (V1)
 │   ├── agent/                      # Agente autónomo LangGraph (V2)
-│   └── metrics/                    # Evaluadores (Fidelidad, FactScore)
+│   └── metrics/                    # Evaluadores (Fidelidad, Relevancia, FactScore)
+│       ├── faithfulness.py         # Métrica de Fidelidad (LLM-as-a-Judge)
+│       ├── context_relevance.py    # Métrica de Relevancia del Contexto
+│       ├── factscore.py            # FactScore (extracción + verificación atómica)
+│       └── judges.py               # Factory del LLM juez (Ollama local)
 │
 ├── scripts/
 │   ├── setup_and_ingest.py         # ⭐ Script de setup automático
@@ -60,7 +74,7 @@ TFM-allucination/
 
 - **Docker Desktop** (activo y funcionando)
 - **Python 3.10+** con [`uv`](https://docs.astral.sh/uv/) instalado
-- **API Key** de Google Gemini (obligatorio para embeddings y como proveedor por defecto)
+- **Ollama** instalado localmente ([ollama.com](https://ollama.com))
 
 ### Paso 1: Clonar y Configurar Variables de Entorno
 
@@ -73,69 +87,48 @@ cp .env.example .env
 # Editar .env con tu editor favorito
 ```
 
-> **⚠️ Importante:** Necesitas al menos `GOOGLE_API_KEY` configurada, ya que se usa para los embeddings (Text-Embedding-004) y como proveedor LLM por defecto.
+> **ℹ️ Nota:** Si solo usas Ollama (100% local), las API keys son opcionales.  
+> Si quieres usar Gemini/OpenRouter, necesitas `GOOGLE_API_KEY` y/o `OPENROUTER_API_KEY`.
 
 ### Paso 2: Instalar Dependencias Python
 
 ```bash
-# Instalar uv si no lo tienes
-pip install uv
-
-# Instalar dependencias del proyecto
-uv sync
+pip install uv    # Si no lo tienes
+uv sync           # Instalar dependencias
 ```
 
-### Paso 3: Levantar la Infraestructura Docker
+### Paso 3: Levantar Qdrant y Redis (Docker)
 
 ```bash
-# Levanta Qdrant, Redis y Ollama
-docker compose up -d
+docker compose up -d qdrant redis
 ```
 
-Esto inicia tres servicios:
-- **Qdrant** (puerto 6333) — Base de datos vectorial
-- **Redis** (puerto 6379) — Cola de tareas y caché
-- **Ollama** (puerto 11434) — LLM local
+### Paso 4: Descargar los Modelos Ollama
 
-Verifica que estén activos:
 ```bash
-docker compose ps
+# Modelo LLM (chat e inferencia)
+ollama pull qwen2.5:3b
+
+# Modelo de Embeddings (indexación y búsqueda vectorial)
+ollama pull nomic-embed-text
 ```
 
-### Paso 4: Obtener Documentos del Corpus
+| Modelo | Uso | Tamaño |
+|--------|-----|--------|
+| `qwen2.5:3b` | LLM para chat/métricas | 1.9 GB |
+| `nomic-embed-text` | Embeddings vectoriales | 274 MB |
 
-Los documentos PDF **no se incluyen en el repositorio** (están en `.gitignore`). Debes obtenerlos de alguna de estas formas:
-
-#### Opción A: Descarga Automática desde ArXiv (Recomendado)
+### Paso 5: Obtener Documentos del Corpus
 
 ```bash
 # Batch 1: 30 artículos de detección de plagas/enfermedades con IA
 uv run corpus/fetch_phytosanitary_articles.py
 
-# Batch 2: 30 artículos de agronomía de campo (control biológico, fungicidas, etc.)
+# Batch 2: 30 artículos de agronomía de campo
 uv run corpus/fetch_phytosanitary_batch2.py
 ```
 
-Cada script:
-- Descarga los PDFs en `corpus/raw/`
-- Actualiza `corpus/registry.yaml` con metadatos
-- Genera CSVs de seguimiento en `corpus/`
-
-#### Opción B: Documentos Propios
-
-```bash
-# 1. Crear la carpeta si no existe
-mkdir -p corpus/raw
-
-# 2. Copiar tus documentos (PDF, DOCX, XLSX)
-cp /ruta/a/tus/documentos/*.pdf corpus/raw/
-
-# 3. Registrarlos en corpus/registry.yaml (ver formato abajo)
-```
-
-### Paso 5: Setup Automático (Indexación + Modelo Ollama)
-
-El script `setup_and_ingest.py` automatiza todo el proceso:
+### Paso 6: Setup Automático (Indexación + Verificación)
 
 ```bash
 uv run scripts/setup_and_ingest.py
@@ -143,55 +136,64 @@ uv run scripts/setup_and_ingest.py
 
 Este script:
 1. ✅ Verifica que Qdrant y Ollama estén activos
-2. ✅ Descarga el modelo `qwen2.5:3b` en Ollama (1.9 GB, si no existe)
-3. ✅ Verifica que haya documentos en `corpus/raw/`
-4. ✅ Indexa todos los documentos en la base vectorial Qdrant
+2. ✅ Verifica que `qwen2.5:3b` y `nomic-embed-text` estén descargados
+3. ✅ Indexa todos los documentos en Qdrant usando embeddings de Ollama (768d)
 
-**Opciones adicionales:**
+**Opciones:**
 ```bash
-# Si solo usas Gemini/OpenRouter (sin LLM local):
-uv run scripts/setup_and_ingest.py --skip-ollama
-
-# Para usar un modelo Ollama diferente:
-uv run scripts/setup_and_ingest.py --model qwen2.5:7b
-
-# Solo verificar servicios, sin indexar:
-uv run scripts/setup_and_ingest.py --skip-index
-
-# Forzar re-indexación completa:
-uv run scripts/setup_and_ingest.py --force-reindex
+uv run scripts/setup_and_ingest.py --skip-ollama      # Sin verificar Ollama
+uv run scripts/setup_and_ingest.py --model qwen2.5:7b  # Modelo diferente
+uv run scripts/setup_and_ingest.py --force-reindex     # Re-indexar todo
 ```
 
-### Paso 6: Iniciar la Aplicación
+### Paso 7: Iniciar la Aplicación
 
 ```bash
-# Opción A: Ejecución local (desarrollo)
 uv run streamlit run app.py
-
-# Opción B: Con Docker (producción)
-docker compose up -d --build
 ```
 
-La aplicación estará disponible en: **http://localhost:8501**
+👉 Abrir **http://localhost:8501**
+
+---
+
+## 🖥️ Uso de la Aplicación
+
+### Pestañas Principales
+
+| Pestaña | Función |
+|---------|---------|
+| ⚔️ **Comparativa** | Compara V0 vs V1, V1 vs V2, V0 vs V2, o **V0 vs V1 vs V2** (triple) |
+| 🧠 **V0 (Baseline)** | Chat directo con el LLM sin contexto |
+| 📚 **V1 (RAG)** | Chat con documentos + métricas de calidad |
+| 🤖 **V2 (Agente)** | Agente autónomo con pasos de razonamiento + métricas |
+| 📊 **Reportes** | Benchmarks automáticos y generación de informes |
+
+### Métricas en la UI
+
+Cuando activas **"📊 Calcular Métricas"** en la barra lateral, cada respuesta de V1 y V2 se evalúa con:
+
+- **⚖️ Fidelidad (Faithfulness):** LLM-as-a-Judge evalúa si cada afirmación de la respuesta está soportada por el contexto. Score 1.0 = cero alucinaciones.
+- **🎯 Relevancia (Context Relevance):** Evalúa si los documentos recuperados contienen la información necesaria. Score 1.0 = contexto perfecto.
+- **🔬 FactScore:** Descompone la respuesta en hechos atómicos individuales y verifica cada uno contra el contexto. Muestra desglose: ✅ Soportado / ❌ Contradicho / ⚠️ No verificado.
+
+> **Nota:** Las métricas usan Ollama (`qwen2.5:3b`) como juez evaluador. Es más lento pero funciona 100% offline y sin cuota de API.
 
 ---
 
 ## 🐋 Despliegue Completo con Docker
 
-Para levantar **todo el stack** (App + Qdrant + Redis + Ollama) con un solo comando:
-
 ```bash
-# 1. Configurar variables de entorno
+# 1. Configurar .env
 cp .env.example .env
-# Editar .env con tus API keys
 
 # 2. Levantar todo el stack
 docker compose up -d --build
 
-# 3. Descargar modelo Ollama (dentro del contenedor)
+# 3. Descargar modelos en Ollama (dentro del contenedor)
 docker exec -it tfm-ollama ollama pull qwen2.5:3b
+docker exec -it tfm-ollama ollama pull nomic-embed-text
 
-# 4. Indexar documentos (requiere que corpus/raw/ tenga archivos)
+# 4. Indexar documentos
 docker exec -it tfm-app uv run scripts/setup_and_ingest.py --skip-ollama
 
 # 5. Abrir http://localhost:8501
@@ -199,126 +201,48 @@ docker exec -it tfm-app uv run scripts/setup_and_ingest.py --skip-ollama
 
 ### Modelos Ollama Recomendados
 
-| Modelo | Tamaño | Parámetros | Ideal para |
-|--------|--------|------------|------------|
-| `qwen2.5:3b` | 1.9 GB | 3B | ⭐ **Recomendado** — Mejor relación calidad/tamaño |
-| `qwen2.5:7b` | 4.7 GB | 7B | Mayor calidad, requiere más RAM |
-| `phi3:mini` | 2.3 GB | 3.8B | Buen razonamiento lógico |
-| `gemma2:2b` | 1.6 GB | 2B | Ultra-ligero, respuestas rápidas |
+| Modelo | Tamaño | Uso | Recomendación |
+|--------|--------|-----|---------------|
+| `qwen2.5:3b` | 1.9 GB | LLM Chat/Métricas | ⭐ **Recomendado** |
+| `nomic-embed-text` | 274 MB | Embeddings (768d) | ⭐ **Obligatorio** |
+| `qwen2.5:7b` | 4.7 GB | LLM más potente | Si tienes +8GB RAM |
+| `phi3:mini` | 2.3 GB | Razonamiento | Alternativa |
 
 ---
 
 ## 📚 Gestión del Corpus de Conocimiento
 
-### Estructura del `registry.yaml`
+### Agregar Documentos Manualmente
 
-Cada documento en `corpus/raw/` debe tener una entrada correspondiente en `corpus/registry.yaml`:
+```bash
+# 1. Copiar archivo
+cp mi_articulo.pdf corpus/raw/mi-articulo-id.pdf
+
+# 2. Agregar entrada en corpus/registry.yaml
+# 3. Re-indexar
+uv run scripts/setup_and_ingest.py
+```
+
+### Formato de `registry.yaml`
 
 ```yaml
 documents:
-  - id: arxiv-2504.07342           # ID único (nombre del archivo sin extensión)
+  - id: mi-articulo-id
     title: "Título del documento"
-    url: "https://arxiv.org/abs/2504.07342"
-    type: pdf                       # pdf, docx, xlsx
-    language: en                    # en, es
-    tags:
-      - detección de enfermedades
-      - deep learning
-      - arándanos
-    description: "Descripción breve del contenido..."
-    year: 2025
-    country: Internacional
-    source: "ArXiv (cs.CV)"
+    url: "https://..."
+    type: pdf
+    language: es
+    tags: [fitosanidad, arándanos]
+    description: "Descripción breve..."
+    year: 2024
+    country: Chile
+    source: "Revista XYZ"
     doc_type: "Artículo científico"
-    checksum: "sha256..."          # Opcional
 ```
-
-### Agregar Nuevos Documentos
-
-#### Paso a paso para agregar artículos manualmente:
-
-1. **Copiar el archivo** a `corpus/raw/`:
-   ```bash
-   cp mi_articulo.pdf corpus/raw/mi-articulo-id.pdf
-   ```
-
-2. **Agregar entrada en `corpus/registry.yaml`**:
-   ```yaml
-   # Añadir al final de la lista 'documents:'
-   - id: mi-articulo-id
-     title: "Título de mi artículo"
-     url: "https://doi.org/..."
-     type: pdf
-     language: es
-     tags:
-       - fitosanidad
-       - arándanos
-     description: "Breve descripción..."
-     year: 2024
-     country: Chile
-     source: "Revista XYZ"
-     doc_type: "Artículo científico"
-   ```
-
-3. **Re-indexar en Qdrant**:
-   ```bash
-   uv run scripts/setup_and_ingest.py
-   ```
-   > ⚠️ Esto **recrea** la colección y re-indexa TODOS los documentos. Es seguro ejecutarlo múltiples veces.
-
-#### Para agregar artículos desde ArXiv automáticamente:
-
-1. **Editar la lista de IDs** en el script correspondiente o en `corpus/curated_arxiv_ids.json`
-2. **Ejecutar el script**:
-   ```bash
-   uv run corpus/fetch_phytosanitary_batch2.py
-   ```
-3. **Re-indexar**:
-   ```bash
-   uv run scripts/setup_and_ingest.py
-   ```
-
-#### Para crear un nuevo batch de artículos:
-
-1. Crea un nuevo script basado en `fetch_phytosanitary_batch2.py`
-2. Define los IDs de ArXiv curados
-3. El script automáticamente:
-   - Descarga PDFs solo de artículos nuevos
-   - Actualiza `registry.yaml` sin duplicados
-   - Genera CSVs de seguimiento
-
-### Verificar el Estado de la Indexación
-
-```bash
-# Verificar qué documentos están indexados en Qdrant
-uv run scripts/verify_ingestion.py
-```
-
----
-
-## 🖥️ Uso de la Aplicación
-
-La aplicación tiene 5 pestañas principales:
-
-| Pestaña | Función |
-|---------|---------|
-| ⚔️ **Comparativa** | Compara respuestas V0 vs V1, V1 vs V2, o V0 vs V2 lado a lado |
-| 🧠 **V0 (Baseline)** | Chat directo con el LLM sin contexto |
-| 📚 **V1 (RAG)** | Chat con recuperación de documentos + métricas de calidad |
-| 🤖 **V2 (Agente)** | Agente autónomo con pasos de razonamiento visibles |
-| 📊 **Reportes** | Ejecutar benchmarks y generar informes comparativos |
-
-### Configuración desde la Barra Lateral
-
-- **Proveedor LLM**: Gemini, OpenRouter, o Ollama
-- **Modelo**: Seleccionable según el proveedor
-- **Métricas**: Activar cálculo de Fidelidad / Relevancia / FactScore
 
 ---
 
 ## 📊 Evaluación y Benchmarks
-
-Para replicar los resultados experimentales del TFM:
 
 ```bash
 # Evaluación V0 y V1
@@ -331,53 +255,31 @@ uv run eval/run_eval_v2.py
 uv run eval/run_metrics.py
 uv run eval/run_factscore.py
 
-# Generar reporte unificado
+# Generar reporte 
 uv run reports/generate_report.py --mode all
 ```
-
-Los reportes se guardan en `reports/`.
 
 ---
 
 ## 🔧 Troubleshooting
 
-### Qdrant no responde
-```bash
-docker compose restart qdrant
-# Verificar logs:
-docker compose logs qdrant
-```
-
-### Ollama sin modelo
-```bash
-# Descargar modelo manualmente:
-docker exec -it tfm-ollama ollama pull qwen2.5:3b
-
-# O con Ollama local (fuera de Docker):
-ollama pull qwen2.5:3b
-```
-
-### Error de embeddings / API Key
-Verifica que tu `.env` tenga `GOOGLE_API_KEY` configurada correctamente. Los embeddings requieren esta clave incluso si usas Ollama como LLM.
-
-### Re-indexar documentos
-```bash
-uv run scripts/setup_and_ingest.py --force-reindex
-```
-
-### La app no encuentra documentos
-1. Verifica que `corpus/raw/` contenga archivos
-2. Verifica que `corpus/registry.yaml` tenga entradas
-3. Ejecuta el setup: `uv run scripts/setup_and_ingest.py`
+| Problema | Solución |
+|----------|----------|
+| Qdrant no responde | `docker compose restart qdrant` |
+| Ollama sin modelo | `ollama pull qwen2.5:3b && ollama pull nomic-embed-text` |
+| Métricas no aparecen | Activar checkbox "📊 Calcular Métricas" en la barra lateral |
+| FactScore vacío | Verificar que Ollama esté activo y el modelo descargado |
+| Re-indexar | `uv run scripts/setup_and_ingest.py --force-reindex` |
+| Error de embeddings | Verificar que `nomic-embed-text` esté descargado en Ollama |
 
 ---
 
 ## 📄 Documentación Adicional
 
+- [Plan de Hitos del TFM](PLAN_HITOS_TFM.md)
 - [Arquitectura y Manual](docs/ARQUITECTURA_Y_MANUAL.md)
 - [Protocolo Experimental](docs/protocolo_experimental.md)
 - [Definición Matemática de Métricas](docs/METRICAS_IMPLEMENTADAS.md)
-- [Plan de Hitos](plan_hitos_chatbot_llm_rag_metricas.md)
 
 ---
 

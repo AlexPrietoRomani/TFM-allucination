@@ -60,12 +60,13 @@ El stack tecnológico se ha seleccionado para maximizar la reproducibilidad y la
 *   **Orquestación LLM**: `LangChain` (Core) y `LangGraph` (Agentes de estado).
 *   **Interfaz de Usuario**: `Streamlit` (Desarrollo rápido de aplicaciones de datos).
 *   **Base de Datos Vectorial**: `Qdrant` (Motor de búsqueda vectorial de alto rendimiento, dockerizado).
-*   **Gestión de Colas**: `Redis` + `RQ` (Redis Queue) para procesamiento asíncrono de métricas pesadas.
-*   **Infraestructura**: `Docker` y `Docker Compose` para despliegue aislado y reproducible.
+*   **Embeddings**: `Ollama` con `nomic-embed-text` (768d, 100% local, ~274 MB).
+*   **Gestión de Colas**: `Redis` + `RQ` (Redis Queue) para procesamiento asíncrono.
+*   **Infraestructura**: `Docker` y `Docker Compose` con healthchecks, volúmenes nombrados y límites de memoria.
 *   **Modelos LLM**:
     *   **Google Gemini** (vía `langchain-google-genai`).
     *   **Modelos OpenRouter** (vía `langchain-openai`).
-    *   **Ollama** (Modelos locales para privacidad/costo).
+    *   **Ollama** local: `qwen2.5:3b` (1.9 GB) por defecto + `nomic-embed-text` para embeddings.
 
 ---
 
@@ -223,7 +224,7 @@ Transformar los documentos PDF/Excel en vectores buscables de alta calidad.
     1.  Configuración de contenedor Qdrant en `docker-compose.yml`.
     2.  Implementación de `src/knowledge/loaders.py` para manejar PDF (`PyPDFLoader`) y Excel (Pandas a Markdown).
     3.  Desarrollo de `src/knowledge/indexer.py` para dividir textos (`RecursiveCharacterTextSplitter`) y cargarlos a Qdrant.
-    4.  Uso de embeddings de OpenAI/Gemini (vía `EmbeddingFactory`) para la representación vectorial.
+    4.  Uso de embeddings de Ollama `nomic-embed-text` (768 dimensiones, 100% local) vía `EmbeddingFactory`.
 
 *   **Archivos Clave**:
     *   `src/knowledge/loaders.py`: Estrategias de carga polimórficas.
@@ -389,24 +390,33 @@ El entregable final "llave en mano".
 *   **Entradas**:
     *   Código fuente completo y testeado.
 *   **Salidas**:
-    *   Nuevo archivo: `Dockerfile`.
-    *   Archivo modificado: `docker-compose.yml` (App + Ollama).
-    *   Modificación: `app.py` (Tab "Reportes & Eval").
+    *   Nuevo archivo: `Dockerfile` (multi-stage, healthcheck, selective COPY).
+    *   Nuevo archivo: `.dockerignore` (optimiza el build context).
+    *   Nuevo archivo: `scripts/setup_and_ingest.py` (setup automático).
+    *   Archivo modificado: `docker-compose.yml` (healthchecks, volúmenes nombrados, límites de memoria).
+    *   Modificación: `app.py` (Tab "Reportes & Eval" + comparativa triple V0 vs V1 vs V2).
 
 *   **Acciones Realizadas**:
-    1.  Creación del `Dockerfile` final optimizado con `uv`.
-    2.  Configuración completa de red en `docker-compose.yml` (comunicación inter-contenedores: app -> ollama, app -> qdrant).
-    3.  Desarrollo de la pestaña "📊 Reportes & Eval" en Streamlit para correr benchmarks sin tocar código.
-    4.  Visualización de progreso en tiempo real y descarga de reportes MD.
+    1.  `Dockerfile` optimizado: multi-stage build, COPY selectivo, HEALTHCHECK integrado, Streamlit headless.
+    2.  `docker-compose.yml`: healthchecks para Qdrant/Redis/Ollama, volúmenes nombrados, límite 6G para Ollama, `service_healthy` en depends_on.
+    3.  `scripts/setup_and_ingest.py`: Verifica servicios, descarga modelo Ollama, indexa documentos en Qdrant.
+    4.  Pestaña "📊 Reportes & Eval" para correr benchmarks V0/V1/V2.
+    5.  Pestaña "⚔️ Comparativa" con modo triple V0 vs V1 vs V2.
+    6.  Métricas de calidad (Fidelidad, Relevancia, FactScore) calculadas en todas las pestañas V1 y V2, con descripciones claras de cada métrica.
+    7.  Embeddings 100% locales con Ollama `nomic-embed-text` (768d).
 
 *   **Archivos Clave**:
-    *   `Dockerfile`: Imagen de producción.
-    *   `docker-compose.yml`: Orquestador final.
-    *   `app.py`: Nueva lógica de UI para el runner.
+    *   `Dockerfile`: Imagen de producción optimizada.
+    *   `.dockerignore`: Exclusiones de build.
+    *   `docker-compose.yml`: Orquestador con healthchecks.
+    *   `scripts/setup_and_ingest.py`: Setup automático.
+    *   `app.py`: UI con comparativa triple y métricas integradas.
 
 *   **Métricas de Éxito**:
     *   Despliegue exitoso con `docker-compose up --build`.
-    *   Usuario final puede ejecutar evaluación y descargar reporte desde el navegador.
+    *   Setup automático con `uv run scripts/setup_and_ingest.py`.
+    *   Comparativa triple V0 vs V1 vs V2 funcional.
+    *   FactScore calculado y desglosado en la UI.
 
 ---
 
