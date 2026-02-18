@@ -10,12 +10,11 @@ documents:
   - guía técnica
   - Estados Unidos
   - control fitosanitario
-  description: Guía anual de manejo integrado de plagas y enfermedades en arándano
-    para la región sureste de EE.UU. Incluye recomendaciones actualizadas de control
-    químico (con intervalos de reingreso – REI y periodos de carencia – PHI), métodos
-    biológicos y culturales, y listados de plaguicidas con sus eficacias. Es una publicación
-    conjunta de instituciones de extensión agrícola del sureste de EE.UU., liderada
-    por la Universidad de Georgia.
+  description: Guía anual de manejo integrado de plagas y enfermedades en arándano para la región sureste
+    de EE.UU. Incluye recomendaciones actualizadas de control químico (con intervalos de reingreso – REI
+    y periodos de carencia – PHI), métodos biológicos y culturales, y listados de plaguicidas con sus
+    eficacias. Es una publicación conjunta de instituciones de extensión agrícola del sureste de EE.UU.,
+    liderada por la Universidad de Georgia.
   year: 2021
   country: Estados Unidos
   source: Southern Region Small Fruit Consortium (Univ. de Georgia)
@@ -32,11 +31,10 @@ documents:
   - plagas y enfermedades
   - cosecha y poscosecha
   - Chile
-  description: Manual técnico integral sobre el cultivo del arándano en Chile, publicado
-    por INIA. Cubre la instalación del huerto, manejo agronómico (suelo, riego, poda,
-    nutrición), control de plagas y enfermedades, y aspectos de cosecha y poscosecha
-    para exportación. Es una obra de referencia con aportes de especialistas, que
-    consta de ~120 páginas con recomendaciones adaptadas a condiciones chilenas.
+  description: Manual técnico integral sobre el cultivo del arándano en Chile, publicado por INIA. Cubre
+    la instalación del huerto, manejo agronómico (suelo, riego, poda, nutrición), control de plagas y
+    enfermedades, y aspectos de cosecha y poscosecha para exportación. Es una obra de referencia con aportes
+    de especialistas, que consta de ~120 páginas con recomendaciones adaptadas a condiciones chilenas.
   year: 2013
   country: Chile
   source: Instituto de Investigaciones Agropecuarias (INIA Chile)
@@ -53,13 +51,12 @@ documents:
   - requisitos fitosanitarios
   - China
   - Chile
-  description: Guía oficial del Servicio Agrícola y Ganadero de Chile (SAG) que detalla
-    los requisitos fitosanitarios y procedimientos para exportar arándanos frescos
-    desde Chile a China. Incluye las obligaciones para inscribir huertos, packings
-    y frigoríficos, Buenas Prácticas Agrícolas requeridas, manejo fitosanitario del
-    huerto (por ejemplo, control de frutos caídos, monitoreo de plagas de importancia
-    cuarentenaria), procedimientos de inspección y certificación fitosanitaria, de
-    acuerdo al protocolo bilateral Chile–China firmado en 2015.
+  description: Guía oficial del Servicio Agrícola y Ganadero de Chile (SAG) que detalla los requisitos
+    fitosanitarios y procedimientos para exportar arándanos frescos desde Chile a China. Incluye las obligaciones
+    para inscribir huertos, packings y frigoríficos, Buenas Prácticas Agrícolas requeridas, manejo fitosanitario
+    del huerto (por ejemplo, control de frutos caídos, monitoreo de plagas de importancia cuarentenaria),
+    procedimientos de inspección y certificación fitosanitaria, de acuerdo al protocolo bilateral Chile–China
+    firmado en 2015.
   year: 2015
   country: Chile
   source: Servicio Agrícola y Ganadero (SAG Chile)
@@ -76,22 +73,20 @@ documents:
   - requisitos fitosanitarios
   - China
   - Perú
-  description: Protocolo fitosanitario suscrito entre Perú y China (2016) que establece
-    las medidas cuarentenarias y requisitos que deben cumplir los lugares de producción
-    y las empacadoras peruanas para exportar arándanos frescos a China. El documento
-    describe el plan de trabajo acordado con la autoridad china (AQSIQ), incluyendo
-    registro oficial de campos y packing, supervisión de plagas cuarentenarias (como
-    moscas de la fruta), manejo fitosanitario en campo (monitoreos, controles y registros),
-    tratamientos poscosecha (cuando corresponda) y procedimientos de inspección/certificación
-    previos al envío. Este protocolo es obligatorio para acceder al mercado chino.
+  description: Protocolo fitosanitario suscrito entre Perú y China (2016) que establece las medidas cuarentenarias
+    y requisitos que deben cumplir los lugares de producción y las empacadoras peruanas para exportar
+    arándanos frescos a China. El documento describe el plan de trabajo acordado con la autoridad china
+    (AQSIQ), incluyendo registro oficial de campos y packing, supervisión de plagas cuarentenarias (como
+    moscas de la fruta), manejo fitosanitario en campo (monitoreos, controles y registros), tratamientos
+    poscosecha (cuando corresponda) y procedimientos de inspección/certificación previos al envío. Este
+    protocolo es obligatorio para acceder al mercado chino.
   year: 2016
   country: Perú
   source: Servicio Nacional de Sanidad Agraria – SENASA Perú
   doc_type: Protocolo fitosanitario
   checksum: 315b33c395ac74ded29a222246c1cfb6ac4235426e1fe811ef84c0151ed6512a
 - id: lineamientos-mip-senasa
-  title: Lineamientos del Manejo Integrado de Plagas (MIP) en Lugares de Producción
-    (Anexo 1.1)
+  title: Lineamientos del Manejo Integrado de Plagas (MIP) en Lugares de Producción (Anexo 1.1)
   url: https://www.senasa.gob.pe/senasa/wp-content/uploads/2016/11/Anexo-1.1-Lineamientos-MIP.docx
   type: docx
   language: es
@@ -101,15 +96,13 @@ documents:
   - certificación fitosanitaria
   - campo de exportación
   - Perú
-  description: 'Documento normativo de SENASA Perú (Anexo 1.1 del procedimiento de
-    exportación) que establece las pautas de Manejo Integrado de Plagas en los lugares
-    de producción destinados a exportar. Detalla las consideraciones y buenas prácticas
-    que el productor debe implementar: monitoreo periódico de plagas, control cultural
-    (sanitación de campo, eliminación de hospederos), uso de control biológico, rotación
-    de plaguicidas según FRAC/IRAC para prevenir resistencia, registro de aplicaciones
-    y evaluación de efectividad. El cumplimiento de estos lineamientos de MIP es verificado
-    por SENASA como parte de la certificación del campo para exportación (por ejemplo,
-    en arándano u otros cultivos).'
+  description: 'Documento normativo de SENASA Perú (Anexo 1.1 del procedimiento de exportación) que establece
+    las pautas de Manejo Integrado de Plagas en los lugares de producción destinados a exportar. Detalla
+    las consideraciones y buenas prácticas que el productor debe implementar: monitoreo periódico de plagas,
+    control cultural (sanitación de campo, eliminación de hospederos), uso de control biológico, rotación
+    de plaguicidas según FRAC/IRAC para prevenir resistencia, registro de aplicaciones y evaluación de
+    efectividad. El cumplimiento de estos lineamientos de MIP es verificado por SENASA como parte de la
+    certificación del campo para exportación (por ejemplo, en arándano u otros cultivos).'
   year: 2016
   country: Perú
   source: Servicio Nacional de Sanidad Agraria – SENASA Perú
@@ -126,23 +119,20 @@ documents:
   - formato
   - exportación
   - Perú
-  description: Formato en Excel (Anexo 1.2 de SENASA) que el productor debe completar
-    con su Plan de Manejo Fitosanitario en campo. En este plan se listan todas las
-    aplicaciones de plaguicidas (químicos y biológicos) programadas para el control
-    de plagas en el cultivo destinado a exportación, indicando producto/componente
-    activo, dosis, frecuencia, intervalo de reingreso (REI) y período de carencia
-    (PHI) correspondiente. Es un requisito obligatorio que refleja las estrategias
-    de control planificadas en el lugar de producción de arándano, asegurando el cumplimiento
-    de límites máximos de residuos y otras normativas. El plan firmado se presenta
-    a SENASA para la certificación del campo exportador.
+  description: Formato en Excel (Anexo 1.2 de SENASA) que el productor debe completar con su Plan de Manejo
+    Fitosanitario en campo. En este plan se listan todas las aplicaciones de plaguicidas (químicos y biológicos)
+    programadas para el control de plagas en el cultivo destinado a exportación, indicando producto/componente
+    activo, dosis, frecuencia, intervalo de reingreso (REI) y período de carencia (PHI) correspondiente.
+    Es un requisito obligatorio que refleja las estrategias de control planificadas en el lugar de producción
+    de arándano, asegurando el cumplimiento de límites máximos de residuos y otras normativas. El plan
+    firmado se presenta a SENASA para la certificación del campo exportador.
   year: 2016
   country: Perú
   source: Servicio Nacional de Sanidad Agraria – SENASA Perú
   doc_type: Formato oficial (plan fitosanitario, Excel)
   checksum: 8349eff378db8cb096762dca879617e5d2ab03dc082376688f9b3cfd3c01bcfc
 - id: formato-evaluacion-plagas-senasa
-  title: Formato de Evaluación de Plagas para Certificación de Lugar de Producción
-    (Anexo 1.3)
+  title: Formato de Evaluación de Plagas para Certificación de Lugar de Producción (Anexo 1.3)
   url: https://www.senasa.gob.pe/senasa/wp-content/uploads/2019/02/Anexo-1.3-Formato-evaluacion-de-plagas-para-certificaci%C3%B3n-de-lugar-de-producci%C3%B3n_01.xlsx
   type: xlsx
   language: es
@@ -152,23 +142,21 @@ documents:
   - formato
   - SENASA
   - Perú
-  description: 'Formato oficial en Excel (Anexo 1.3) utilizado por SENASA para registrar
-    la evaluación de plagas en un lugar de producción que solicita certificación para
-    exportar. En este formulario se consignan los datos de la inspección fitosanitaria
-    del campo: identificación del predio, fecha de evaluación, plagas encontradas
-    y porcentaje de infestación o incidencia por cada una, conforme a los muestreos
-    realizados. Sirve para determinar si el campo de arándano cumple con las tolerancias
-    de plagas establecidas (Anexo 1.6) previo a la cosecha y exportación. Este registro,
-    validado por el inspector, es parte del expediente de certificación del huerto
-    exportador.'
+  description: 'Formato oficial en Excel (Anexo 1.3) utilizado por SENASA para registrar la evaluación
+    de plagas en un lugar de producción que solicita certificación para exportar. En este formulario se
+    consignan los datos de la inspección fitosanitaria del campo: identificación del predio, fecha de
+    evaluación, plagas encontradas y porcentaje de infestación o incidencia por cada una, conforme a los
+    muestreos realizados. Sirve para determinar si el campo de arándano cumple con las tolerancias de
+    plagas establecidas (Anexo 1.6) previo a la cosecha y exportación. Este registro, validado por el
+    inspector, es parte del expediente de certificación del huerto exportador.'
   year: 2019
   country: Perú
   source: Servicio Nacional de Sanidad Agraria – SENASA Perú
   doc_type: Formato de registro (Excel)
   checksum: ''
 - id: enfermedades-fungosas-arandano-2023
-  title: Prospección y alternativas de manejo de enfermedades fungosas asociadas en
-    el cultivo de arándano (Vaccinium corymbosum L.)
+  title: Prospección y alternativas de manejo de enfermedades fungosas asociadas en el cultivo de arándano
+    (Vaccinium corymbosum L.)
   url: https://revistas.unitru.edu.pe/index.php/agroindscience/article/download/5777/5821/21952
   type: pdf
   language: es
@@ -178,18 +166,1197 @@ documents:
   - manejo integrado
   - investigación
   - Perú
-  description: Artículo científico publicado en *Agroindustrial Science* (Univ. Nacional
-    de Trujillo, Perú) en 2023, que caracteriza las principales enfermedades fúngicas
-    del arándano en la zona de Trujillo y propone estrategias de manejo. Se identificaron
-    patógenos como *Pestalotia* sp. (mancha foliar, tizón de tallos), *Thekopsora
-    minima* (roya de la hoja), *Botrytis cinerea* (moho gris) y *Lasiodiplodia theobromae*
-    (muerte regresiva). El estudio recomienda implementar un plan de manejo integrado
-    para controlar estas enfermedades (medidas culturales, fungicidas específicos,
-    controles biológicos) a fin de reducir pérdidas y cumplir estándares fitosanitarios
-    de exportación. Es un ejemplo de investigación aplicada al manejo fitosanitario
-    en arándano peruano.
+  description: Artículo científico publicado en *Agroindustrial Science* (Univ. Nacional de Trujillo,
+    Perú) en 2023, que caracteriza las principales enfermedades fúngicas del arándano en la zona de Trujillo
+    y propone estrategias de manejo. Se identificaron patógenos como *Pestalotia* sp. (mancha foliar,
+    tizón de tallos), *Thekopsora minima* (roya de la hoja), *Botrytis cinerea* (moho gris) y *Lasiodiplodia
+    theobromae* (muerte regresiva). El estudio recomienda implementar un plan de manejo integrado para
+    controlar estas enfermedades (medidas culturales, fungicidas específicos, controles biológicos) a
+    fin de reducir pérdidas y cumplir estándares fitosanitarios de exportación. Es un ejemplo de investigación
+    aplicada al manejo fitosanitario en arándano peruano.
   year: 2023
   country: Perú
   source: Revista Agroindustrial Science (Univ. Nac. de Trujillo)
   doc_type: Artículo científico
   checksum: acca4266bfb483234082dc1b8d74571d785e1efb9d91e6d3a716741e6f67af5e
+- id: arxiv-2108.00421
+  title: Automated Pest Detection with DNN on the Edge for Precision Agriculture
+  url: http://arxiv.org/abs/2108.00421v1
+  type: pdf
+  language: en
+  tags:
+  - detección de plagas
+  - deep learning
+  - agricultura de precisión
+  - cultivos
+  - frutales
+  - visión por computadora
+  - artículo científico
+  - ArXiv
+  description: Artificial intelligence has smoothly penetrated several economic activities, especially
+    monitoring and control applications, including the agriculture sector.
+  year: 2021
+  country: Internacional
+  source: ArXiv (cs.LG, cs.CV)
+  doc_type: Artículo científico
+  checksum: 74883910a53e0004fa0af59b64946b3ae96719f86c860ab886f269a81b8ef3f2
+- id: arxiv-2409.04038
+  title: 'PlantSeg: A Large-Scale In-the-wild Dataset for Plant Disease Segmentation'
+  url: http://arxiv.org/abs/2409.04038v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - clasificación de imágenes
+  - agricultura de precisión
+  - cultivos
+  - artículo científico
+  - ArXiv
+  description: Plant diseases pose significant threats to agriculture. It necessitates proper diagnosis
+    and effective treatment to safeguard crop yields. To automate the diagnosis process, image segmentation
+    is usually adopted for precisely identifying diseased regions, thereby advancing precision agriculture.
+  year: 2024
+  country: Internacional
+  source: ArXiv (cs.CV)
+  doc_type: Artículo científico
+  checksum: 27d5d67a62405a38e054b232e830905c48b2513f41f24ea3071f4d54c041bdfa
+- id: arxiv-2407.18000
+  title: Investigation to answer three key questions concerning plant pest identification and development
+    of a practical identification framework
+  url: http://arxiv.org/abs/2407.18000v1
+  type: pdf
+  language: en
+  tags:
+  - cultivos
+  - frutales
+  - artículo científico
+  - ArXiv
+  description: The development of practical and robust automated diagnostic systems for identifying plant
+    pests is crucial for efficient agricultural production.
+  year: 2024
+  country: Internacional
+  source: ArXiv (cs.CV)
+  doc_type: Artículo científico
+  checksum: 40a3b5198e7631038b95f42f409785d1d571545c8284877b2c54eb38158dbed2
+- id: arxiv-2503.16628
+  title: 'MobilePlantViT: A Mobile-friendly Hybrid ViT for Generalized Plant Disease Image Classification'
+  url: http://arxiv.org/abs/2503.16628v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - deep learning
+  - clasificación de imágenes
+  - cultivos
+  - transformer
+  - dispositivos móviles
+  - artículo científico
+  - ArXiv
+  description: Plant diseases significantly threaten global food security by reducing crop yields and
+    undermining agricultural sustainability. AI-driven automated classification has emerged as a promising
+    solution, with deep learning models demonstrating impressive performance in plant disease identification.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.CV, cs.AI, cs.LG)
+  doc_type: Artículo científico
+  checksum: f5be8f8365e12e14ced40cb87d4ab2f459170dee62bb5a72e6f56a4c3afb6228
+- id: arxiv-2510.24650
+  title: 'Advancing site-specific disease and pest management in precision agriculture: From reasoning-driven
+    foundation models to adaptive, feedback-based learning'
+  url: http://arxiv.org/abs/2510.24650v1
+  type: pdf
+  language: en
+  tags:
+  - manejo de plagas
+  - deep learning
+  - agricultura de precisión
+  - cultivos
+  - visión por computadora
+  - artículo científico
+  - ArXiv
+  description: Site-specific disease management (SSDM) in crops has advanced rapidly through machine and
+    deep learning (ML and DL) for real-time computer vision. Research evolved from handcrafted feature
+    extraction to large-scale automated feature learning.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.AI)
+  doc_type: Artículo científico
+  checksum: edec8dd3f1226472a2eb384d7c3f45c0a1d10b3fe6c9d8968147cf6aa249fd90
+- id: arxiv-2505.02877
+  title: A Wireless Collaborated Inference Acceleration Framework for Plant Disease Recognition
+  url: http://arxiv.org/abs/2505.02877v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - deep learning
+  - artículo científico
+  - ArXiv
+  description: Plant disease is a critical factor affecting agricultural production. Traditional manual
+    recognition methods face significant drawbacks, including low accuracy, high costs, and inefficiency.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.LG, cs.AI, cs.CV)
+  doc_type: Artículo científico
+  checksum: a2b3c349e40e4c0f4076272391c36bd22ba1108ecea0ff15278d39af084605f6
+- id: arxiv-2508.10817
+  title: 'Mobile-Friendly Deep Learning for Plant Disease Detection: A Lightweight CNN Benchmark Across
+    101 Classes of 33 Crops'
+  url: http://arxiv.org/abs/2508.10817v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - deep learning
+  - clasificación de imágenes
+  - cultivos
+  - visión por computadora
+  - dispositivos móviles
+  - artículo científico
+  - ArXiv
+  description: Plant diseases are a major threat to food security globally. It is important to develop
+    early detection systems which can accurately detect. The advancement in computer vision techniques
+    has the potential to solve this challenge.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.CV, cs.LG)
+  doc_type: Artículo científico
+  checksum: d4e9929500c92b1f686371fd419c102870c6e2038641f2ae8157614bbf6e906d
+- id: arxiv-2004.11252
+  title: Weakly Supervised Learning Guided by Activation Mapping Applied to a Novel Citrus Pest Benchmark
+  url: http://arxiv.org/abs/2004.11252v1
+  type: pdf
+  language: en
+  tags:
+  - manejo de plagas
+  - manejo integrado de plagas
+  - clasificación de imágenes
+  - cultivos
+  - artículo científico
+  - ArXiv
+  description: Pests and diseases are relevant factors for production losses in agriculture and, therefore,
+    promote a huge investment in the prevention and detection of its causative agents.
+  year: 2020
+  country: Internacional
+  source: ArXiv (cs.CV, cs.LG)
+  doc_type: Artículo científico
+  checksum: 08e22a918c53b74a17049087b6b112a66bcf021d3e0ace5f0474a26503fd9050
+- id: arxiv-2205.07723
+  title: Pest presence prediction using interpretable machine learning
+  url: http://arxiv.org/abs/2205.07723v1
+  type: pdf
+  language: en
+  tags:
+  - cultivos
+  - artículo científico
+  - ArXiv
+  description: Helicoverpa Armigera, or cotton bollworm, is a serious insect pest of cotton crops that
+    threatens the yield and the quality of lint. The timely knowledge of the presence of the insects in
+    the field is crucial for effective farm interventions.
+  year: 2022
+  country: Internacional
+  source: ArXiv (cs.LG, cs.CV)
+  doc_type: Artículo científico
+  checksum: e9758ac3735c50d1102f15e866114602ccb2009a032a5c8500bbbfeb66e33b3e
+- id: arxiv-2403.05479
+  title: The temperature affects the impact levels of synthetic insecticides on a parasitoid wasp used
+    in the biological control of pentatomid pests in soybean crops
+  url: http://arxiv.org/abs/2403.05479v1
+  type: pdf
+  language: en
+  tags:
+  - clima
+  - temperatura
+  - cultivos
+  - insecticidas
+  - artículo científico
+  - ArXiv
+  description: The impact of climate change has led to growing global concern about the interaction of
+    temperature and xenobiotics in agricultural toxicological studies.
+  year: 2024
+  country: Internacional
+  source: ArXiv (q-bio.QM)
+  doc_type: Artículo científico
+  checksum: af5fd0686347aef3858d32ea91799f59371f91ba7df6a85dbca169c4f4dc6be3
+- id: arxiv-2312.04343
+  title: Causality and Explainability for Trustworthy Integrated Pest Management
+  url: http://arxiv.org/abs/2312.04343v1
+  type: pdf
+  language: en
+  tags:
+  - manejo de plagas
+  - manejo integrado de plagas
+  - clima
+  - plaguicidas
+  - artículo científico
+  - ArXiv
+  description: Pesticides serve as a common tool in agricultural pest control but significantly contribute
+    to the climate crisis. To combat this, Integrated Pest Management (IPM) stands as a climate-smart
+    alternative.
+  year: 2023
+  country: Internacional
+  source: ArXiv (cs.LG, cs.AI)
+  doc_type: Artículo científico
+  checksum: 611d753bc14b3699f45dc9175895170ee04713d514170f0f1c7418ac6c9fb7d5
+- id: arxiv-1604.03169
+  title: Using Deep Learning for Image-Based Plant Disease Detection
+  url: http://arxiv.org/abs/1604.03169v2
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - deep learning
+  - cultivos
+  - visión por computadora
+  - artículo científico
+  - ArXiv
+  description: Crop diseases are a major threat to food security, but their rapid identification remains
+    difficult in many parts of the world due to the lack of the necessary infrastructure.
+  year: 2016
+  country: Internacional
+  source: ArXiv (cs.CV)
+  doc_type: Artículo científico
+  checksum: ff72755d8ee47a4bb56971aee9ffb3d5551cf2a573ae50d4306690fc4b850d06
+- id: arxiv-2505.02441
+  title: 'MSFNet-CPD: Multi-Scale Cross-Modal Fusion Network for Crop Pest Detection'
+  url: http://arxiv.org/abs/2505.02441v1
+  type: pdf
+  language: en
+  tags:
+  - detección de plagas
+  - deep learning
+  - cultivos
+  - artículo científico
+  - ArXiv
+  description: Accurate identification of agricultural pests is essential for crop protection but remains
+    challenging due to the large intra-class variance and fine-grained differences among pest species.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.AI)
+  doc_type: Artículo científico
+  checksum: 0ae2e2c33d9a7a389e345c3372b3320c3fd8db0dd694ab7b3c7565c5c7a8c35b
+- id: arxiv-2512.18500
+  title: 'PlantDiseaseNet-RT50: A Fine-tuned ResNet50 Architecture for High-Accuracy Plant Disease Detection
+    Beyond Standard CNNs'
+  url: http://arxiv.org/abs/2512.18500v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - deep learning
+  - clasificación de imágenes
+  - cultivos
+  - artículo científico
+  - ArXiv
+  description: Plant diseases pose a significant threat to agricultural productivity and global food security,
+    accounting for 70-80% of crop losses worldwide.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.CV, cs.AI, cs.LG)
+  doc_type: Artículo científico
+  checksum: d466877027b5e0d300ea10c8e241d5d987ee7e10ba4351d11031b744fd8147d0
+- id: arxiv-2601.00243
+  title: Context-Aware Pesticide Recommendation via Few-Shot Pest Recognition for Precision Agriculture
+  url: http://arxiv.org/abs/2601.00243v1
+  type: pdf
+  language: en
+  tags:
+  - detección de plagas
+  - manejo de plagas
+  - agricultura de precisión
+  - cultivos
+  - plaguicidas
+  - artículo científico
+  - ArXiv
+  description: Effective pest management is crucial for enhancing agricultural productivity, especially
+    for crops such as sugarcane and wheat that are highly vulnerable to pest infestations. Traditional
+    pest management methods depend heavily on manual field inspections and the use of chemical pesticides.
+  year: 2026
+  country: Internacional
+  source: ArXiv (cs.CV)
+  doc_type: Artículo científico
+  checksum: cf0dabc7b7ba51bb402d860fae925c2fb56a65ad857e6bb5b1c320fb91a620c6
+- id: arxiv-2305.11533
+  title: 'Embrace Limited and Imperfect Training Datasets: Opportunities and Challenges in Plant Disease
+    Recognition Using Deep Learning'
+  url: http://arxiv.org/abs/2305.11533v2
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - deep learning
+  - artículo científico
+  - ArXiv
+  description: Recent advancements in deep learning have brought significant improvements to plant disease
+    recognition. However, achieving satisfactory performance often requires high-quality training datasets,
+    which are challenging and expensive to collect.
+  year: 2023
+  country: Internacional
+  source: ArXiv (cs.CV)
+  doc_type: Artículo científico
+  checksum: 811362f39242c8daab7465eb4b39ab0a6c1dc53229b4fe0ce59dbf101ba2973c
+- id: arxiv-2312.10948
+  title: A Multimodal Approach for Advanced Pest Detection and Classification
+  url: http://arxiv.org/abs/2312.10948v1
+  type: pdf
+  language: en
+  tags:
+  - detección de plagas
+  - deep learning
+  - clasificación de imágenes
+  - artículo científico
+  - ArXiv
+  description: This paper presents a novel multi modal deep learning framework for enhanced agricultural
+    pest detection, combining tiny-BERT's natural language processing with R-CNN and ResNet-18's image
+    processing.
+  year: 2023
+  country: Internacional
+  source: ArXiv (cs.CV, cs.AI)
+  doc_type: Artículo científico
+  checksum: 96b050094bc2e51244655f1757d14e0dfa0fce05f99d538dec18f14732cb1cc0
+- id: arxiv-2404.16833
+  title: Leaf-Based Plant Disease Detection and Explainable AI
+  url: http://arxiv.org/abs/2404.16833v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - deep learning
+  - artículo científico
+  - ArXiv
+  description: The agricultural sector plays an essential role in the economic growth of a country. Specifically,
+    in an Indian context, it is the critical source of livelihood for millions of people living in rural
+    areas. Plant Disease is one of the significant factors affecting the agricultural sector.
+  year: 2023
+  country: Internacional
+  source: ArXiv (cs.CV, cs.AI, cs.LG)
+  doc_type: Artículo científico
+  checksum: d82b517bd3a4b4743c8c5e452a1248d0531407da5385b2c810f541efcd4a4fa2
+- id: arxiv-2312.07905
+  title: 'Plant Disease Recognition Datasets in the Age of Deep Learning: Challenges and Opportunities'
+  url: http://arxiv.org/abs/2312.07905v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - deep learning
+  - artículo científico
+  - ArXiv
+  description: Plant disease recognition has witnessed a significant improvement with deep learning in
+    recent years. Although plant disease datasets are essential and many relevant datasets are public
+    available, two fundamental questions exist.
+  year: 2023
+  country: Internacional
+  source: ArXiv (cs.CV)
+  doc_type: Artículo científico
+  checksum: 5217e0407c204d2bce14d3d9b60a0b23f5f19c8bbe7b426a56ff9adf782d5137
+- id: arxiv-2504.20948
+  title: 'DS_FusionNet: Dynamic Dual-Stream Fusion with Bidirectional Knowledge Distillation for Plant
+    Disease Recognition'
+  url: http://arxiv.org/abs/2504.20948v3
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - clasificación de imágenes
+  - cultivos
+  - artículo científico
+  - ArXiv
+  description: Given the severe challenges confronting the global growth security of economic crops, precise
+    identification and prevention of plant diseases has emerged as a critical issue in artificial intelligence-enabled
+    agricultural technology.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.CV)
+  doc_type: Artículo científico
+  checksum: 9679e4b6fb40d8f63baebf66eec1b582565aa40c693dd9ae19e00ad2bcdc8d2e
+- id: arxiv-2512.11871
+  title: Automated Plant Disease and Pest Detection System Using Hybrid Lightweight CNN-MobileViT Models
+    for Diagnosis of Indigenous Crops
+  url: http://arxiv.org/abs/2512.11871v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - detección de plagas
+  - cultivos
+  - transformer
+  - dispositivos móviles
+  - artículo científico
+  - ArXiv
+  description: Agriculture supports over 80% of the population in the Tigray region of Ethiopia, where
+    infrastructural disruptions limit access to expert crop disease diagnosis.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.CV, cs.AI)
+  doc_type: Artículo científico
+  checksum: 7f4445700d88474aa15ca077d0de00eb4b560292a658981ea48278db4d338cc0
+- id: arxiv-2207.07919
+  title: 'Explainable vision transformer enabled convolutional neural network for plant disease identification:
+    PlantXViT'
+  url: http://arxiv.org/abs/2207.07919v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - deep learning
+  - clasificación de imágenes
+  - cultivos
+  - transformer
+  - artículo científico
+  - ArXiv
+  description: Plant diseases are the primary cause of crop losses globally, with an impact on the world
+    economy. To deal with these issues, smart agriculture solutions are evolving that combine the Internet
+    of Things and machine learning for early disease detection and control.
+  year: 2022
+  country: Internacional
+  source: ArXiv (cs.CV)
+  doc_type: Artículo científico
+  checksum: 898735356921f9e049e8bc85846da0474a4c0f017db085b269ea30dd10b83c59
+- id: arxiv-2111.00298
+  title: A fast accurate fine-grain object detection model based on YOLOv4 deep neural network
+  url: http://arxiv.org/abs/2111.00298v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - agricultura de precisión
+  - cultivos
+  - frutales
+  - artículo científico
+  - ArXiv
+  description: Early identification and prevention of various plant diseases in commercial farms and orchards
+    is a key feature of precision agriculture technology.
+  year: 2021
+  country: Internacional
+  source: ArXiv (cs.CV, cs.LG)
+  doc_type: Artículo científico
+  checksum: 70f09c7ec4b7189b418a6769dd90ba1681003a7518cbdb08198be9d468dd9e0b
+- id: arxiv-2412.07408
+  title: Explainability of Deep Learning-Based Plant Disease Classifiers Through Automated Concept Identification
+  url: http://arxiv.org/abs/2412.07408v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - deep learning
+  - clasificación de imágenes
+  - artículo científico
+  - ArXiv
+  description: While deep learning has significantly advanced automatic plant disease detection through
+    image-based classification, improving model explainability remains crucial for reliable disease detection.
+  year: 2024
+  country: Internacional
+  source: ArXiv (cs.CV, cs.AI)
+  doc_type: Artículo científico
+  checksum: da59130458337e27613e1adfe85aacf7f1a6acf7715f5fd84f85ed669826152c
+- id: arxiv-2507.01494
+  title: 'Crop Pest Classification Using Deep Learning Techniques: A Review'
+  url: http://arxiv.org/abs/2507.01494v3
+  type: pdf
+  language: en
+  tags:
+  - detección de plagas
+  - deep learning
+  - clasificación de imágenes
+  - cultivos
+  - transformer
+  - artículo científico
+  - ArXiv
+  description: Insect pests continue to bring a serious threat to crop yields around the world, and traditional
+    methods for monitoring them are often slow, manual, and difficult to scale.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.CV, cs.AI)
+  doc_type: Artículo científico
+  checksum: c6cfe569ab2748eaff9654d36a960e8f02d81a81b7fa25609bb4383876ae46f9
+- id: arxiv-2504.07342
+  title: 'Leveraging deep learning for plant disease identification: a bibliometric analysis in SCOPUS
+    from 2018 to 2024'
+  url: http://arxiv.org/abs/2504.07342v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - deep learning
+  - artículo científico
+  - ArXiv
+  description: This work aimed to present a bibliometric analysis of deep learning research for plant
+    disease identification, with a special focus on generative modeling. A thorough analysis of SCOPUS-sourced
+    bibliometric data from 253 documents was performed.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.LG)
+  doc_type: Artículo científico
+  checksum: 9a649a57e80c4d0a002f3a7eeee39be557915305ae90ee80f3fb39003cd452d6
+- id: arxiv-2508.08317
+  title: Evaluation of State-of-the-Art Deep Learning Techniques for Plant Disease and Pest Detection
+  url: http://arxiv.org/abs/2508.08317v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - detección de plagas
+  - deep learning
+  - cultivos
+  - transformer
+  - dispositivos móviles
+  - artículo científico
+  - ArXiv
+  description: Addressing plant diseases and pests is critical for enhancing crop production and preventing
+    economic losses.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.CV, cs.AI)
+  doc_type: Artículo científico
+  checksum: f421fa1a56b56ee2ccc6e188f36abfa73eed3f266c29571995c6950ca558b1ab
+- id: arxiv-2508.17653
+  title: 'FloraSyntropy-Net: Scalable Deep Learning with Novel FloraSyntropy Archive for Large-Scale Plant
+    Disease Diagnosis'
+  url: http://arxiv.org/abs/2508.17653v1
+  type: pdf
+  language: en
+  tags:
+  - enfermedades de plantas
+  - deep learning
+  - artículo científico
+  - ArXiv
+  description: Early diagnosis of plant diseases is critical for global food safety, yet most AI solutions
+    lack the generalization required for real-world agricultural diversity.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.CV)
+  doc_type: Artículo científico
+  checksum: a4fe5665e46271efbf61d51370756d874caecca197c486ab99d81935b8b97d91
+- id: arxiv-1602.06584
+  title: A model-based approach to assess the effectiveness of pest biocontrol by natural enemies
+  url: http://arxiv.org/abs/1602.06584v1
+  type: pdf
+  language: en
+  tags:
+  - control biológico
+  - cultivos
+  - plaguicidas
+  - artículo científico
+  - ArXiv
+  description: 'Main goal: The aim of this note is to propose a modeling approach for assessing the effectiveness
+    of pest biocontrol by natural enemies in diversified agricultural landscapes including several pesticide-based
+    management strategies.'
+  year: 2016
+  country: Internacional
+  source: ArXiv (q-bio.PE)
+  doc_type: Artículo científico
+  checksum: 13eb6cd1044ddbc8b3a82aa50ff06275ff9413a5aaab2d2773e9e5542baf2222
+- id: arxiv-2510.00547
+  title: 'Forestpest-YOLO: A High-Performance Detection Framework for Small Forestry Pests'
+  url: http://arxiv.org/abs/2510.00547v1
+  type: pdf
+  language: en
+  tags:
+  - artículo científico
+  - ArXiv
+  description: Detecting agricultural pests in complex forestry environments using remote sensing imagery
+    is fundamental for ecological preservation, yet it is severely hampered by practical challenges.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.CV, cs.AI)
+  doc_type: Artículo científico
+  checksum: 6547edefb173738485501d1ebda12d3a5c4e2886fc94082675b5f4ed90533508
+- id: arxiv-1807.07343
+  title: Automated Phenotyping of Epicuticular Waxes of Grapevine Berries Using Light Separation and Convolutional
+    Neural Networks
+  url: http://arxiv.org/abs/1807.07343v3
+  type: pdf
+  language: en
+  tags:
+  - Botrytis
+  - vid
+  - especies invasoras
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: In viticulture the epicuticular wax as the outer layer of the berry skin is known as trait
+    which is correlated to resilience towards Botrytis bunch rot.
+  year: 2018
+  country: Internacional
+  source: ArXiv (cs.CV)
+  doc_type: Artículo científico
+  checksum: c46d285f58b011462553c56eb39a425ffe21ba30ec96743162cf712a0495bba9
+- id: arxiv-2112.11448
+  title: Temperature sensitivity of pest reproductive numbers in age-structured PDE models, with a focus
+    on the invasive spotted lanternfly
+  url: http://arxiv.org/abs/2112.11448v1
+  type: pdf
+  language: en
+  tags:
+  - dinámica de poblaciones
+  - temperatura
+  - especies invasoras
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Invasive pest establishment is a pervasive threat to global ecosystems, agriculture, and
+    public health.
+  year: 2021
+  country: Internacional
+  source: ArXiv (q-bio.PE)
+  doc_type: Artículo científico
+  checksum: cf0056cbe1620545195d96f739338e552bc7751d933a85964315a8c575a18a01
+- id: arxiv-2312.03338
+  title: Modeling human activity-related spread of the spotted lanternfly (Lycorma delicatula) in the
+    US
+  url: http://arxiv.org/abs/2312.03338v1
+  type: pdf
+  language: en
+  tags:
+  - especies invasoras
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: The spotted lanternfly (Lycorma delicatula) has recently spread from its native range to
+    several other countries and forecasts predict that it may become a global invasive pest.
+  year: 2023
+  country: Internacional
+  source: ArXiv (q-bio.PE, q-bio.QM)
+  doc_type: Artículo científico
+  checksum: 507a45317ee1e6af1253d57e0be6e83ca464fe4e45c2d92a8cf9dca68b0b9467
+- id: arxiv-2404.03839
+  title: A Complete Mathematical Model For Trichoderma Fungi Kinetics
+  url: http://arxiv.org/abs/2404.03839v2
+  type: pdf
+  language: en
+  tags:
+  - Trichoderma
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: We develop an unstructured mathematical model describing the growth kinetics of the Trichoderma
+    fungus and the production of enzymes (cellulase) by degradation of a substrate (cellulose) in the
+    rhizosphere.
+  year: 2024
+  country: Internacional
+  source: ArXiv (math.DS)
+  doc_type: Artículo científico
+  checksum: 7d8ad94ee29df7ab4b0fded8ef1a94a11f5680fc70e98a7f805e2f1d14079d8c
+- id: arxiv-2109.00121
+  title: 'Exploring the Dynamics of Virulent and Avirulent Aphids: A Case for a "Within Plant" Refuge'
+  url: http://arxiv.org/abs/2109.00121v2
+  type: pdf
+  language: en
+  tags:
+  - resistencia
+  - especies invasoras
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: 'The soybean aphid, Aphis glycines (Hemiptera: Aphididae), is an invasive pest that can
+    cause severe yield loss to soybeans in the northcentral United States. A tactic to counter this pest
+    is the use of aphid-resistant soybean varieties.'
+  year: 2021
+  country: Internacional
+  source: ArXiv (math.DS, q-bio.PE)
+  doc_type: Artículo científico
+  checksum: b05b47e02aafa9bb98c0afc7629ed1276ff091dc051954bd15eb98adab43a738
+- id: arxiv-2403.19273
+  title: A Machine Learning Approach for Crop Yield and Disease Prediction Integrating Soil Nutrition
+    and Weather Factors
+  url: http://arxiv.org/abs/2403.19273v1
+  type: pdf
+  language: en
+  tags:
+  - temperatura
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: The development of an intelligent agricultural decision-supporting system for crop selection
+    and disease forecasting in Bangladesh is the main objective of this work. The economy of the nation
+    depends heavily on agriculture.
+  year: 2024
+  country: Internacional
+  source: ArXiv (cs.LG, cs.AI)
+  doc_type: Artículo científico
+  checksum: c26f98f66938d642c2c600ec2f669b9865b746f5e03a7ef6379c838a3d227f08
+- id: arxiv-2305.14357
+  title: Role of Nano-fertilizer in Plants Nutrient Use Efficiency (NUE)- A mini-review
+  url: http://arxiv.org/abs/2305.14357v1
+  type: pdf
+  language: en
+  tags:
+  - clima
+  - nano-fertilizantes
+  - salud del suelo
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Over the past half-century, the combination of technology and innovation has been developed
+    to manage the negative impact of synthetic fertilizer on land ecosystems to identify the limitations
+    of sustainability and optimize agricultural systems.
+  year: 2023
+  country: Internacional
+  source: ArXiv (q-bio.TO)
+  doc_type: Artículo científico
+  checksum: 9ba0e02de8f21d5b34b693b8e8328927f95ddf1032e622b6f86a451e1277208a
+- id: arxiv-2302.03471
+  title: How a simple chloroplast psbA gene mutation changed world agriculture
+  url: http://arxiv.org/abs/2302.03471v1
+  type: pdf
+  language: en
+  tags:
+  - herbicidas
+  - resistencia
+  - temperatura
+  - malezas
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Atrazine as a weed control tactic profoundly changed world agriculture. Long-term use revealed
+    resistant biotypes, R, with a single base pair mutation of the chloroplast psbA gene. The R phenotype
+    emerged from a sequential cascade of pleiotropic effects from the plastid to the whole plant.
+  year: 2023
+  country: Internacional
+  source: ArXiv (q-bio.PE)
+  doc_type: Artículo científico
+  checksum: 1a301e0f0e1cc32410fbb1fcff3139d56bee406fcbb5bee95ce4db680ebd09b8
+- id: arxiv-2512.13718
+  title: 'Ecological Management of Wild Oat (Avena fatua L.) in Winter Wheat: Modeling Yield Loss and
+    Determination of Economic Thresholds under Varying Crop Densities'
+  url: http://arxiv.org/abs/2512.13718v1
+  type: pdf
+  language: en
+  tags:
+  - herbicidas
+  - resistencia
+  - malezas
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Wild oat (Avena fatua L.) is widely recognized as one of the most detrimental grassy weeds
+    in winter wheat production systems globally.
+  year: 2025
+  country: Internacional
+  source: ArXiv (q-bio.TO)
+  doc_type: Artículo científico
+  checksum: b595964171006cb3fec3d0cca9926f588b5d0d6eb52c3832586c7658a39bb074
+- id: arxiv-1903.02246
+  title: Microbiomes and pathogen survival in crop residues, an ecotone between plant and soil
+  url: http://arxiv.org/abs/1903.02246v3
+  type: pdf
+  language: en
+  tags:
+  - control biológico
+  - patógenos vegetales
+  - epidemiología
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: This review focuses on microbiomes associated with residues within the context of other
+    microbial habitats in cereal-producing agroecosystems such as phyllosphere or rhizosphere.
+  year: 2019
+  country: Internacional
+  source: ArXiv (q-bio.PE)
+  doc_type: Artículo científico
+  checksum: 89992a489f600970ac7bb1ac38df0b916d4acf8b4fe5bb8e6004649e6a636c4c
+- id: arxiv-2103.06007
+  title: 'Pest control using farming awareness: impact of time delays and optimal use of biopesticides'
+  url: http://arxiv.org/abs/2103.06007v1
+  type: pdf
+  language: en
+  tags:
+  - control biológico
+  - biopesticidas
+  - manejo de plagas
+  - manejo integrado de plagas
+  - dinámica de poblaciones
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: 'We investigate a mathematical model in crop pest management, considering plant biomass,
+    pest, and the effect of farming awareness. The pest population is divided into two compartments: susceptible
+    pest and infected pest.'
+  year: 2021
+  country: Internacional
+  source: ArXiv (math.OC, q-bio.QM)
+  doc_type: Artículo científico
+  checksum: a147f1f2d31a36dce94ff2a89e0c6eaa5b6d9e3cce83a3f37f5b8e1cf026dce6
+- id: arxiv-1301.6561
+  title: Can high risk fungicides be used in mixtures without selecting for fungicide resistance?
+  url: http://arxiv.org/abs/1301.6561v2
+  type: pdf
+  language: en
+  tags:
+  - fungicidas
+  - resistencia
+  - patógenos vegetales
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Fungicide mixtures produced by the agrochemical industry often contain low-risk fungicides,
+    to which fungal pathogens are fully sensitive, together with high-risk fungicides known to be prone
+    to fungicide resistance.
+  year: 2013
+  country: Internacional
+  source: ArXiv (q-bio.PE)
+  doc_type: Artículo científico
+  checksum: 8d171d6b47dc71810feb23aef86c4f00133f3feb1f28dcc022f0eee64c9102c5
+- id: arxiv-1210.1844
+  title: Prediction of invasion from the early stage of an epidemic
+  url: http://arxiv.org/abs/1210.1844v1
+  type: pdf
+  language: en
+  tags:
+  - patógenos vegetales
+  - epidemiología
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Predictability of undesired events is a question of great interest in many scientific disciplines
+    including seismology, economy, and epidemiology.
+  year: 2012
+  country: Internacional
+  source: ArXiv (q-bio.PE, stat.AP)
+  doc_type: Artículo científico
+  checksum: f182119b5e212d19f095324abed011298f690db08364034e32340e344a27f015
+- id: arxiv-2506.15728
+  title: Smartphone-integrated RPA-CRISPR-Cas12a Detection System with Microneedle Sampling for Point-of-Care
+    Diagnosis of Potato Late Blight in Early Stage
+  url: http://arxiv.org/abs/2506.15728v1
+  type: pdf
+  language: en
+  tags:
+  - Phytophthora
+  - patógenos vegetales
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Potato late blight, caused by the oomycete pathogen Phytophthora infestans, is one of the
+    most devastating diseases affecting potato crops in the history.
+  year: 2025
+  country: Internacional
+  source: ArXiv (q-bio.QM, cs.CV, q-bio.BM)
+  doc_type: Artículo científico
+  checksum: a652762d43c186b406f7c1a9673d06ddf3facdead4b75bee027b1aff09d2d670
+- id: arxiv-2403.01383
+  title: Postharvest litchi (Litchi chinensis Sonn.) quality preservation by alginate oligosaccharides
+  url: http://arxiv.org/abs/2403.01383v1
+  type: pdf
+  language: en
+  tags:
+  - temperatura
+  - poscosecha
+  - frutales
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: This study investigates the efficacy of alginate oligosaccharides, derived from a novel
+    alginate lyase expressed in E. coli (Pet21a-alginate lyase), in preserving the postharvest quality
+    of litchi (Litchi chinensis Sonn.) fruits. The alginate lyase, characterized by Huang et al.
+  year: 2024
+  country: Internacional
+  source: ArXiv (q-bio.OT)
+  doc_type: Artículo científico
+  checksum: 3517a553f261e2792b7d8ea095b4313688cf75dc0c788cfe703e41f9dfd21aa6
+- id: arxiv-1305.4206
+  title: The rise and fall of the Phytophthora infestans lineage that triggered the Irish potato famine
+  url: http://arxiv.org/abs/1305.4206v1
+  type: pdf
+  language: en
+  tags:
+  - Phytophthora
+  - epidemiología
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Phytophthora infestans, the cause of potato late blight, is infamous for having triggered
+    the Irish Great Famine in the 1840s. Until the late 1970s, P.
+  year: 2013
+  country: Internacional
+  source: ArXiv (q-bio.GN)
+  doc_type: Artículo científico
+  checksum: b06ba59eda2b313d86bb1c3f1ab1cd77369902a71959c2d5a01c27485021087f
+- id: arxiv-2004.09644
+  title: Site-bond percolation solution to preventing the propagation of \textit{Phytophthora} zoospores
+    on plantations
+  url: http://arxiv.org/abs/2004.09644v1
+  type: pdf
+  language: en
+  tags:
+  - Phytophthora
+  - patógenos vegetales
+  - dispersión de esporas
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: We propose a strategy based on the site-bond percolation to minimize the propagation of
+    \textit{Phytophthora} zoospores on plantations, consisting in introducing physical barriers between
+    neighboring plants.
+  year: 2020
+  country: Internacional
+  source: ArXiv (q-bio.PE, cond-mat.stat-mech, physics.soc-ph)
+  doc_type: Artículo científico
+  checksum: 5fae51481915d7705118e8243eaac094122b64328c201c203ca0bbf7dde4a08b
+- id: arxiv-2002.00951
+  title: Improving Pest Monitoring Networks in order to reduce pesticide use in agriculture
+  url: http://arxiv.org/abs/2002.00951v1
+  type: pdf
+  language: en
+  tags:
+  - patógenos vegetales
+  - epidemiología
+  - monitoreo fitosanitario
+  - protección de cultivos
+  - malezas
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Disease and pest control largely rely on pesticides use and progress still remains to be
+    made towards more sustainable practices. Pest Monitoring Networks (PMNs) can provide useful information
+    for improving crop protection by restricting pesticide use to the situations that best require it.
+  year: 2020
+  country: Internacional
+  source: ArXiv (q-bio.PE, stat.AP)
+  doc_type: Artículo científico
+  checksum: d78980d198275f6cefe8c9304a45af26e1cff1cceb4e091b7a95ebefc41bcdd8
+- id: arxiv-2010.14944
+  title: Projecting the optimal control strategy on invasive plants combining effects of herbivores and
+    native plants resistance
+  url: http://arxiv.org/abs/2010.14944v1
+  type: pdf
+  language: en
+  tags:
+  - resistencia
+  - control biológico
+  - especies invasoras
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Understanding how to limit biological invasion is critical, especially in the context of
+    accelerating anthropogenic ecological changes.
+  year: 2020
+  country: Internacional
+  source: ArXiv (q-bio.PE, math.OC)
+  doc_type: Artículo científico
+  checksum: 6c61bdb5fd94cfee6fb40c5ec665225c19bf14d2c5f67f350fb7fef51ceacd4d
+- id: arxiv-2009.10375
+  title: Temperature dependence of mycosubtilin homologue production in Bacillus subtilis ATCC6633
+  url: http://arxiv.org/abs/2009.10375v1
+  type: pdf
+  language: en
+  tags:
+  - Bacillus
+  - mycosubtilin
+  - patógenos vegetales
+  - temperatura
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Bacillus subtilis ATCC6633 produces mycosubtilin, a non-ribosomally synthesized lipopeptide
+    of the iturin family which presents antagonistic activities toward various phytopathogens.
+  year: 2020
+  country: Internacional
+  source: ArXiv (q-bio.BM)
+  doc_type: Artículo científico
+  checksum: d2d62b5ef6053a744c99115985d7ca2290ec75a6a93b14738c8cdf8d09b64ce9
+- id: arxiv-2508.03238
+  title: Modeling the Temperature-Humidity Coupling Dynamics of Soybean Pod Borer Population and Assessing
+    the Predictive Performance of the PCM-NN Algorithm
+  url: http://arxiv.org/abs/2508.03238v1
+  type: pdf
+  language: en
+  tags:
+  - dinámica de poblaciones
+  - clima
+  - temperatura
+  - monitoreo fitosanitario
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Against the backdrop of global climate change and agricultural globalization, soybean production
+    is increasingly threatened by pest outbreaks, with Leguminivora glycinivorella (commonly known as
+    the soybean pod borer) being a major pest species.
+  year: 2025
+  country: Internacional
+  source: ArXiv (math.DS)
+  doc_type: Artículo científico
+  checksum: ca519617bbf03f216c5823492886359051816ce1c9977977be905663bf5573b6
+- id: arxiv-2504.04965
+  title: 'Climate adaptation of millet and sorghum varieties in North-Eastern Senegal: cross-referencing
+    rainfall, thermal and phenological parameters'
+  url: http://arxiv.org/abs/2504.04965v1
+  type: pdf
+  language: en
+  tags:
+  - control biológico
+  - manejo de plagas
+  - manejo integrado de plagas
+  - clima
+  - temperatura
+  - protección de cultivos
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Millet (Pennisetum glaucum) and sorghum (Sorghum bicolor) are the main rainfed cereals
+    grown in North-Eastern Senegal. However, faced with constraints such as falling rainfall, rising temperatures
+    and frequent dry spells, their production is tending to decline.
+  year: 2025
+  country: Internacional
+  source: ArXiv (physics.geo-ph)
+  doc_type: Artículo científico
+  checksum: 9399f5be5760819d8f93fe10efe6d08378a120b2728990c91646a5ecd1bc139f
+- id: arxiv-2510.06111
+  title: An additional food driven biological control patch model, incorporating generalized competition
+  url: http://arxiv.org/abs/2510.06111v1
+  type: pdf
+  language: en
+  tags:
+  - control biológico
+  - manejo de plagas
+  - clima
+  - especies invasoras
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Additional food sources for an introduced predator are known to increase its efficiency
+    on a target pest.
+  year: 2025
+  country: Internacional
+  source: ArXiv (q-bio.PE)
+  doc_type: Artículo científico
+  checksum: df4c540566d3ec4348df9ec0941610697f5595f7c434b590282b5fc9bd146778
+- id: arxiv-2303.05242
+  title: Molecular detection and antimicrobial activity of Endophytic fungi isolated from a medical plant
+    Rosmarinus officinalis
+  url: http://arxiv.org/abs/2303.05242v1
+  type: pdf
+  language: en
+  tags:
+  - Trichoderma
+  - Bacillus
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Endophytes are tiny organisms present in living tissues of distinct plants and have been
+    extensively studied for their endophytic microbial complement.
+  year: 2023
+  country: Internacional
+  source: ArXiv (q-bio.GN)
+  doc_type: Artículo científico
+  checksum: 96d8b505553696a09c166b06192b722fcad3dbc43b96ab9e15d17d3313a901f6
+- id: arxiv-2306.13869
+  title: Coherent spore dispersion via drop-leaf interactions
+  url: http://arxiv.org/abs/2306.13869v3
+  type: pdf
+  language: en
+  tags:
+  - patógenos vegetales
+  - dispersión de esporas
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: The dispersion of plant pathogens, such as rust spores, is responsible for more than 20%
+    of global yield loss annually, and poses a significant threat to human health. However, the release
+    mechanics of pathogens from flexible plant surfaces into the canopy is not well understood.
+  year: 2023
+  country: Internacional
+  source: ArXiv (physics.flu-dyn)
+  doc_type: Artículo científico
+  checksum: a315ad18a2be5cf30eda359e0ce9200a9a23bdebd6d3714fc956f1de7195119b
+- id: arxiv-2310.07442
+  title: Network-thinking to optimize surveillance and control of crop parasites. A review
+  url: http://arxiv.org/abs/2310.07442v1
+  type: pdf
+  language: en
+  tags:
+  - epidemiología
+  - monitoreo fitosanitario
+  - protección de cultivos
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Increasing cultivated lands, crop homogenization and global food trade have fostered the
+    spread of crop pests and diseases. Optimizing crop protection is urgently needed to ensure food safety.
+  year: 2023
+  country: Internacional
+  source: ArXiv (q-bio.PE)
+  doc_type: Artículo científico
+  checksum: 59682a4f1ba55446cfe005b484088b0e182c386e722e7b8ac9f63a14dbbc260f
+- id: arxiv-2009.10378
+  title: Mycosubtilin Overproduction by Bacillus subtilis BBG100 Enhances the Organism's Antagonistic
+    and Biocontrol Activities
+  url: http://arxiv.org/abs/2009.10378v1
+  type: pdf
+  language: en
+  tags:
+  - control biológico
+  - Bacillus
+  - mycosubtilin
+  - patógenos vegetales
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: A Bacillus subtilis derivative was obtained from strain ATCC 6633 by replacement of the
+    native promoter of the mycosubtilin operon by a constitutive promoter originating from the replication
+    gene repU of the Staphylococcus aureus plasmid pUB110.
+  year: 2020
+  country: Internacional
+  source: ArXiv (q-bio.BM)
+  doc_type: Artículo científico
+  checksum: a9673cfc440fe7eae1426f7086ed98d2e690f09d3bb67ede3dc4cb178425b071
+- id: arxiv-1911.07007
+  title: Spatiotemporal large-scale networks shaped by air mass movements
+  url: http://arxiv.org/abs/1911.07007v2
+  type: pdf
+  language: en
+  tags:
+  - patógenos vegetales
+  - epidemiología
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: The movement of atmospheric air masses can be seen as a continuous and complex flow of
+    particles hovering over our planet. It can however be locally simplified by considering three-dimensional
+    trajectories of air masses connecting distant areas of the globe during a given period of time.
+  year: 2019
+  country: Internacional
+  source: ArXiv (stat.AP)
+  doc_type: Artículo científico
+  checksum: 944213f073dfbb01c964514d9623a1837515b9a2a8bcd04ed06042613b8e299c
+- id: arxiv-1408.6616
+  title: 'Conceptual and mathematical modeling of insect-borne plant diseases: theory and application
+    to flavescence doree in grapevine'
+  url: http://arxiv.org/abs/1408.6616v1
+  type: pdf
+  language: en
+  tags:
+  - patógenos vegetales
+  - epidemiología
+  - vid
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Insect-borne plant diseases recur commonly in wild plants and in agricultural crops, and
+    are responsible for severe losses in terms of produce yield and monetary return.
+  year: 2014
+  country: Internacional
+  source: ArXiv (q-bio.PE)
+  doc_type: Artículo científico
+  checksum: 174da5c442d2cecf9dbd7993a3bf4a6b55e531f9f6ff255fcf25650642962324
+- id: arxiv-2512.11474
+  title: General-purpose AI models can generate actionable knowledge on agroecological crop protection
+  url: http://arxiv.org/abs/2512.11474v1
+  type: pdf
+  language: en
+  tags:
+  - control biológico
+  - protección de cultivos
+  - malezas
+  - artículo científico
+  - ArXiv
+  - agronomía de campo
+  description: Generative artificial intelligence (AI) offers potential for democratizing scientific knowledge
+    and converting this to clear, actionable information, yet its application in agri-food science remains
+    unexplored.
+  year: 2025
+  country: Internacional
+  source: ArXiv (cs.AI, cs.CY, cs.IR)
+  doc_type: Artículo científico
+  checksum: cbc5e257851e2e9cfe4057280a1ec43811f06bb25aaee994355ff4e279ee34c3
