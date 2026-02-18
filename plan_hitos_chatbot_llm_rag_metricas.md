@@ -1,501 +1,469 @@
-# Plan por Hitos — Chatbot LLM (Python + Streamlit) con RAG, Métricas y Mitigación
+# Plan de Hitos Detallado — Chatbot TFM (LLM + RAG + Métricas)
 
-Este documento consolida el plan por hitos para construir un chatbot con:
+## 1. Descripción General
 
-- **Backend en Python** (servicios modulares).
-- **Frontend en Streamlit** (chat UI).
-- **LangChain desde el inicio**.
-- Proveedores **Gemini** y **OpenRouter** integrados de forma robusta (validación anti-errores).
-- **RAG** con un corpus agronómico seleccionado para maximizar diferencia vs “chat normal”.
-- **Métricas** (incertidumbre / riesgo de alucinación y factualidad) y **mitigación activa** con orquestación (LangGraph).
-- **Hito explícito** de búsqueda/descarga/curación de PDFs/tablas para el RAG.
+Este Trabajo de Fin de Máster (TFM) desarrolla, evalúa y optimiza un sistema de **Chatbot con RAG (Retrieval-Augmented Generation)** especializado en el dominio agronómico (fitosanidad en arándanos). El proyecto aborda el problema crítico de las "alucinaciones" en los LLMs cuando se enfrentan a datos técnicos y normativos estrictos.
 
-> Nota: El plan mantiene la estructura y contenido previamente definidos. Se agregan únicamente precisiones operativas (convenciones, estructura de repositorio, gates y herramientas auxiliares).
+La solución implementa una arquitectura progresiva de tres niveles:
+1.  **V0 (Baseline)**: Chatbot estándar sin contexto externo, susceptible a errores factuales.
+2.  **V1 (RAG Pasivo)**: Sistema de recuperación densa con Qdrant y LangChain, que inyecta contexto normativo para "anclar" las respuestas.
+3.  **V2 (Agente Autónomo)**: Sistema agéntico con grafos de estado (**LangGraph**) que incorpora ciclos de auto-corrección ("Self-Correction") y verificación de hechos antes de entregar la respuesta final.
 
----
-
-## 1) Stack objetivo (constante en el plan)
-
-### Frontend
-- **Streamlit**: UI conversacional con `st.chat_message` y `st.chat_input`.
-
-### Backend / Core
-- **LangChain** (LCEL/Runnables) para pipelines desde el inicio.
-- **LangGraph** para orquestación agéntica/estado (Self‑RAG/CRAG style) en hitos avanzados.
-- **Vector DB**: **Qdrant** vía `langchain-qdrant`.
-- **PDF ingestion**: `PyPDFLoader` y/o `UnstructuredPDFLoader`.
-
-### Proveedores LLM (desde Hito 1)
-- **Gemini (Google)**: `langchain-google-genai` (`ChatGoogleGenerativeAI`) con `GOOGLE_API_KEY`.
-- **OpenRouter**: endpoint **OpenAI-compatible** (`https://openrouter.ai/api/v1`) vía `ChatOpenAI` + `OPENROUTER_API_KEY`; headers opcionales `HTTP-Referer` y `X-Title`.
+El sistema final está contenerizado con **Docker** e incluye un dashboard interactivo en **Streamlit** para la evaluación continua de métricas de calidad (Faithfulness, FactScore).
 
 ---
 
-## 2) Convenciones operativas (recomendadas)
+## 2. Estructura del Proyecto
 
-### 2.1 Gestión de configuración
-- Archivo `.env` (no versionado) + `.env.example` (versionado).
-- Validación de variables con `pydantic-settings`.
-- Variables mínimas:
-  - `GOOGLE_API_KEY`
-  - `OPENROUTER_API_KEY`
-  - `OPENROUTER_HTTP_REFERER` (opcional)
-  - `OPENROUTER_X_TITLE` (opcional)
-  - `QDRANT_URL` (p. ej. `http://localhost:6333`)
-  - `QDRANT_API_KEY` (si aplica)
+La estructura de directorios sigue un diseño modular para separar responsabilidades (Core, Chat, Ingesta, Métricas, evaluación):
 
-### 2.2 Estructura de repositorio (mínima y escalable)
-
-Sugerida (puede ajustarse sin romper el plan):
-
-- `app.py` (Streamlit)
-- `src/`
-  - `core/`
-    - `config/` (settings/env)
-    - `providers/` (Gemini/OpenRouter + factory)
-    - `logging/` (trace_id, jsonl)
-  - `chat/` (chains V0/V1)
-  - `knowledge/` (loaders, splitters, indexer, retriever)
-  - `metrics/` (semantic entropy, factscore)
-  - `agent/` (LangGraph)
-- `corpus/`
-  - `registry.yaml` (metadata)
-  - `raw/` (PDFs)
-  - `processed/` (texto/chunks opcional)
-- `eval/`
-  - `question_bank_v1.csv`
-  - `results/` (V0/V1/V2)
-- `scripts/`
-  - `sync_model_registry.py`
-  - `acquire_corpus.py`
-- `reports/` (markdown/quarto)
-- `tests/` (smoke + integración)
-- `docker-compose.yml` (Qdrant/Redis/worker según hito)
-
-### 2.3 Versionado y reproducibilidad
-- Recomendado fijar versiones en `pyproject.toml` (Poetry/uv) o `requirements.txt`.
-- Registrar en cada corrida (eval/run):
-  - proveedor, modelo, parámetros, hash del corpus, hash del código (commit) y timestamp.
-
-### 2.4 Gate de avance por hito
-- Cada hito tiene **Criterio de salida** y **Entregables** obligatorios.
-- Si un criterio no se cumple, se corrige antes de avanzar.
+```text
+TFM-allucination/
+├── .env                       # Variables de entorno (API keys, Config)
+├── app.py                     # Punto de entrada de la aplicación Streamlit (UI)
+├── docker-compose.yml         # Orquestación (App, Worker, Qdrant, Redis, Ollama)
+├── Dockerfile                 # Definición de la imagen del contenedor principal
+├── pyproject.toml             # Gestión de dependencias (uv) y configuración del proyecto
+├── README.md                  # Documentación general de instalación y uso
+├── corpus/                    # Gestión del conocimiento
+│   ├── registry.yaml          # Registro de fuentes y metadatos con checksums
+│   └── raw/                   # Archivos crudos descargados (PDFs, XLSX)
+├── docs/                      # Documentación del proyecto
+│   ├── ARQUITECTURA_Y_MANUAL.md # Diagramas y manual técnico
+│   └── protocolo_experimental.md # Definición del experimento y métricas
+├── eval/                      # Módulo de Evaluación
+│   ├── question_bank_v1.csv   # Banco de preguntas (Golden Dataset)
+│   ├── run_eval.py            # Script de evaluación masiva V0/V1
+│   ├── run_eval_v2.py         # Script de evaluación asíncrona V2
+│   └── results/               # Almacenamiento de logs y resultados JSON/CSV/Parquet
+├── reports/                   # Generación de informes
+│   ├── generate_report.py     # Lógica para reportes comparativos Markdown
+│   └── final_integrated_report.md # Reporte consolidado de resultados
+├── services/                  # Servicios en segundo plano
+│   └── worker/                # Worker RQ para tareas pesadas (Métricas asíncronas)
+└── src/                       # Código Fuente del Núcleo
+    ├── agent/                 # Lógica del Agente V2 (LangGraph)
+    ├── chat/                  # Cadenas de RAG V1 (LangChain)
+    ├── core/                  # Configuración y Factory de Proveedores LLM
+    ├── knowledge/             # Ingesta, Splitting e Indexación Vectorial
+    └── metrics/               # Implementación de Métricas (Faithfulness, FactScore)
+```
 
 ---
 
-## 3) Tema recomendado para maximizar alucinación y “delta” con RAG
+## 3. Herramientas y Tecnologías
 
-**Tema**: Manejo fitosanitario en arándano orientado a cumplimiento de etiqueta.
+El stack tecnológico se ha seleccionado para maximizar la reproducibilidad y la escalabilidad:
 
-**Subtema específico**:
-- **REI/PHI**, selección de activos por **grupo FRAC** (resistencia) y restricciones por **MRL** para exportación.
-
-**Motivación**: alta propensión a alucinación por dependencia de números/reglas/etiquetas que cambian y por necesidad de evidencia.
-
----
-
-## 4) Corpus RAG — búsqueda, descarga y curación (insumos)
-
-El corpus debe incluir (mínimo viable):
-
-- Documentos normativos y definiciones (REI/WPS, etiquetas, definiciones de PHI).
-- Tablas oficiales (FRAC code list).
-- Guías IPM/arándano (extensión universitaria).
-- Documentos/tablas de MRL (por mercado o referencia estándar).
-
-Se administran mediante `corpus/registry.yaml` con checksum.
+*   **Lenguaje**: Python 3.10+ (Tipado estricto).
+*   **Gestión de Dependencias**: `uv` (Rápido y determinista).
+*   **Orquestación LLM**: `LangChain` (Core) y `LangGraph` (Agentes de estado).
+*   **Interfaz de Usuario**: `Streamlit` (Desarrollo rápido de aplicaciones de datos).
+*   **Base de Datos Vectorial**: `Qdrant` (Motor de búsqueda vectorial de alto rendimiento, dockerizado).
+*   **Gestión de Colas**: `Redis` + `RQ` (Redis Queue) para procesamiento asíncrono de métricas pesadas.
+*   **Infraestructura**: `Docker` y `Docker Compose` para despliegue aislado y reproducible.
+*   **Modelos LLM**:
+    *   **Google Gemini** (vía `langchain-google-genai`).
+    *   **Modelos OpenRouter** (vía `langchain-openai`).
+    *   **Ollama** (Modelos locales para privacidad/costo).
 
 ---
 
-# 5) Plan por hitos (detallado)
+## 4. Descripción Detallada de Hitos
 
-## Hito 0 — Protocolo experimental y criterios de éxito (TFM-ready)
+A continuación se detalla cada hito completado, describiendo las acciones realizadas, los archivos clave y la evidencia de éxito.
 
-**Meta**: Definir qué comparas y cómo lo mides (V0/V1/V2) antes de construir.
+### Hito 0: Protocolo Experimental y Criterios de Éxito
+establecer las bases metodológicas del TFM, definiendo qué se va a comparar y cómo. Se diseñaron las variantes del sistema y se construyó el conjunto de datos de evaluación ("Golden Dataset").
 
-**Tecnologías**: Python (pandas), Markdown, repo `docs/`.
+*   **Entradas**:
+    *   Conocimiento experto del dominio (Fitosanidad en arándanos).
+    *   Normativa oficial (SENASA, SAG, EPA) y papers científicos.
+*   **Salidas**:
+    *   Nuevo archivo: `docs/protocolo_experimental.md`.
+    *   Nuevo archivo: `eval/question_bank_v1.csv` (12 preguntas "Gold Standard").
 
-**Tareas**
-1. Definir variantes:
-   - **V0**: Chat “normal” (sin RAG, sin métricas).
-   - **V1**: Chat con RAG y citas.
-   - **V2**: RAG + mitigación (gating por incertidumbre + verificación factual).
-2. Crear **Question Bank** (30–60 preguntas) del tema elegido.
-3. Definir **ground truth** por pregunta.
-4. Definir métricas:
-   - Factualidad (FactScore-style).
-   - Incertidumbre/riesgo (Semantic Entropy-style).
-   - Operativas: TTFT, latencia total, #calls LLM, costo (si disponible).
+*   **Acciones Realizadas**:
+    1.  Redacción del `protocolo_experimental.md` definiendo V0 (Baseline), V1 (RAG) y V2 (Agente).
+    2.  Creación manual del `question_bank_v1.csv` con 12 preguntas de alta complejidad sobre normativa fitosanitaria (SENASA, SAG, EPA).
+    3.  Definición de categorías de preguntas (Plagas, Riego, Exportación) y niveles de dificultad.
+    4.  Establecimiento de métricas clave: Fidelidad (Faithfulness), FactScore y Latencia.
 
-**Criterio de salida**
-- `docs/protocolo_experimental.md` con V0/V1/V2 + reglas.
-- `eval/question_bank_v1.csv` (o JSON) versionado.
+*   **Archivos Clave**:
+    *   `docs/protocolo_experimental.md`: Documento maestro del diseño experimental.
+    *   `eval/question_bank_v1.csv`: Dataset con columnas `id`, `question`, `ground_truth`, `source_doc`.
 
-**Entregables**
-- Protocolo + dataset de evaluación inicial.
+*   **Métricas de Éxito**:
+    *   Protocolo validado y documentado.
+    *   Banco de preguntas cubre diversas fuentes documentales reales.
+
+### Hito 1: Proyecto Base y Configuración de Proveedores
+Crear la infraestructura de código mínima para invocar LLMs de múltiples proveedores sin errores de configuración.
+
+*   **Entradas**:
+    *   Credenciales de API (Google AI Studio, OpenRouter).
+*   **Salidas**:
+    *   Archivos modificados: `pyproject.toml`, `.gitignore`.
+    *   Nuevos archivos: `src/core/config/settings.py`, `src/core/providers/*`.
+    *   Nuevo archivo: `tests/test_providers_smoke.py`.
+
+*   **Acciones Realizadas**:
+    1.  Estructuración del repositorio según buenas prácticas (`src/core`).
+    2.  Implementación de `settings.py` con `pydantic-settings` para validar variables de entorno (`.env`).
+    3.  Desarrollo del `ProviderFactory` (`src/core/providers/factory.py`) para instanciar dinámicamente Gemini, OpenRouter y Ollama.
+    4.  Creación de tests de humo (`tests/test_providers_smoke.py`) para verificar conectividad.
+
+*   **Archivos Clave**:
+    *   `src/core/config/settings.py`: Validación de tipos para API Keys.
+    *   `src/core/providers/gemini.py`, `openrouter.py`, `ollama.py`: Wrappers específicos.
+    *   `pyproject.toml`: Definición de dependencias.
+
+*   **Métricas de Éxito**:
+    *   Tests automáticos pasan confirmando que los LLMs responden "pong" al ping.
+    *   Variables de entorno gestionadas de forma segura.
+
+### Hito 2: Registro de Modelos (Model Registry)
+Evitar errores en tiempo de ejecución por nombres de modelos incorrectos y centralizar la gestión de capacidades (context length, pricing).
+
+*   **Entradas**:
+    *   Conectividad a API OpenRouter (endpoint `/models`).
+*   **Salidas**:
+    *   Nuevo archivo: `scripts/sync_model_registry.py`.
+    *   Nuevo archivo: `src/core/config/model_registry.json`.
+
+*   **Acciones Realizadas**:
+    1.  Creación del script `scripts/sync_model_registry.py` que consulta la API de OpenRouter y genera un JSON local.
+    2.  Implementación de `src/core/config/model_registry.json` como fuente de verdad para la UI.
+    3.  Integración del registro en `ProviderFactory` para validar `model_id` antes de invocar la API.
+
+*   **Archivos Clave**:
+    *   `scripts/sync_model_registry.py`: Script asíncrono de actualización.
+    *   `src/core/config/model_registry.json`: Base de datos ligera de modelos disponibles.
+
+*   **Métricas de Éxito**:
+    *   Selector de modelos en la UI se puebla dinámicamente desde el JSON.
+    *   Prevención de crashes por *typos* en nombres de modelos.
+
+### Hito 3: Chat Baseline (V0) en Streamlit
+Tener una interfaz funcional para interactuar con los LLMs de forma directa, sirviendo como línea base de comparación.
+
+*   **Entradas**:
+    *   `src/core/providers` (funcionalidad de backend).
+*   **Salidas**:
+    *   Nuevo archivo: `app.py`.
+
+*   **Acciones Realizadas**:
+    1.  Desarrollo de `app.py` utilizando `st.chat_message` y gestión de estado de sesión (`st.session_state`).
+    2.  Implementación de selectores de configuración (Proveedor, Modelo) en la barra lateral.
+    3.  Conexión directa: `Prompt` -> `LLM` -> `Respuesta`.
+
+*   **Archivos Clave**:
+    *   `app.py`: Código fuente de la interfaz.
+
+*   **Métricas de Éxito**:
+    *   Conversación fluida con historial mantenido en memoria.
+    *   Cambio de modelo en caliente funcional.
+
+### Hito 4: Harness de Evaluación Automática (V0)
+Automatizar la medición del desempeño del modelo base para tener datos cuantitativos iniciales.
+
+*   **Entradas**:
+    *   `eval/question_bank_v1.csv` (Dataset).
+*   **Salidas**:
+    *   Nuevo archivo: `eval/run_eval.py`.
+    *   Nuevos archivos: `eval/results/Comparison/*.csv` y `*.parquet`.
+
+*   **Acciones Realizadas**:
+    1.  Creación de `eval/run_eval.py` para iterar sobre el `question_bank_v1.csv`.
+    2.  Implementación de lógica de reintentos y manejo de errores por API rate limits.
+    3.  Guardado de resultados en formato CSV y Parquet en `eval/results/`.
+
+*   **Archivos Clave**:
+    *   `eval/run_eval.py`: Motor de evaluación síncrono.
+    *   `eval/results/Comparison/`: Directorio de salidas.
+
+*   **Métricas de Éxito**:
+    *   Ejecución completa del banco de preguntas sin supervisión.
+    *   Generación de logs de latencia y respuestas crudas.
+
+### Hito 5: Adquisición y Curación del Corpus RAG
+Construir una base de conocimiento confiable y trazable para el sistema RAG.
+
+*   **Entradas**:
+    *   URLs de documentos públicos (SENASA, SAG, Universities).
+*   **Salidas**:
+    *   Nuevo archivo: `corpus/registry.yaml` (Metadata inicial).
+    *   Nuevo archivo: `scripts/acquire_corpus.py`.
+    *   Archivos generados: PDFs en `corpus/raw/`.
+
+*   **Acciones Realizadas**:
+    1.  Definición de documentos en `corpus/registry.yaml` con metadatos (título, año, país, checksum).
+    2.  Desarrollo de `scripts/acquire_corpus.py` para descargar PDFs y validar su integridad (SHA256).
+    3.  Inclusión de manuales técnicos, normativas legales y papers científicos reales.
+
+*   **Archivos Clave**:
+    *   `corpus/registry.yaml`: Fuente de verdad documental.
+    *   `scripts/acquire_corpus.py`: Gestor de descargas idempotente.
+
+*   **Métricas de Éxito**:
+    *   Carpeta `corpus/raw/` poblada con archivos validados.
+    *   Registro YAML actualizado automáticamente con checksums reales.
+
+### Hito 6 & 7: Ingesta y Vectorización con Qdrant
+Transformar los documentos PDF/Excel en vectores buscables de alta calidad.
+
+*   **Entradas**:
+    *   Archivos en `corpus/raw/` (PDF, XLSX).
+    *   Servicio Qdrant (Docker).
+*   **Salidas**:
+    *   Nuevos archivos: `src/knowledge/loaders.py`, `src/knowledge/indexer.py`.
+    *   Colección persistida en volumen Docker `qdrant_storage`.
+
+*   **Acciones Realizadas**:
+    1.  Configuración de contenedor Qdrant en `docker-compose.yml`.
+    2.  Implementación de `src/knowledge/loaders.py` para manejar PDF (`PyPDFLoader`) y Excel (Pandas a Markdown).
+    3.  Desarrollo de `src/knowledge/indexer.py` para dividir textos (`RecursiveCharacterTextSplitter`) y cargarlos a Qdrant.
+    4.  Uso de embeddings de OpenAI/Gemini (vía `EmbeddingFactory`) para la representación vectorial.
+
+*   **Archivos Clave**:
+    *   `src/knowledge/loaders.py`: Estrategias de carga polimórficas.
+    *   `src/knowledge/indexer.py`: Script de indexación masiva.
+    *   `docker-compose.yml`: Definición del servicio Qdrant.
+
+*   **Métricas de Éxito**:
+    *   Colección Qdrant creada y poblada con chunks.
+    *   Metadatos (origen, página) preservados en cada vector.
+
+### Hito 8: Chat RAG (V1)
+Integrar la recuperación de información en el flujo de chat para fundamentar las respuestas.
+
+*   **Entradas**:
+    *   Colección indexada en Qdrant.
+*   **Salidas**:
+    *   Nuevo archivo: `src/chat/rag.py`.
+    *   Modificación: `app.py` (Tab V1).
+
+*   **Acciones Realizadas**:
+    1.  Creación de `src/chat/rag.py` definiendo la cadena `Retrieve` -> `Augment` -> `Generate`.
+    2.  Diseño de prompts específicos para forzar la citación de fuentes.
+    3.  Integración en `app.py`: Pestaña "V1 (RAG)" con visualización de fuentes recuperadas ("Sources").
+
+*   **Archivos Clave**:
+    *   `src/chat/rag.py`: Lógica del motor RAG.
+    *   `app.py`: Renderizado de componentes expansibles (st.expander) para evidencias.
+
+*   **Métricas de Éxito**:
+    *   Respuestas del chatbot incluyen referencias explícitas a los documentos.
+    *   Reducción subjetiva de invenciones en preguntas de normativa.
+
+### Hito 9: Evaluación Comparativa V0 vs V1
+Medir cuantitativamente el impacto de introducir RAG frente al baseline.
+
+*   **Entradas**:
+    *   Modelos V0 y V1 operativos.
+    *   `eval/run_eval.py` actualizado.
+*   **Salidas**:
+    *   Nuevo archivo: `reports/generate_report.py`.
+    *   Archivo generado: `reports/v0_vs_v1_comparative.md`.
+
+*   **Acciones Realizadas**:
+    1.  Ejecución de `eval/run_eval.py` en modo comparativo (ejecuta ambos modelos para cada pregunta).
+    2.  Generación de reportes automáticos (`reports/generate_report.py`) que muestran latencias y respuestas lado a lado.
+    3.  Análisis manual de mejoras en especificidad (V1 suele ser más preciso en datos numéricos).
+
+*   **Archivos Clave**:
+    *   `reports/v0_vs_v1_comparative.md`: Informe generado.
+
+*   **Métricas de Éxito**:
+    *   Evidencia documentada de la superioridad de V1 en preguntas de "dato exacto".
+    *   Identificación del trade-off de latencia (V1 es más lento).
+
+### Hito 10: Métricas de Alucinación (Faithfulness)
+Implementar métrica de "Fidelidad" para verificar si la respuesta se adhiere al contexto.
+
+*   **Entradas**:
+    *   Respuestas de V1 (RAG).
+*   **Salidas**:
+    *   Nuevo archivo: `src/metrics/faithfulness.py`.
+    *   Actualización: `eval/run_metrics.py`.
+
+*   **Acciones Realizadas**:
+    1.  Implementación de `src/metrics/faithfulness.py`: Prompt diseñado para LLM-as-a-Judge que evalúa si la respuesta se deriva **exclusivamente** del contexto.
+    2.  Integración en script de evaluación para correr post-hoc.
+
+*   **Archivos Clave**:
+    *   `src/metrics/faithfulness.py`: Clase de métrica.
+    *   `src/metrics/judges.py`: Factory para el LLM evaluador.
+
+*   **Métricas de Éxito**:
+    *   Scores consistentes (0.0 o 1.0) al evaluar alucinaciones inducidas vs respuestas correctas.
+
+### Hito 11: Métrica 2: FactScore (Hechos Atómicos)
+Implementar FactScore para una evaluación granular de precisión factual.
+
+*   **Entradas**:
+    *   Respuestas V1/V2.
+*   **Salidas**:
+    *   Nuevo archivo: `src/metrics/factscore.py`.
+    *   Nuevo script: `eval/run_factscore.py`.
+
+*   **Acciones Realizadas**:
+    1.  Implementación de `src/metrics/factscore.py` con dos etapas:
+        *   **Extracción**: Descomposición de texto en "afirmaciones atómicas".
+        *   **Verificación**: Validación de cada afirmación contra el contexto (`Soportado`, `Contradicho`, `NoVerificado`).
+    2.  Ejecución de prueba sobre respuestas generadas.
+
+*   **Archivos Clave**:
+    *   `src/metrics/factscore.py`: Motor FactScore simplificado.
+    *   `eval/run_factscore.py`: Runner específico para esta métrica costo-intensiva.
+
+*   **Métricas de Éxito**:
+    *   Desglose detallado de qué partes de una oración son falsas.
+
+### Hito 12: Agente Mitigador (V2 - LangGraph)
+Cerrar el ciclo de control: crear un agente que use las métricas para corregirse a sí mismo.
+
+*   **Entradas**:
+    *   Componentes V1 (Writer, Retriever).
+    *   Métrica Faithfulness.
+*   **Salidas**:
+    *   Nuevos archivos: `src/agent/graph.py`, `src/agent/state.py`, `src/agent/nodes.py`.
+    *   Modificación: `app.py` (Tab V2).
+
+*   **Acciones Realizadas**:
+    1.  Diseño del grafo en `src/agent/graph.py` usando `LangGraph`.
+    2.  Nodos implementados (`src/agent/nodes.py`):
+        *   `classify`: Detecta intención.
+        *   `retrieve`: Busca información.
+        *   `generate`: Crea borrador.
+        *   `grade`: Evalúa alucinación.
+    3.  Lógica de Loop: Si `grade` detecta falla, el grafo re-entra al nodo `generate` (limitado por retries).
+
+*   **Archivos Clave**:
+    *   `src/agent/graph.py`: Definición de aristas y flujos condicionales.
+    *   `src/agent/nodes.py`: Funciones puras de ejecución.
+
+*   **Métricas de Éxito**:
+    *   El agente reescribe respuestas detectadas como alucinadas en los logs.
+    *   Alta puntuación final de Faithfulness en el reporte comparativo.
+
+### Hito 13: Asincronía y Workers
+Optimizar la UX moviendo las tareas pesadas de evaluación a segundo plano.
+
+*   **Entradas**:
+    *   Infraestructura Redis.
+*   **Salidas**:
+    *   Nuevos archivos: `services/worker/tasks.py`.
+    *   Modificación: `docker-compose.yml`.
+
+*   **Acciones Realizadas**:
+    1.  Configuración de `redis` y `worker` en `docker-compose.yml`.
+    2.  Creación de tareas en `services/worker/tasks.py` para calcular FactScore.
+    3.  (Parcial) Integración en UI para no bloquear el chat mientras se evalúa.
+
+*   **Archivos Clave**:
+    *   `services/worker/tasks.py`: Definición de trabajos en cola.
+    *   `docker-compose.yml`: Servicio de colas.
+
+*   **Métricas de Éxito**:
+    *   Contenedor `worker` procesando tareas (logs visibles en Docker).
+
+### Hito 14: Reporte Integrado Final
+Consolidar la evidencia científica del TFM.
+
+*   **Entradas**:
+    *   Resultados de benchmarks V0, V1, V2.
+*   **Salidas**:
+    *   Archivo generado: `reports/final_integrated_report.md`.
+
+*   **Acciones Realizadas**:
+    1.  Ejecución de benchmark completo (V0/V1/V2).
+    2.  Generación de `reports/final_integrated_report.md` con tablas comparativas.
+
+*   **Archivos Clave**:
+    *   `reports/final_integrated_report.md`.
+
+### Hito 15: Automatización Docker y UI de Evaluación Interactiva
+El entregable final "llave en mano".
+
+*   **Entradas**:
+    *   Código fuente completo y testeado.
+*   **Salidas**:
+    *   Nuevo archivo: `Dockerfile`.
+    *   Archivo modificado: `docker-compose.yml` (App + Ollama).
+    *   Modificación: `app.py` (Tab "Reportes & Eval").
+
+*   **Acciones Realizadas**:
+    1.  Creación del `Dockerfile` final optimizado con `uv`.
+    2.  Configuración completa de red en `docker-compose.yml` (comunicación inter-contenedores: app -> ollama, app -> qdrant).
+    3.  Desarrollo de la pestaña "📊 Reportes & Eval" en Streamlit para correr benchmarks sin tocar código.
+    4.  Visualización de progreso en tiempo real y descarga de reportes MD.
+
+*   **Archivos Clave**:
+    *   `Dockerfile`: Imagen de producción.
+    *   `docker-compose.yml`: Orquestador final.
+    *   `app.py`: Nueva lógica de UI para el runner.
+
+*   **Métricas de Éxito**:
+    *   Despliegue exitoso con `docker-compose up --build`.
+    *   Usuario final puede ejecutar evaluación y descargar reporte desde el navegador.
 
 ---
 
-## Hito 1 — Proyecto base + configuración de proveedores (sin UI todavía)
+## 5. Flujograma General del Sistema
 
-**Meta**: Core LangChain que invoca **Gemini y OpenRouter** sin errores, con validación básica de credenciales.
-
-**Tecnologías / librerías**
-- `langchain`, `langchain-openai`, `langchain-google-genai`
-- `python-dotenv`, `pydantic-settings`
-- `pytest` (smoke tests)
-
-**Tareas**
-1. Estructura repo mínima:
-   - `src/core/config/`
-   - `src/core/providers/`
-   - `tests/test_providers_smoke.py`
-2. **Gemini**: configurar `GOOGLE_API_KEY` y wrapper.
-3. **OpenRouter**: `OPENROUTER_API_KEY`, `base_url=https://openrouter.ai/api/v1`, headers opcionales.
-
-**Criterio de salida**
-- Tests pasan:
-  - `gemini.invoke("ping")` responde.
-  - `openrouter.invoke("ping")` responde.
-- Logs con proveedor/modelo/latencia/trace_id.
-
-**Entregables**
-- `src/core/providers/{gemini.py, openrouter.py, factory.py}`
-- `.env.example` documentado.
-
----
-
-## Hito 2 — Registro de modelos y validación anti-errores (model registry)
-
-**Meta**: Evitar errores de “modelo no existe”/nombres incorrectos.
-
-**Tecnologías / librerías**
-- HTTP client (requests/httpx)
-- Sync scripts en `scripts/`
-
-**Tareas**
-1. `scripts/sync_model_registry.py`:
-   - OpenRouter: `GET /models` → guarda JSON.
-   - Gemini: listar/validar modelos vía API/SDK → guarda metadata.
-2. Persistir `config/model_registry.json`:
-   - `provider`, `model_id`, `context_length`, `pricing` (si aplica), `updated_at`.
-3. `ProviderFactory` valida `model_id` contra registry.
-
-**Criterio de salida**
-- Sync genera registry.
-- Modelo inválido falla temprano con error claro.
-
-**Entregables**
-- `config/model_registry.json`
-- `scripts/sync_model_registry.py`
+```mermaid
+graph TD
+    User((Usuario)) -->|Navegador| UI[Streamlit Interface]
+    
+    subgraph "Docker Host"
+        UI -->|HTTP| Cont_App[Contenedor App]
+        
+        subgraph "Contenedor App"
+            Router{Selector Modo}
+            
+            %% Flujo V0
+            Router -- V0 --> LLM0[LLM Directo]
+            
+            %% Flujo V1
+            Router -- V1 --> RAG[RAG Engine]
+            RAG -->|Embedding| Qdrant[(Qdrant DB)]
+            Qdrant -->|Contexto| RAG
+            RAG -->|Síntesis| LLM1[LLM Generador]
+            
+            %% Flujo V2
+            Router -- V2 --> Agent[LangGraph Agent]
+            Agent --> Classify[Nodo: Clasificar]
+            Classify -->|Query| Retr[Nodo: Recuperar]
+            Retr --> Gen[Nodo: Generar]
+            Gen --> Grade[Nodo: Evaluar]
+            Grade -->|Alucinación| Gen
+            Grade -->|OK| Final[Respuesta]
+        end
+        
+        subgraph "Servicios Soporte"
+            Cont_App -->|Async Task| Redis[(Redis Queue)]
+            Redis --> Worker[Contenedor Worker RQ]
+            Worker -->|Calcula| FactScore[Métrica FactScore]
+            
+            Cont_App -->|API| Ollama[Contenedor Ollama]
+            Cont_App -->|API| Qdrant
+        end
+    end
+    
+    subgraph "Nube / Externo"
+        LLM0 -.-> APIs[Google Gemini / OpenRouter]
+        LLM1 -.-> APIs
+        Agent -.-> APIs
+    end
+```
 
 ---
 
-## Hito 3 — Chat baseline V0 en Streamlit (LangChain desde el día 1)
-
-**Meta**: UI de chat funcional con memoria mínima, usando LangChain directo a LLM.
-
-**Tecnologías / librerías**
-- Streamlit chat UI
-- Factory de modelos (H1/H2)
-
-**Tareas**
-1. `app.py`:
-   - `st.session_state` (historial)
-   - selector proveedor/modelo (desde registry)
-2. Pipeline LangChain:
-   - PromptTemplate + `ChatModel` + parser.
-3. Logging local `runs/trace.jsonl`.
-
-**Criterio de salida**
-- Chat funciona con ambos proveedores.
-- Historial operativo (ventana corta).
-
-**Entregables**
-- `app.py` + `src/core/chat_baseline.py`
-- `docs/operacion_chat_v0.md`
-
----
-
-## Hito 4 — Harness de evaluación automática (V0)
-
-**Meta**: Ejecutar Question Bank contra V0 y guardar outputs comparables.
-
-**Tecnologías**
-- pandas, json, tqdm
-
-**Tareas**
-1. `eval/run_eval.py --variant V0 --provider ... --model ...`
-2. Persistir `eval/results/V0/{timestamp}.parquet`:
-   - `question_id`, `prompt`, `response`, `model`, `latency`, `tokens` (si aplica)
-3. Parámetros controlados (temperatura baja, etc.).
-
-**Criterio de salida**
-- Ejecuta 30–60 preguntas sin fallar.
-- Resultados persistidos/versionados.
-
-**Entregables**
-- `eval/run_eval.py`
-- `eval/results/V0/...`
-
----
-
-## Hito 5 — Búsqueda, descarga y curación del corpus RAG (PDFs/tablas)
-
-**Meta**: Corpus RAG formal, trazable y versionado.
-
-**Tecnologías / librerías**
-- `scripts/acquire_corpus.py` (requests)
-- `corpus/registry.yaml`
-
-**Tareas**
-1. Definir lista de fuentes y URLs.
-2. Crear `corpus/registry.yaml`:
-   - `doc_id`, título, editorial, año, url, dominio, licencia/nota, checksum.
-3. `scripts/acquire_corpus.py`:
-   - descarga + verificación checksum → `corpus/raw/`.
-4. QA manual: verificar que contengan “hechos consultables”.
-
-**Criterio de salida**
-- ≥10 documentos relevantes descargados y registrados.
-- Cada documento con metadata + checksum.
-
-**Entregables**
-- `corpus/registry.yaml`
-- `corpus/raw/*.pdf`
-- `scripts/acquire_corpus.py`
-
----
-
-## Hito 6 — Ingestión PDF → Document objects (LangChain loaders)
-
-**Meta**: Transformar PDFs a `Document` con metadata consistente.
-
-**Tecnologías / librerías**
-- `PyPDFLoader` (rápido), fallback `UnstructuredPDFLoader`.
-- `langchain-text-splitters`
-
-**Tareas**
-1. Loader unificado: `load_pdf(doc_path) -> List[Document]`.
-2. Normalizar metadata: `doc_id`, `source`, `page`, `section`, `published_year`, `domain`.
-3. QA de extracción (texto vacío/encoding) y fallback.
-
-**Criterio de salida**
-- 90%+ PDFs extraen texto utilizable.
-- Trazabilidad a doc + página.
-
-**Entregables**
-- `src/knowledge/loaders.py`
-- `reports/ingestion_qa.md`
-
----
-
-## Hito 7 — Vectorización y almacenamiento en Qdrant
-
-**Meta**: Construir índice vectorial consultable por dominio.
-
-**Tecnologías / librerías**
-- Qdrant + `langchain-qdrant`
-- `docker-compose.yml` (Qdrant local)
-
-**Tareas**
-1. Definir colecciones o payload `domain`.
-2. Indexación (upsert) de chunks.
-3. Tests de recuperación (REI/FRAC).
-
-**Criterio de salida**
-- `retrieve(query)` devuelve top‑k chunks con metadata correcta.
-- Persistencia estable tras reinicio.
-
-**Entregables**
-- `docker-compose.yml` (Qdrant)
-- `src/knowledge/indexer.py`
-
----
-
-## Hito 8 — Chat RAG V1 (con citas y política “no inventar”)
-
-**Meta**: Chat con RAG + citas visibles en Streamlit.
-
-**Tecnologías**
-- LangChain retrieval chain
-- Streamlit para render de citas
-
-**Tareas**
-1. Chain: `retrieve -> synthesize -> answer_with_citations`.
-2. Política: si no hay evidencia, abstenerse y declarar falta de soporte.
-3. UI: panel “Sources” + evidencia expandible.
-
-**Criterio de salida**
-- Preguntas con números/reglas: siempre cita o abstiene.
-- V1 corre el Question Bank completo.
-
-**Entregables**
-- `src/chat/rag_chain.py`
-- `eval/results/V1/...`
-
----
-
-## Hito 9 — Evaluación comparativa V0 vs V1 (primer “delta”)
-
-**Meta**: Cuantificar mejora por introducir RAG.
-
-**Tecnologías**
-- pandas + reporte (Markdown/Notebook)
-
-**Tareas**
-1. Ejecutar eval V0 y V1.
-2. Reportar:
-   - tasa de “sin cita” donde se exige soporte
-   - error manual (subset) o heurística.
-
-**Criterio de salida**
-- Evidencia clara de mejora V1 > V0.
-
-**Entregables**
-- `reports/v0_vs_v1.md` + tablas
-
----
-
-## Hito 10 — Métrica 1: Riesgo de alucinación por muestreo (Semantic Entropy style)
-
-**Meta**: Estimar incertidumbre mediante múltiples generaciones y agrupación semántica.
-
-**Tecnologías**
-- LangChain multi-sampling
-- Persistencia de runs
-
-**Tareas**
-1. `uncertainty_service`:
-   - N muestras (temperatura > 0)
-   - clustering semántico
-   - score final
-2. Persistir muestras, clusters, score.
-
-**Criterio de salida**
-- Score estable y correlacionable con errores (al menos en subset).
-
-**Entregables**
-- `src/metrics/semantic_entropy.py`
-- `eval/results/uncertainty/...`
-
----
-
-## Hito 11 — Métrica 2: FactScore-style (hechos atómicos + verificación con evidencia)
-
-**Meta**: Medir factualidad por afirmaciones verificables.
-
-**Tecnologías**
-- LangChain extraction + judge
-- Reuso de evidencias del retriever
-
-**Tareas**
-1. Extractor de claims atómicos.
-2. Verificador claim vs evidencia.
-3. FactScore: % supported y reporte de fallos.
-
-**Criterio de salida**
-- Diagnóstico por claim (qué falló y por qué).
-
-**Entregables**
-- `src/metrics/factscore.py`
-- `reports/factscore_examples.md`
-
----
-
-## Hito 12 — Orquestación con LangGraph (V2: mitigación activa)
-
-**Meta**: Reducir alucinación automáticamente (no solo medir).
-
-**Tecnologías**
-- LangGraph (StateGraph)
-
-**Tareas**
-1. Definir grafo:
-   - `classify -> retrieve -> draft -> eval(SE, FactScore) -> decide -> revise/abstain`.
-2. Políticas:
-   - SE alta → más retrieval / reescritura “solo evidencia”.
-   - FactScore bajo → abstenerse o pedir dato faltante.
-3. UI modo “Explain”: mostrar estados y decisiones.
-
-**Criterio de salida**
-- V2 end-to-end con trazabilidad por nodo.
-
-**Entregables**
-- `src/agent/graph.py`
-- `docs/graph_policy.md`
-
----
-
-## Hito 13 — Asincronía (fast/slow path) + experiencia de usuario
-
-**Meta**: Mantener chat ágil aunque FactScore sea costoso.
-
-**Tecnologías**
-- Celery/RQ + Redis (patrón enterprise)
-- Streamlit status
-
-**Tareas**
-1. Respuesta rápida con draft.
-2. Verificación lenta en worker.
-3. UI: badges de estado.
-
-**Criterio de salida**
-- TTFT bajo; verificación llega después sin romper conversación.
-
-**Entregables**
-- `services/worker/`
-- `docker-compose.yml` (Redis + worker)
-
----
-
-## Hito 14 — Evaluación final V0/V1/V2 + paquete del “PDF de Métricas”
-
-**Meta**: Resultados y material del TFM reproducible.
-
-**Tecnologías**
-- pipeline de evaluación
-- reporte final en Markdown/Quarto/LaTeX
-
-**Tareas**
-1. Ejecutar evaluación completa.
-2. Reportar:
-   - distribuciones SE/FactScore
-   - comparativos V0/V1/V2
-   - latencia/costo/#calls
-3. Anexos:
-   - prompts, registry de documentos, versionado de modelos.
-
-**Criterio de salida**
-- Documento final reproducible y defendible.
-
-**Entregables**
-- `reports/final_metrics.pdf` (o fuente)
-- `eval/results/final/` + `corpus/registry.yaml` + `config/model_registry.json`
-
----
-
-## 6) Reglas prácticas para no tener errores con proveedores (desde el día 1)
-
-1. **Nunca hardcodear modelos**: sincroniza y valida contra `model_registry.json`.
-2. **Variables de entorno canónicas**:
-   - Gemini: `GOOGLE_API_KEY`.
-   - OpenRouter: `OPENROUTER_API_KEY` + `base_url` OpenAI-compatible.
-3. **Headers OpenRouter** (recomendado): `HTTP-Referer`, `X-Title`.
-4. **Logs obligatorios** por request: `trace_id`, proveedor, modelo, parámetros, latencia.
-
----
-
-## 7) Checklist rápido de gates (resumen ejecutivo)
-
-- **H0**: Protocolo + Question Bank + ground truth.
-- **H1**: Proveedores funcionando con tests.
-- **H2**: Registry y validación anti-errores.
-- **H3**: Streamlit chat V0 operativo.
-- **H4**: Harness V0 produce resultados.
-- **H5–H7**: Corpus descargado, cargado y vectorizado.
-- **H8**: RAG V1 con citas y abstención si no hay evidencia.
-- **H9**: Reporte V0 vs V1.
-- **H10–H11**: Métricas implementadas y persistidas.
-- **H12–H13**: Mitigación y asincronía integradas.
-- **H14**: Evaluación final + PDF de métricas.
+## 6. Bibliografía y Referencias Clave
+
+*   **LangChain Documentation**: https://python.langchain.com/
+*   **LangGraph**: https://langchain-ai.github.io/langgraph/
+*   **DeepEval / RAGAS**: Inspiración para métricas de `Faithfulness` y `Context Relevancy`.
+*   **FactScore**: Min et al. (2023) "FActScore: Fine-grained Atomic Evaluation of Factual Precision in Long Form Text Generation".
+*   **Self-RAG**: Asai et al. (2023) "Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection".
