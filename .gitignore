@@ -155,6 +155,7 @@ runs/
 .vscode/
 .idea/
 .DS_Store
+.agent/
 
 # Documents
 Documents/
