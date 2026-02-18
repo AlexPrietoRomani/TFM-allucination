@@ -24,8 +24,8 @@ class AppSettings(BaseSettings):
     default_model_openrouter: str = "openai/gpt-oss-120b:free"
     default_ollama_model: str = "qwen2.5:3b"
     
-    # Configuración de Embeddings
-    default_embedding_provider: str = "gemini" 
+    # Configuración de Embeddings (cambiar a 'gemini' cuando la cuota se renueve)
+    default_embedding_provider: str = "ollama" 
     default_embedding_model: str = "models/text-embedding-004"
 
     # Configuración de Qdrant (Base Vectorial)
