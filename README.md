@@ -207,6 +207,7 @@ docker exec -it tfm-app uv run scripts/setup_and_ingest.py --skip-ollama
 | `nomic-embed-text` | 274 MB | Embeddings (768d) | ⭐ **Obligatorio** |
 | `qwen2.5:7b` | 4.7 GB | LLM más potente | Si tienes +8GB RAM |
 | `phi3:mini` | 2.3 GB | Razonamiento | Alternativa |
+| `llama3.2:latest` | 2.0 GB | LLM Chat texto | Alternativa |
 
 ---
 
