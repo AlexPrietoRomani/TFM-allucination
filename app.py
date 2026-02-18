@@ -74,7 +74,7 @@ with st.sidebar:
     provider = st.selectbox("Proveedor LLM", providers, index=0)
     
     if provider == "ollama":
-        model_id = st.text_input("Modelo", value="gpt-oss:20b", help="Nombre exacto del modelo Ollama")
+        model_id = st.text_input("Modelo", value=settings.default_ollama_model, help="Nombre exacto del modelo Ollama (ej: qwen2.5:3b)")
     else:
         available_models = [m["id"] for m in registry.get("providers", {}).get(provider, [])]
         default_model = settings.default_model_google if provider == "gemini" else settings.default_model_openrouter

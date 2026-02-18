@@ -1,5 +1,5 @@
-version: '3'
 services:
+  # ─── Base de Datos Vectorial ───────────────────────────────────────────────
   qdrant:
     image: qdrant/qdrant:latest
     container_name: tfm-qdrant
@@ -7,59 +7,110 @@ services:
       - "6333:6333"
       - "6334:6334"
     volumes:
-      - ./qdrant_storage:/qdrant/storage:z
+      - qdrant_data:/qdrant/storage
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
+  # ─── Cache / Cola de Tareas ────────────────────────────────────────────────
   redis:
     image: redis:alpine
     container_name: tfm-redis
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # ─── LLM Local (Ollama) ───────────────────────────────────────────────────
   ollama:
     image: ollama/ollama:latest
     container_name: tfm-ollama
     ports:
       - "11434:11434"
     volumes:
-      - ./ollama_data:/root/.ollama
+      - ollama_data:/root/.ollama
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 15s
+    deploy:
+      resources:
+        limits:
+          memory: 6G
 
+  # ─── Aplicación Principal ──────────────────────────────────────────────────
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: tfm-app
     ports:
       - "8501:8501"
     environment:
       - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_BASE_URL=http://ollama:11434
       - REDIS_HOST=redis
       - QDRANT_URL=http://qdrant:6333
       - STREAMLIT_SERVER_FILE_WATCHER_TYPE=none
+      - DEFAULT_OLLAMA_MODEL=qwen2.5:3b
     env_file:
       - .env
     depends_on:
-      - qdrant
-      - redis
-      - ollama
+      qdrant:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
     volumes:
       - .:/app
       - /app/.venv
+    restart: unless-stopped
 
+  # ─── Worker Asíncrono (RQ) ────────────────────────────────────────────────
   worker:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: tfm-worker
-    command: [ "uv", "run", "rq", "worker", "-u", "redis://redis:6379" ]
+    command: ["uv", "run", "rq", "worker", "-u", "redis://redis:6379"]
     environment:
       - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_BASE_URL=http://ollama:11434
       - REDIS_HOST=redis
       - QDRANT_URL=http://qdrant:6333
     env_file:
       - .env
     depends_on:
-      - redis
-      - qdrant
-      - ollama
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
     volumes:
       - .:/app
       - /app/.venv
+    restart: unless-stopped
+
+# ─── Volúmenes nombrados ──────────────────────────────────────────────────
+volumes:
+  qdrant_data:
+    driver: local
+  redis_data:
+    driver: local
+  ollama_data:
+    driver: local

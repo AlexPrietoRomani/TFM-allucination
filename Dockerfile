@@ -1,28 +1,44 @@
-FROM python:3.10-slim
+# ────────────────────────────────────────────────────────────────────────────
+# TFM-Allucination  ·  Multi-stage Dockerfile
+# ────────────────────────────────────────────────────────────────────────────
+FROM python:3.10-slim AS base
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv
+# Instalar uv (gestor de paquetes ultra-rápido)
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
-# Set working directory
 WORKDIR /app
 
-# Copy dependency files first
+# ── Etapa de dependencias (cacheable) ────────────────────────────────────
 COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev
 
-# Install dependencies
-RUN uv sync --frozen
+# ── Etapa de aplicación ─────────────────────────────────────────────────
+COPY src/ src/
+COPY app.py .
+COPY corpus/registry.yaml corpus/registry.yaml
+COPY eval/ eval/
+COPY reports/ reports/
+COPY services/ services/
+COPY scripts/ scripts/
 
-# Copy the rest of the application
-COPY . .
+# Crear directorio para corpus/raw (será montado o llenado)
+RUN mkdir -p corpus/raw
 
-# Expose Streamlit port
+# Puerto de Streamlit
 EXPOSE 8501
 
-# Default command (overridden in docker-compose)
-CMD ["uv", "run", "streamlit", "run", "app.py"]
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD curl -f http://localhost:8501/_stcore/health || exit 1
+
+# Comando por defecto: Streamlit
+CMD ["uv", "run", "streamlit", "run", "app.py", \
+    "--server.address=0.0.0.0", \
+    "--server.port=8501", \
+    "--server.headless=true"]
