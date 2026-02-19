@@ -1,0 +1,24 @@
+--- TEST DE RECUPERACIÓN VECTORIAL ---
+Query: 'como puedo combatir con Telenomus podisi en mi huerto?, dime los ingredientes activos que puedo utilizar'
+Modelo Embeddings Configurado: mxbai-embed-large
+--------------------------------------------------
+Dimensión del vector generado: 1024
+
+Documentos Recuperados (5):
+
+[1] ID: boletin-inia-263 | Título: Manual de Arándano (Boletín INIA N° 263)
+    Snippet: vigorosos y productivos para la siguiente temporada de cosecha.  No usar tijeras de punta y hojas anchas porque los cortes no se podrán hacer fácil  y rápidamente como se requiere, sobre todo en el interior de la canopia de las  plantas. El podador debe utilizar guantes y portar un tarro con permang...
+
+[2] ID: enfermedades-fungosas-arandano-2023 | Título: Prospección y alternativas de manejo de enfermedades fungosas asociadas en el cultivo de arándano (Vaccinium corymbosum L.)
+    Snippet: que causa estrés; por lo que antes de la poda se  debe suspender la fertilización, se debe incluir  programa de lavado de sales (Apaza, 2021). Si el  cultivo no ha desarrollado buena masa radicular,  se recomienda dejar brotes jóvenes, vigorosos y  sanos como alimentadores, los cuales, luego del  br...
+
+[3] ID: boletin-inia-263 | Título: Manual de Arándano (Boletín INIA N° 263)
+    Snippet: dar acceso a la penetración de la luz y la aireación. Además se deberá cortar desde  la base todos los brotes delgados que le quitan fuerza a la planta y producen fruta  de bajo calibre. Aquellos brotes muy largos que con el peso de la fruta caerán  hacia el centro de la entre hilera serán despuntad...
+
+[4] ID: boletin-inia-263 | Título: Manual de Arándano (Boletín INIA N° 263)
+    Snippet: rojo, si bien mantienen una mayor firmeza y desarrollarán un color azul posterior  a cosecha, tendrán calidad organoléptica inferior a un fruto cosechado con un  color apropiado. En este momento, se deben tomar todas las precauciones para  disminuir daños por golpe y exposición a altas temperaturas,...
+
+[5] ID: boletin-inia-263 | Título: Manual de Arándano (Boletín INIA N° 263)
+    Snippet: plantación, incorporándolo superficialmente a toda la superficie a plantar. Si no se  alcanzó a acidificar el suelo antes de plantar, el azufre elemental debe mezclarse  muy bien con la tierra que se sacará del hoyo de plantación. El pH que se pueda  obtener en el suelo se mantiene acidificando el a...
+
+⚠️ AVISO: No se encontró explícitamente el ID '2403.05479' o 'Telenomus' en los top results.

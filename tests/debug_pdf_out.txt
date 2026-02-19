@@ -1,0 +1,18 @@
+--- CHECKING PDF CONTENT: corpus\raw\arxiv-2403.05479.pdf ---
+Pages Loaded: 43
+Total Characters: 62682
+
+--- FIRST 500 CHARS ---
+The temperature affects the impact levels of synthetic insecticides on a parasitoid 
+wasp used in the biological control of pentatomid pests in soybean crops. 
+ 
+Matheus Rakesa*, Maíra Chagas Moraisa, Leandro do Prado Ribeirob, Gabriel Rodrigues 
+Palmac, Rafael de Andrade Moralc,d, Daniel Bernardia, Anderson Dionei Grützmachera 
+ 
+aDepartment of Plant Protection, Federal University of Pelotas (UFPel), Pelotas, Rio 
+Grande do Sul, Brazil 
+bResearch Center for Family Agriculture, Agricultural Rese
+
+--- SEARCH FOR 'Telenomus' ---
+✅ 'Telenomus' FOUND in text.
+Context: Telenomus podisi  - The increasing temperature caused changes in the toxicity of some insecticides  - Methoxyfenozide + spinetoram reduced its lethal toxicity in increasing temperature  - The mortalit...

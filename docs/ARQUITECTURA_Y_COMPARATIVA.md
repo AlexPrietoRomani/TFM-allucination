@@ -17,7 +17,7 @@ El sistema compara tres niveles de sofisticación en la generación de respuesta
 
 Esta sección detalla las diferencias fundamentales entre las tres arquitecturas implementadas.
 
-### 2.1 V0: Modelo Base (Baseline)
+### V0: Modelo Base (Baseline)
 
 El modelo **V0** representa la interacción directa con el LLM (Gemini, Llama, Qwen, etc.) sin contexto externo. Sirve como línea base para medir la "alucinación pura" del modelo.
 
@@ -32,9 +32,11 @@ graph LR
 *   **Alucinaciones**: Altas.
 *   **Latencia**: Mínima.
 
-### 2.2 V1: RAG Estándar (Retrieval-Augmented Generation)
+### V1: RAG Estándar (Retrieval-Augmented Generation)
 
-La versión **V1** implementa un pipeline **RAG** clásico. Busca fragmentos en Qdrant y los inyecta en el prompt.
+La versión **V1** implementa un pipeline **RAG** clásico. Antes de responder, el sistema busca fragmentos relevantes en la base de datos vectorial (Qdrant) y los inyecta en el prompt del sistema.
+
+### Flujo de Datos (V1)
 
 ```mermaid
 graph TD
@@ -50,17 +52,25 @@ graph TD
     style Q fill:#dfd,stroke:#333
 ```
 
-*   **Mejora**: Acceso a documentos específicos (PDFs, papers).
-*   **Limitación**: Si la búsqueda falla, el modelo puede alucinar o no responder. Pipeline lineal.
+**Mejoras respecto a V0:**
+*   **Contexto**: Acceso a documentos específicos indexados (PDFs, papers).
+*   **Alucinaciones**: Reducidas significativamente, pero posibles si el contexto es irrelevante o el modelo lo ignora.
+*   **Latencia**: Media (Búsqueda + Generación).
 
-### 2.3 V2: Agente Autónomo (LangGraph)
+### V2: Agente Autónomo (LangGraph)
 
-La versión **V2** es un **Agente Cognitivo** con un grafo de estados que permite **Self-Correction**.
+La versión **V2** es un **Agente Cognitivo** diseñado con `LangGraph`. A diferencia del pipeline lineal de V1, V2 tiene un **grafo de estados** que le permite razonar, evaluar su propia respuesta y corregirse (Self-Correction).
 
 El agente V2 implementa **RAG Activo**:
-1.  **Planificación**: Decide si necesita buscar.
-2.  **Recuperación & Evaluación**: Verifica si los documentos recuperados son relevantes. Si no, reescribe la búsqueda.
-3.  **Generación & Verificación**: Evalúa si su propia respuesta tiene alucinaciones antes de entregarla al usuario.
+1.  **Planificación**: Decide si necesita buscar información.
+2.  **Recuperación**: Ejecuta la búsqueda en Qdrant.
+3.  **Evaluación (Grader)**: Un nodo "juez" interno evalúa si los documentos recuperados son relevantes.
+    *   Si NO son relevantes -> Reescribe la búsqueda y vuelve a intentar.
+4.  **Generación**: Genera la respuesta.
+5.  **Verificación Final**: Evalúa si la respuesta generada sufre de alucinaciones.
+    *   Si ALUCINA -> Regenera la respuesta.
+
+### Flujo de Datos (V2) - Diagrama Simplificado
 
 ```mermaid
 stateDiagram-v2
@@ -80,21 +90,23 @@ stateDiagram-v2
     GradeHallucinations --> Generate : Alucinación Detectada (Regenerar)
 ```
 
-**Ventajas de V2:**
-*   **Resiliencia**: Reintenta búsquedas fallidas.
-*   **Auto-Corrección**: Verifica hechos internos ('Grader').
-*   **Fiabilidad**: Reduce drásticamente las alucinaciones al "pensar" antes de hablar.
+**Por qué V2 es superior a V1:**
+*   **Resiliencia**: Si la primera búsqueda falla (V1 simplemente respondería con "no sé" o alucinaría), V2 reescribe la query y prueba de nuevo.
+*   **Auto-Corrección**: V2 verifica sus propios hechos antes de responder al usuario. Funciona como un "doble check" interno.
+*   **Adaptabilidad**: Puede manejar preguntas complejas descomponiéndolas (si se implementa ese nodo) o rechazando preguntas fuera de dominio.
+
 
 ### Tabla Comparativa Resumen
 
 | Característica | V0 (Baseline) | V1 (RAG Estándar) | V2 (Agente Autónomo) |
 | :--- | :--- | :--- | :--- |
-| **Arquitectura** | Directa (Prompt -> LLM) | Cadena Lineal | Grafo Cíclico (LangGraph) |
-| **Conocimiento** | Paramétrico | Contextual (Vectorial) | Contextual + Razonamiento |
-| **Búsqueda** | Nula | Estática (1 intento) | Dinámica (Reintentos) |
+| **Arquitectura** | Directa (Prompt -> LLM) | Cadena Lineal (Retriever -> LLM) | Grafo Cíclico (LangGraph) |
+| **Conocimiento** | Paramétrico (Pre-entrenado) | Contextual (Base Vectorial) | Contextual + Razonamiento |
+| **Búsqueda** | Nula | Estática (1 intento) | Dinámica (Reintentos con Query Rewriting) |
 | **Control de Calidad** | Ninguno | Prompt Engineering | Nodos de Evaluación (Grader) |
-| **Mitigación Alucinación**| Baja | Media-Alta | **Muy Alta** |
-| **Latencia** | Baja (~1s) | Media (~3s) | Alta (~5-15s) |
+| **Mitigación de Alucinaciones** | Baja | Media-Alta | **Muy Alta** (Ciclos de corrección) |
+| **Latencia** | Baja (~1-2s) | Media (~3-5s) | Alta (~5-15s, variable según ciclos) |
+| **Complejidad** | Trivial | Moderada | Alta |
 
 ---
 
@@ -120,8 +132,10 @@ graph TD
     end
 
     subgraph "Componentes Compartidos"
-        RAG & Agent --> VectorDB[Qdrant (Documentos)]
-        RAG & Agent --> Metrics[Sistema de Métricas]
+        RAG --> VectorDB["Qdrant (Documentos)"]
+        Agent --> VectorDB
+        RAG --> Metrics["Sistema de Métricas"]
+        Agent --> Metrics
         Worker --> Metrics
     end
 ```
