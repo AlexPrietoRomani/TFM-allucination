@@ -29,20 +29,22 @@ class RAGEngine:
         Retriever -> Format -> Prompt -> LLM -> Parser
         """
         
-        # Prompt de Sistema (Ingeniería de Prompts para reducir alucinación)
-        template = """Eres un asistente agrícola experto en manejo de arándanos.
-        Usa SOLAMENTE el siguiente contexto para responder a la pregunta.
-        
-        Reglas:
-        1. Si la respuesta no está en el contexto, di "No tengo suficiente información en mis documentos".
-        2. NO inventes información.
-        3. Cita la fuente (título o ID del documento) si es posible.
-        
-        Contexto:
+        # Prompt de Sistema MEJORADO (Ingeniería de Prompts para reducir alucinación y aumentar detalle)
+        template = """Eres un Ingeniero Agrónomo experto y preciso especializado en el cultivo de arándanos.
+        Tu objetivo es responder a la consulta del usuario basándote ÚNICA y EXCLUSIVAMENTE en la información proporcionada en el siguiente contexto.
+
+        Contexto Recuperado:
         {context}
         
-        Pregunta: {question}
-        """
+        Consulta del Usuario: {question}
+
+        Instrucciones Obligatorias:
+        1.  **Especificidad ante todo**: Si el usuario pide ingredientes activos, productos, dosis o métodos, extrae los nombres EXACTOS del contexto. No generalices (ej: di "Spinosad" en vez de "insecticida biológico" si el texto lo dice).
+        2.  **Cita de Fuentes**: Al final de cada afirmación importante, indica la fuente entre corchetes, ej: [Fuente: Manejo Plagas 2024].
+        3.  **Honestidad Radical**: Si el contexto no contiene la respuesta exacta a lo que se pregunta, di: "La información disponible en mis documentos no cubre específicamente [tema solicitado]". NO inentes rellenar con conocimiento externo.
+        4.  **Estructura**: Usa viñetas o listas para enumerar pasos, productos o síntomas.
+
+        Respuesta Técnica:"""
         
         prompt = ChatPromptTemplate.from_template(template)
         

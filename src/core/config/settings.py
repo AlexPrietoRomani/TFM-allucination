@@ -2,37 +2,35 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 from typing import Optional
 
-class AppSettings(BaseSettings):
-    """
-    Configuración principal de la aplicación usando Pydantic.
-    Carga variables desde el archivo .env.
-    """
+class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    # Claves de API (Opcionales: vacías si solo se usa Ollama)
-    google_api_key: str = Field(default="", description="API Key de Google para Gemini")
-    openrouter_api_key: str = Field(default="", description="API Key de OpenRouter")
+    # API Keys (Optional: empty if only Ollama is used)
+    google_api_key: str = Field(default="", description="Google API Key for Gemini")
+    openrouter_api_key: str = Field(default="", description="OpenRouter API Key")
 
-    # Configuración de OpenRouter
-    openrouter_base_url: str = "https://openrouter.ai/api/v1"
-    openrouter_http_referer: Optional[str] = None
-    openrouter_x_title: Optional[str] = None
-
-    # Modelos por Defecto
+    # Default Models
     default_provider: str = "gemini"
-    default_model_google: str = "gemini-3-flash-preview"
-    default_model_openrouter: str = "openai/gpt-oss-120b:free"
+    # Fallback models if API keys are missing
+    default_model_google: str = "gemini-1.5-flash" 
+    default_model_openrouter: str = "openai/gpt-4o-mini"
+    
+    # Ollama Default LLM (Local)
     default_ollama_model: str = "qwen2.5:3b"
     
-    # Configuración de Embeddings (cambiar a 'gemini' cuando la cuota se renueve)
+    # Embeddings Configuration
+    # Options: "gemini" (cloud), "ollama" (local)
     default_embedding_provider: str = "ollama" 
-    default_embedding_model: str = "models/text-embedding-004"
+    
+    # Ollama Embedding Model
+    # Recomendado: "mxbai-embed-large" (SOTA, 670MB) o "nomic-embed-text" (Liagero, 274MB)
+    default_embedding_model: str = "mxbai-embed-large"
 
-    # Configuración de Qdrant (Base Vectorial)
+    # Qdrant Configuration (Vector Database)
     qdrant_url: str = "http://localhost:6333"
     qdrant_api_key: Optional[str] = None
     
-    # Configuración Ollama (Local)
+    # Ollama Configuration (Local)
     ollama_base_url: str = "http://localhost:11434"
 
-settings = AppSettings()
+settings = Settings()

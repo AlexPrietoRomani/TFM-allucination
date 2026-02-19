@@ -16,7 +16,7 @@ from src.ui.tabs.tab_reports import render_tab_reports
 
 # --- Page Config ---
 st.set_page_config(
-    page_title="TFM Chatbot (Unificado)",
+    page_title="TFM Chatbot",
     page_icon="🫐",
     layout="wide"
 )
