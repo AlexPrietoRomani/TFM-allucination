@@ -110,13 +110,13 @@ docker compose up -d qdrant redis
 ollama pull qwen2.5:3b
 
 # Modelo de Embeddings (indexación y búsqueda vectorial)
-ollama pull nomic-embed-text
+ollama pull mxbai-embed-large
 ```
 
 | Modelo | Uso | Tamaño |
 |--------|-----|--------|
 | `qwen2.5:3b` | LLM para chat/métricas | 1.9 GB |
-| `nomic-embed-text` | Embeddings vectoriales | 274 MB |
+| `mxbai-embed-large` | Embeddings SOTA (Recomendado) | 670 MB |
 
 ### Paso 5: Obtener Documentos del Corpus
 
@@ -191,7 +191,7 @@ docker compose up -d --build
 
 # 3. Descargar modelos en Ollama (dentro del contenedor)
 docker exec -it tfm-ollama ollama pull qwen2.5:3b
-docker exec -it tfm-ollama ollama pull nomic-embed-text
+docker exec -it tfm-ollama ollama pull mxbai-embed-large
 
 # 4. Indexar documentos
 docker exec -it tfm-app uv run scripts/setup_and_ingest.py --skip-ollama
@@ -270,18 +270,18 @@ uv run reports/generate_report.py --mode all
 | Problema | Solución |
 |----------|----------|
 | Qdrant no responde | `docker compose restart qdrant` |
-| Ollama sin modelo | `ollama pull qwen2.5:3b && ollama pull nomic-embed-text` |
+| Ollama sin modelo | `ollama pull qwen2.5:3b && ollama pull mxbai-embed-large` |
 | Métricas no aparecen | Activar checkbox "📊 Calcular Métricas" en la barra lateral |
 | FactScore vacío | Verificar que Ollama esté activo y el modelo descargado |
 | Re-indexar | `uv run scripts/setup_and_ingest.py --force-reindex` |
-| Error de embeddings | Verificar que `nomic-embed-text` esté descargado en Ollama |
+| Error de embeddings | Verificar que `mxbai-embed-large` esté descargado en Ollama |
 
 ---
 
 ## 📄 Documentación Adicional
 
 - [Plan de Hitos del TFM](PLAN_HITOS_TFM.md)
-- [Arquitectura y Manual](docs/ARQUITECTURA_Y_MANUAL.md)
+- [Arquitectura y Comparativa Técnica](docs/ARQUITECTURA_Y_COMPARATIVA.md)
 - [Protocolo Experimental](docs/protocolo_experimental.md)
 - [Definición Matemática de Métricas](docs/METRICAS_IMPLEMENTADAS.md)
 
