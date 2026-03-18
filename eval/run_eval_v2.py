@@ -5,20 +5,23 @@ import time
 from pathlib import Path
 from src.agent.graph import AgentGraph
 
+import argparse
+
 # Config
 INPUT_FILE = Path("eval/question_bank_v1.csv")
 OUTPUT_DIR = Path("eval/results/V2")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-async def run_v2_eval():
-    print("🚀 Iniciando Evaluación V2 (Agente Autónomo)...")
+async def run_v2_eval(provider: str, model: str, limit: int = None):
+    print(f"🚀 Iniciando Evaluación V2 (Agente Autónomo) con {provider}/{model}...")
     
     # Cargar Preguntas
     df = pd.read_csv(INPUT_FILE, dtype={'id': str})
+    if limit:
+        print(f"Limiting to first {limit} questions.")
+        df = df.head(limit)
     
-    # Inicializar Agente
-    # Configuración explícita para el Benchmark final (Ollama)
-    agent = AgentGraph(provider="ollama", model_id="gpt-oss:20b")
+    agent = AgentGraph(provider=provider, model_id=model, force_local=True)
     
     results = []
     
@@ -72,4 +75,10 @@ async def evaluate_row_v2(row, agent):
         }
 
 if __name__ == "__main__":
-    asyncio.run(run_v2_eval())
+    parser = argparse.ArgumentParser(description="Evaluate Application V2")
+    parser.add_argument("--provider", type=str, default="gemini", help="LLM Provider (gemini, ollama, etc)")
+    parser.add_argument("--model", type=str, default="gemini-3-flash-preview", help="Model name")
+    parser.add_argument("--limit", type=int, default=None, help="Limit number of questions to process")
+    
+    args = parser.parse_args()
+    asyncio.run(run_v2_eval(provider=args.provider, model=args.model, limit=args.limit))

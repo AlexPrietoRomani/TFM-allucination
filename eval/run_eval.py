@@ -34,9 +34,13 @@ async def run_comparative_evaluation(provider: str, model: str, run_label: str =
     # 2. Initialize Engines
     print("Initializing LLM and RAG Engine...")
     try:
-        # Shared LLM
-        llm = ProviderFactory.get_provider(provider, model)
-        
+        # Shared LLM - Bypass Factory redirect if we really want local Ollama testing for Evals.
+        if provider == "ollama":
+            from langchain_community.llms import Ollama
+            llm = Ollama(model=model, base_url=settings.ollama_base_url)
+        else:
+            llm = ProviderFactory.get_provider(provider, model)
+            
         # RAG Engine (V1)
         rag_engine = RAGEngine()
         rag_chain = rag_engine.get_chain(llm)
@@ -86,7 +90,11 @@ def evaluate_row_v0_v1(row, llm, rag_chain, provider, model, run_label="default"
     # --- V0 Execution (Baseline) ---
     start_v0 = time.time()
     try:
-        resp_v0 = llm.invoke(question).content
+        raw_resp = llm.invoke(question)
+        if hasattr(raw_resp, 'content'):
+            resp_v0 = raw_resp.content
+        else:
+            resp_v0 = str(raw_resp)
         error_v0 = None
     except Exception as e:
         resp_v0 = ""
