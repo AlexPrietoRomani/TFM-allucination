@@ -30,11 +30,12 @@ El sistema implementa y compara tres enfoques:
 ```
 TFM-allucination/
 ├── app.py                          # Aplicación principal Streamlit
-├── docker-compose.yml              # Stack completo (Qdrant + Redis + Ollama + App)
+├── docker-compose.yml              # Stack base (App + Redis + Worker)
+├── docker-compose.local.yml        # Override On-Premise (+ Qdrant + Ollama)
 ├── Dockerfile                      # Imagen de la aplicación
 ├── pyproject.toml                  # Dependencias (uv)
 ├── .env.example                    # Variables de entorno (plantilla)
-├── PLAN_HITOS_TFM.md               # Plan de hitos detallado del TFM
+├── ejecution.md                    # Guía completa de ejecución (local/cloud)
 │
 ├── corpus/                         # Corpus de conocimiento
 │   ├── registry.yaml               # Registro de metadatos de documentos
@@ -45,15 +46,12 @@ TFM-allucination/
 │
 ├── src/
 │   ├── core/                       # Configuración, proveedores, embeddings
-│   │   └── providers/embeddings.py # EmbeddingFactory (Ollama nomic-embed-text)
+│   │   ├── config/settings.py      # Settings con EXECUTION_MODE (local/cloud)
+│   │   └── providers/              # Factory de LLM y Embeddings
 │   ├── knowledge/                  # Indexador y cargadores de documentos
 │   ├── chat/                       # Motor RAG (V1)
 │   ├── agent/                      # Agente autónomo LangGraph (V2)
 │   └── metrics/                    # Evaluadores (Fidelidad, Relevancia, FactScore)
-│       ├── faithfulness.py         # Métrica de Fidelidad (LLM-as-a-Judge)
-│       ├── context_relevance.py    # Métrica de Relevancia del Contexto
-│       ├── factscore.py            # FactScore (extracción + verificación atómica)
-│       └── judges.py               # Factory del LLM juez (Ollama local)
 │
 ├── scripts/
 │   ├── setup_and_ingest.py         # ⭐ Script de setup automático
@@ -64,17 +62,29 @@ TFM-allucination/
 ├── reports/                        # Generación de reportes comparativos
 ├── services/worker/                # Worker asíncrono (RQ/Redis)
 └── docs/                           # Documentación adicional
+    ├── PLAN_HITOS_TFM.md           # Plan de hitos detallado del TFM
+    └── Documentation.md            # Documentación detallada del TFM
 ```
 
 ---
 
 ## 🚀 Guía de Inicio Rápido
 
+El proyecto soporta dos modos de ejecución controlados por la variable `EXECUTION_MODE` en `.env`:
+
+| Modo | Descripción | Requisitos |
+|------|-------------|------------|
+| `local` | On-Premise, 100% offline | Docker, Ollama |
+| `cloud` | APIs en la nube | Google API Key, Qdrant Cloud |
+| `híbrido` | Embeddings Locales + Qdrant Cloud | Docker, Ollama, Qdrant Cloud |
+
+> 📖 Para instrucciones detalladas de los modos y configuración Híbrida PRO, consulta [ejecution.md](ejecution.md).
+
 ### Prerrequisitos
 
 - **Docker Desktop** (activo y funcionando)
 - **Python 3.10+** con [`uv`](https://docs.astral.sh/uv/) instalado
-- **Ollama** instalado localmente ([ollama.com](https://ollama.com))
+- **Ollama** instalado localmente ([ollama.com](https://ollama.com)) — *solo modo local*
 
 ### Paso 1: Clonar y Configurar Variables de Entorno
 
@@ -82,13 +92,13 @@ TFM-allucination/
 git clone https://github.com/TU_USUARIO/TFM-allucination.git
 cd TFM-allucination
 
-# Copiar plantilla y editar con tus API keys
+# Copiar plantilla y editar
 cp .env.example .env
-# Editar .env con tu editor favorito
+# Configurar EXECUTION_MODE=local o EXECUTION_MODE=cloud
 ```
 
-> **ℹ️ Nota:** Si solo usas Ollama (100% local), las API keys son opcionales.  
-> Si quieres usar Gemini/OpenRouter, necesitas `GOOGLE_API_KEY` y/o `OPENROUTER_API_KEY`.
+> **ℹ️ Nota:** En modo `local`, las API keys son opcionales (solo Ollama).
+> En modo `cloud`, necesitas `GOOGLE_API_KEY`, `QDRANT_CLOUD_URL` y `QDRANT_CLOUD_API_KEY`.
 
 ### Paso 2: Instalar Dependencias Python
 
@@ -97,19 +107,22 @@ pip install uv    # Si no lo tienes
 uv sync           # Instalar dependencias
 ```
 
-### Paso 3: Levantar Qdrant y Redis (Docker)
+### Paso 3: Levantar Servicios
 
+**Modo Local (On-Premise):**
 ```bash
-docker compose up -d qdrant redis
+docker compose -f docker-compose.yml -f docker-compose.local.yml up -d qdrant redis ollama
 ```
 
-### Paso 4: Descargar los Modelos Ollama
+**Modo Cloud:**
+```bash
+docker compose up -d redis
+```
+
+### Paso 4: Descargar Modelos Ollama *(solo modo local)*
 
 ```bash
-# Modelo LLM (chat e inferencia)
 ollama pull qwen2.5:3b
-
-# Modelo de Embeddings (indexación y búsqueda vectorial)
 ollama pull mxbai-embed-large
 ```
 
@@ -121,10 +134,7 @@ ollama pull mxbai-embed-large
 ### Paso 5: Obtener Documentos del Corpus
 
 ```bash
-# Batch 1: 30 artículos de detección de plagas/enfermedades con IA
 uv run corpus/fetch_phytosanitary_articles.py
-
-# Batch 2: 30 artículos de agronomía de campo
 uv run corpus/fetch_phytosanitary_batch2.py
 ```
 
@@ -134,17 +144,9 @@ uv run corpus/fetch_phytosanitary_batch2.py
 uv run scripts/setup_and_ingest.py
 ```
 
-Este script:
-1. ✅ Verifica que Qdrant y Ollama estén activos
-2. ✅ Verifica que `qwen2.5:3b` y `nomic-embed-text` estén descargados
-3. ✅ Indexa todos los documentos en Qdrant usando embeddings de Ollama (768d)
-
-**Opciones:**
-```bash
-uv run scripts/setup_and_ingest.py --skip-ollama      # Sin verificar Ollama
-uv run scripts/setup_and_ingest.py --model qwen2.5:7b  # Modelo diferente
-uv run scripts/setup_and_ingest.py --force-reindex     # Re-indexar todo
-```
+Este script indexa los documentos en la colección Qdrant correspondiente al proveedor de embeddings:
+- `tfm_allucination_ollama` (Embeddings locales, modo local/híbrido)
+- `tfm_allucination_gemini` (Embeddings Gemini 3072d, modo cloud)
 
 ### Paso 7: Iniciar la Aplicación
 
@@ -182,12 +184,14 @@ Cuando activas **"📊 Calcular Métricas"** en la barra lateral, cada respuesta
 
 ## 🐋 Despliegue Completo con Docker
 
+### Modo Local (On-Premise)
+
 ```bash
-# 1. Configurar .env
+# 1. Configurar .env (EXECUTION_MODE=local)
 cp .env.example .env
 
-# 2. Levantar todo el stack
-docker compose up -d --build
+# 2. Levantar todo el stack local
+docker compose -f docker-compose.yml -f docker-compose.local.yml up -d --build
 
 # 3. Descargar modelos en Ollama (dentro del contenedor)
 docker exec -it tfm-ollama ollama pull qwen2.5:3b
@@ -197,6 +201,22 @@ docker exec -it tfm-ollama ollama pull mxbai-embed-large
 docker exec -it tfm-app uv run scripts/setup_and_ingest.py --skip-ollama
 
 # 5. Abrir http://localhost:8501
+```
+
+### Modo Cloud Completo
+
+```bash
+# 1. Configurar .env (EXECUTION_MODE=cloud, API keys, Qdrant Cloud URL, DEFAULT_EMBEDDING_PROVIDER=gemini o ollama)
+cp .env.example .env
+
+# 2. Levantar app + redis (y ollama si usas proveedor híbrido)
+# Modificar docker-compose según ejecution.md
+docker compose up -d --build
+
+# 3. Indexar documentos (hacia Qdrant Cloud)
+docker exec -it tfm-app uv run scripts/setup_and_ingest.py --skip-ollama
+
+# 4. Abrir http://localhost:8501
 ```
 
 ### Modelos Ollama Recomendados
@@ -280,7 +300,9 @@ uv run reports/generate_report.py --mode all
 
 ## 📄 Documentación Adicional
 
-- [Plan de Hitos del TFM](PLAN_HITOS_TFM.md)
+- [Guía de Ejecución (Local / Cloud)](ejecution.md)
+- [Documentación Detallada del TFM](docs/Documentation.md)
+- [Plan de Hitos del TFM](docs/PLAN_HITOS_TFM.md)
 - [Arquitectura y Comparativa Técnica](docs/ARQUITECTURA_Y_COMPARATIVA.md)
 - [Protocolo Experimental](docs/protocolo_experimental.md)
 - [Definición Matemática de Métricas](docs/METRICAS_IMPLEMENTADAS.md)
