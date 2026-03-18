@@ -1360,3 +1360,38 @@ documents:
   source: ArXiv (cs.AI, cs.CY, cs.IR)
   doc_type: Artículo científico
   checksum: cbc5e257851e2e9cfe4057280a1ec43811f06bb25aaee994355ff4e279ee34c3
+- id: frac-code-list-2024
+  title: FRAC Code List 2024
+  url: corpus/raw/frac-code-list-2024.pdf
+  type: pdf
+  language: en
+  tags:
+  - FRAC
+  - fungicidas
+  - resistencia a plaguicidas
+  - manejo fitosanitario
+  - normativa
+  description: The completely revised FRAC Code List 2024 (Fungicide Resistance Action Committee) detailing the mode of action, active ingredients, and specific resistance risk for agricultural fungicides, mandatory for designing rotation strategies in phytosanitary plans.
+  year: 2024
+  country: Internacional
+  source: Fungicide Resistance Action Committee (FRAC)
+  doc_type: Guía técnica / normativa
+  checksum: c4050312191cf7604d400d52ad7511fd567d05f0203088b42caa4f76caabc2c9
+- id: irac-moa-classification-v11.5
+  title: IRAC Mode of Action Classification Scheme (v11.5)
+  url: corpus/raw/MoA-Classification_v11.5_4Feb26-1770200746.pdf
+  type: pdf
+  language: en
+  tags:
+  - IRAC
+  - pesticidas
+  - insecticidas
+  - resistencia a plaguicidas
+  - manejo fitosanitario
+  - normativa
+  description: The IRAC (Insecticide Resistance Action Committee) Mode of Action Classification Scheme version 11.5 grouping active ingredients by their target site, which provides the basis for effective and sustainable insecticide resistance management (IRM).
+  year: 2024
+  country: Internacional
+  source: Insecticide Resistance Action Committee (IRAC)
+  doc_type: Guía técnica / normativa
+  checksum: 74641b0f56bcfb46574fd0dc815ee136170af66385950add61045a0692ea750d6
