@@ -1,21 +1,4 @@
 services:
-  # ─── Base de Datos Vectorial ───────────────────────────────────────────────
-  qdrant:
-    image: qdrant/qdrant:latest
-    container_name: tfm-qdrant
-    ports:
-      - "6333:6333"
-      - "6334:6334"
-    volumes:
-      - qdrant_data:/qdrant/storage
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-
   # ─── Cache / Cola de Tareas ────────────────────────────────────────────────
   redis:
     image: redis:alpine
@@ -31,26 +14,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # ─── LLM Local (Ollama) ───────────────────────────────────────────────────
-  ollama:
-    image: ollama/ollama:latest
-    container_name: tfm-ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/"]
-      interval: 15s
-      timeout: 10s
-      retries: 5
-      start_period: 15s
-    deploy:
-      resources:
-        limits:
-          memory: 6G
-
   # ─── Aplicación Principal ──────────────────────────────────────────────────
   app:
     build:
@@ -60,21 +23,12 @@ services:
     ports:
       - "8501:8501"
     environment:
-      - OLLAMA_HOST=http://ollama:11434
-      - OLLAMA_BASE_URL=http://ollama:11434
       - REDIS_HOST=redis
-      - QDRANT_URL=http://qdrant:6333
       - STREAMLIT_SERVER_FILE_WATCHER_TYPE=none
-      - DEFAULT_OLLAMA_MODEL=qwen2.5:3b
-      - DEFAULT_EMBEDDING_PROVIDER=ollama
     env_file:
       - .env
     depends_on:
-      qdrant:
-        condition: service_healthy
       redis:
-        condition: service_healthy
-      ollama:
         condition: service_healthy
     volumes:
       - .:/app
@@ -89,20 +43,11 @@ services:
     container_name: tfm-worker
     command: ["uv", "run", "rq", "worker", "-u", "redis://redis:6379"]
     environment:
-      - OLLAMA_HOST=http://ollama:11434
-      - OLLAMA_BASE_URL=http://ollama:11434
       - REDIS_HOST=redis
-      - QDRANT_URL=http://qdrant:6333
-      - DEFAULT_OLLAMA_MODEL=qwen2.5:3b
-      - DEFAULT_EMBEDDING_PROVIDER=ollama
     env_file:
       - .env
     depends_on:
       redis:
-        condition: service_healthy
-      qdrant:
-        condition: service_healthy
-      ollama:
         condition: service_healthy
     volumes:
       - .:/app
@@ -111,9 +56,5 @@ services:
 
 # ─── Volúmenes nombrados ──────────────────────────────────────────────────
 volumes:
-  qdrant_data:
-    driver: local
   redis_data:
-    driver: local
-  ollama_data:
     driver: local
