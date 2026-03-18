@@ -6,19 +6,20 @@ from qdrant_client import QdrantClient
 
 from src.core.config.settings import settings
 from src.core.providers.embeddings import EmbeddingFactory
+from src.knowledge.indexer import get_collection_name, get_qdrant_client
 
 class RAGEngine:
     def __init__(self):
         # 1. Configurar Embeddings (mismo que indexación)
         self.embeddings = EmbeddingFactory.get_embeddings()
-        
-        # 2. Conectar a Qdrant (modo lectura)
+
+        # 2. Conectar a Qdrant (modo lectura) — respeta EXECUTION_MODE
         self.vector_store = QdrantVectorStore(
-            client=QdrantClient(url=settings.qdrant_url, api_key=settings.qdrant_api_key),
-            collection_name="tfm_allucination_v1",
+            client=get_qdrant_client(),
+            collection_name=get_collection_name(),
             embedding=self.embeddings
         )
-        
+
         # 3. Configurar Retriever
         # 'k': número de documentos a recuperar. Ajustable.
         self.retriever = self.vector_store.as_retriever(search_kwargs={"k": 5})
@@ -28,7 +29,7 @@ class RAGEngine:
         Construye la cadena RAG completa:
         Retriever -> Format -> Prompt -> LLM -> Parser
         """
-        
+
         # Prompt de Sistema MEJORADO (Ingeniería de Prompts para reducir alucinación y aumentar detalle)
         template = """Eres un Ingeniero Agrónomo experto y preciso especializado en el cultivo de arándanos.
         Tu objetivo es responder a la consulta del usuario basándote ÚNICA y EXCLUSIVAMENTE en la información proporcionada en el siguiente contexto.
@@ -45,9 +46,9 @@ class RAGEngine:
         4.  **Estructura**: Usa viñetas o listas para enumerar pasos, productos o síntomas.
 
         Respuesta Técnica:"""
-        
+
         prompt = ChatPromptTemplate.from_template(template)
-        
+
         def format_docs(docs):
             return "\n\n".join([f"[Fuente: {d.metadata.get('title', 'Doc')}, ID: {d.metadata.get('source_id')}]\n{d.page_content}" for d in docs])
 
@@ -58,7 +59,7 @@ class RAGEngine:
             | llm
             | StrOutputParser()
         )
-        
+
         return rag_chain
 
     def retrieve_context(self, query: str):
