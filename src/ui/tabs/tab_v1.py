@@ -44,7 +44,7 @@ def render_tab_v1(rag_engine, provider: str, model_id: str, use_metrics: bool):
                 resp = rag_chain.invoke(prompt)
                 
                 # Paso 3: Metrics
-                met = calculate_metrics_sync(prompt, resp, docs, use_metrics, status)
+                met = calculate_metrics_sync(prompt, resp, docs, use_metrics, status, provider, model_id)
                 
                 dt = time.time() - t0
                 status.update(label="Listo", state="complete")

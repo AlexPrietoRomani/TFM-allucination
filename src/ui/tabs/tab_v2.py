@@ -42,7 +42,7 @@ def render_tab_v2(agent_instance, provider: str, model_id: str, use_metrics: boo
                 if not docs:
                     status.warning("⚠️ No se recuperaron documentos visibles (quizás el agente no usó retrieva o no se capturaron). FactScore será 0.")
                     
-                met = calculate_metrics_sync(prompt, resp, docs, use_metrics, status)
+                met = calculate_metrics_sync(prompt, resp, docs, use_metrics, status, provider, model_id)
                 
                 dt = time.time() - t0
                 status.update(label="Listo", state="complete")

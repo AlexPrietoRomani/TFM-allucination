@@ -15,7 +15,7 @@ class AgentNodes:
         
         self.llm = ProviderFactory.get_provider(provider, model_id, force_local=force_local)
         self.rag_engine = RAGEngine()
-        self.grader = FaithfulnessMetric() # Usa su propio juez interno
+        self.grader = FaithfulnessMetric(provider=provider, model_id=model_id) # Usa su propio juez en base al UI
 
         # Prompt de Generación V2 (más estricto y detallado)
         self.gen_prompt = ChatPromptTemplate.from_template(

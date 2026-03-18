@@ -4,7 +4,7 @@ import asyncio
 from src.core.providers.factory import ProviderFactory
 from src.ui.utils import render_metrics, calculate_metrics_sync, run_agent_v2
 
-def run_model_a_comparison(mode_label: str, prompt: str, llm, rag_engine, agent_instance, use_metrics, status):
+def run_model_a_comparison(mode_label: str, prompt: str, llm, rag_engine, agent_instance, use_metrics, status, provider=None, model_id=None):
     """
     Ejecuta el lado A de la comparación (o B) de forma genérica.
     """
@@ -21,7 +21,7 @@ def run_model_a_comparison(mode_label: str, prompt: str, llm, rag_engine, agent_
         chain = rag_engine.get_chain(llm)
         resp = chain.invoke(prompt)
         # Metrics
-        met = calculate_metrics_sync(prompt, resp, docs, use_metrics, status)
+        met = calculate_metrics_sync(prompt, resp, docs, use_metrics, status, provider, model_id)
         return "V1 (RAG)", resp, time.time() - t0, docs, met
     
     elif mode_label == "V2":
@@ -29,7 +29,7 @@ def run_model_a_comparison(mode_label: str, prompt: str, llm, rag_engine, agent_
         # Async Agent execution
         resp, docs, steps = asyncio.run(run_agent_v2(agent_instance, prompt, status))
         # Metrics
-        met = calculate_metrics_sync(prompt, resp, docs, use_metrics, status)
+        met = calculate_metrics_sync(prompt, resp, docs, use_metrics, status, provider, model_id)
         return "V2 (Agente)", resp, time.time() - t0, docs, met
         
     return "Error", "Modo desconocido", 0, [], {}
@@ -106,15 +106,15 @@ def render_tab_comparison(provider: str, model_id: str, rag_engine, agent_instan
                     
                     # 1. V0
                     status.write("🧠 Ejecutando V0 (Baseline)...")
-                    n_v0, r_v0, t_v0, _, m_v0 = run_model_a_comparison("V0", prompt, llm, rag_engine, agent_instance, False, status) # V0 NO TIENE metricas (sin contexto)
+                    n_v0, r_v0, t_v0, _, m_v0 = run_model_a_comparison("V0", prompt, llm, rag_engine, agent_instance, False, status, provider=provider, model_id=model_id) # V0 NO TIENE metricas (sin contexto)
                     
                     # 2. V1
                     status.write("📚 Ejecutando V1 (RAG)...")
-                    n_v1, r_v1, t_v1, _, m_v1 = run_model_a_comparison("V1", prompt, llm, rag_engine, agent_instance, use_metrics, status)
+                    n_v1, r_v1, t_v1, _, m_v1 = run_model_a_comparison("V1", prompt, llm, rag_engine, agent_instance, use_metrics, status, provider=provider, model_id=model_id)
                     
                     # 3. V2
                     status.write("🤖 Ejecutando V2 (Agente)...")
-                    n_v2, r_v2, t_v2, d_v2, m_v2 = run_model_a_comparison("V2", prompt, llm, rag_engine, agent_instance, use_metrics, status)
+                    n_v2, r_v2, t_v2, d_v2, m_v2 = run_model_a_comparison("V2", prompt, llm, rag_engine, agent_instance, use_metrics, status, provider=provider, model_id=model_id)
                     
                     # Warning for empty docs in V2
                     if not d_v2:
@@ -155,11 +155,11 @@ def render_tab_comparison(provider: str, model_id: str, rag_engine, agent_instan
                     
                     # Run A
                     status.write(f"Ejecutando {label_a}...")
-                    n_a, r_a, t_a, _, m_a = run_model_a_comparison(label_a, prompt, llm, rag_engine, agent_instance, use_metrics, status)
+                    n_a, r_a, t_a, _, m_a = run_model_a_comparison(label_a, prompt, llm, rag_engine, agent_instance, use_metrics, status, provider=provider, model_id=model_id)
                     
                     # Run B
                     status.write(f"Ejecutando {label_b}...")
-                    n_b, r_b, t_b, _, m_b = run_model_a_comparison(label_b, prompt, llm, rag_engine, agent_instance, use_metrics, status)
+                    n_b, r_b, t_b, _, m_b = run_model_a_comparison(label_b, prompt, llm, rag_engine, agent_instance, use_metrics, status, provider=provider, model_id=model_id)
                     
                     status.update(label="Comparación Completada", state="complete")
                     

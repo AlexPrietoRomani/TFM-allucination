@@ -31,8 +31,8 @@ Responde SOLAMENTE con un objeto JSON válido.
 """
 
 class ContextRelevanceMetric:
-    def __init__(self):
-        self.llm = JudgeFactory.get_judge()
+    def __init__(self, provider: str = None, model_id: str = None):
+        self.llm = JudgeFactory.get_judge(provider=provider, model=model_id)
         self.prompt = ChatPromptTemplate.from_template(CONTEXT_RELEVANCE_PROMPT)
         self.chain = self.prompt | self.llm | JsonOutputParser()
 

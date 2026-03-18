@@ -85,7 +85,7 @@ def normalize_docs(docs: List[Any]) -> List[Document]:
             normalized.append(Document(page_content=str(d), metadata={}))
     return normalized
 
-def calculate_metrics_sync(prompt: str, response: str, retrieved_docs: List[Any], use_metrics: bool, status_container=None) -> Dict[str, Any]:
+def calculate_metrics_sync(prompt: str, response: str, retrieved_docs: List[Any], use_metrics: bool, status_container=None, provider=None, model_id=None) -> Dict[str, Any]:
     """
     Calcula las métricas (Fidelidad, Relevancia, FactScore) de forma síncrona.
     Retorna un diccionario con los scores y razones.
@@ -104,14 +104,14 @@ def calculate_metrics_sync(prompt: str, response: str, retrieved_docs: List[Any]
         if status_container:
             status_container.write("⚖️ Calculando Fidelidad...")
         
-        faith_metric = FaithfulnessMetric()
+        faith_metric = FaithfulnessMetric(provider=provider, model_id=model_id)
         faith_res = faith_metric.evaluate(response, docs_objects)
         
         # 2. Relevancia
         if status_container:
             status_container.write("🎯 Calculando Relevancia...")
             
-        rel_metric = ContextRelevanceMetric()
+        rel_metric = ContextRelevanceMetric(provider=provider, model_id=model_id)
         rel_res = rel_metric.evaluate(prompt, docs_objects)
         
         metrics.update({
@@ -128,7 +128,7 @@ def calculate_metrics_sync(prompt: str, response: str, retrieved_docs: List[Any]
                 status_container.write("🔬 Calculando FactScore (puede tardar)...")
             
             try:
-                fs_metric = FactScoreMetric()
+                fs_metric = FactScoreMetric(provider=provider, model_id=model_id)
                 fs_res = fs_metric.calculate(response, docs_objects)
                 
                 metrics.update({

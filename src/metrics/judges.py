@@ -4,18 +4,11 @@ from src.core.config.settings import settings
 
 class JudgeFactory:
     @staticmethod
-    def get_judge():
+    def get_judge(provider: str = None, model: str = None):
         """
         Retorna un LLM para actuar como juez evaluador de métricas.
-        
-        Usa Ollama local por defecto para:
-          - Sin límites de API / cuota
-          - Evaluación reproducible
-          - Costo cero
-        
-        El modelo se puede cambiar con DEFAULT_OLLAMA_MODEL en .env
         """
-        provider = "ollama"
-        model = settings.default_ollama_model  # qwen2.5:3b por defecto
+        jud_provider = provider or "ollama"
+        jud_model = model or settings.default_ollama_model
         
-        return ProviderFactory.get_provider(provider, model)
+        return ProviderFactory.get_provider(jud_provider, jud_model)

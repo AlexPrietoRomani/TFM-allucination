@@ -43,9 +43,9 @@ Salida JSON:
 """
 
 class FactScoreMetric:
-    def __init__(self):
-        # Usamos el juez configurado (Ollama/Gemini)
-        self.llm = JudgeFactory.get_judge()
+    def __init__(self, provider: str = None, model_id: str = None):
+        # Usamos el juez configurado (Ollama/Gemini/OpenRouter) pasando los parametros
+        self.llm = JudgeFactory.get_judge(provider=provider, model=model_id)
         
         # Cadenas
         self.extractor_chain = (
