@@ -1,9 +1,12 @@
 import json
 from pathlib import Path
 from typing import Any, List, Dict
+from tenacity import retry, wait_exponential, stop_after_attempt
+
 from src.core.providers.gemini import GeminiProvider
 from src.core.providers.openrouter import OpenRouterProvider
 from src.core.providers.ollama import OllamaProvider
+from src.core.config.settings import settings
 
 REGISTRY_PATH = Path("src/core/config/model_registry.json")
 
@@ -20,8 +23,7 @@ class ProviderFactory:
             try:
                 with open(REGISTRY_PATH, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                    # Indexar por ID de modelo para búsqueda rápida
-                    # La estructura es ahora {"providers": {"gemini": [...], "openrouter": [...]}}
+                    # La estructura es {\"providers\": {\"gemini\": [...], \"openrouter\": [...]}}
                     providers_data = data.get("providers", {})
                     for provider_key, models_list in providers_data.items():
                         for m in models_list:
@@ -42,7 +44,7 @@ class ProviderFactory:
             # Si el registro falta o está vacío, permitir todo (fail open).
             # Dado el entorno dinámico, es más seguro para desarrollo.
             return True
-        
+
         if model_name not in cls._models_cache:
             # Log de advertencia pero permitir proceder (útil para modelos locales/custom)
             return False
@@ -53,12 +55,26 @@ class ProviderFactory:
         """
         Fábrica principal: Retorna una instancia configurada de ChatModel (LangChain)
         según el proveedor solicitado.
+        
+        En modo cloud, si se pide 'ollama' se emite una advertencia y se redirige
+        al proveedor cloud configurado.
         """
         # Validar (solo loguea advertencia por ahora)
         ProviderFactory.validate_model(model_name)
 
         # Normalizar nombre del proveedor
         provider_name = provider_name.lower().strip()
+
+        # Guardia: en modo cloud, redirigir ollama al proveedor cloud
+        if settings.is_cloud and provider_name == "ollama":
+            fallback = settings.active_llm_provider
+            print(f"⚠ Modo CLOUD activo: redirigiendo 'ollama' → '{fallback}'")
+            provider_name = fallback
+            # Ajustar model_name a uno compatible con cloud
+            if fallback == "gemini":
+                model_name = model_name if "gemini" in model_name else settings.default_model_google
+            elif fallback == "openrouter":
+                model_name = model_name if "/" in model_name else settings.default_model_openrouter
 
         if provider_name == "gemini":
             return GeminiProvider.get_chat_model(model_name, **kwargs)
