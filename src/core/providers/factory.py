@@ -51,13 +51,13 @@ class ProviderFactory:
         return True
 
     @staticmethod
-    def get_provider(provider_name: str, model_name: str, **kwargs) -> Any:
+    def get_provider(provider_name: str, model_name: str, force_local: bool = False, **kwargs) -> Any:
         """
         Fábrica principal: Retorna una instancia configurada de ChatModel (LangChain)
         según el proveedor solicitado.
         
         En modo cloud, si se pide 'ollama' se emite una advertencia y se redirige
-        al proveedor cloud configurado.
+        al proveedor cloud configurado (salvo que force_local=True).
         """
         # Validar (solo loguea advertencia por ahora)
         ProviderFactory.validate_model(model_name)
@@ -66,7 +66,7 @@ class ProviderFactory:
         provider_name = provider_name.lower().strip()
 
         # Guardia: en modo cloud, redirigir ollama al proveedor cloud
-        if settings.is_cloud and provider_name == "ollama":
+        if settings.is_cloud and provider_name == "ollama" and not force_local:
             fallback = settings.active_llm_provider
             print(f"⚠ Modo CLOUD activo: redirigiendo 'ollama' → '{fallback}'")
             provider_name = fallback
