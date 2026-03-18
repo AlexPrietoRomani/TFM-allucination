@@ -47,11 +47,13 @@ def header(msg):
     print(f"{CYAN}{BOLD}{'═' * 60}{RESET}")
 
 
-def check_qdrant(url: str) -> bool:
-    """Verifica que Qdrant esté activo."""
+def check_qdrant() -> bool:
+    """Verifica que Qdrant esté activo mediante el cliente oficial."""
     try:
-        r = requests.get(f"{url}/healthz", timeout=5)
-        return r.status_code == 200
+        from src.knowledge.indexer import get_qdrant_client
+        client = get_qdrant_client()
+        client.get_collections()
+        return True
     except Exception:
         return False
 
@@ -128,7 +130,7 @@ def run_indexer():
 
 def main():
     parser = argparse.ArgumentParser(description="Setup inicial del TFM")
-    parser.add_argument("--qdrant-url", default=settings.qdrant_url,
+    parser.add_argument("--qdrant-url", default=settings.active_qdrant_url,
                         help="URL de Qdrant")
     parser.add_argument("--ollama-url", default=settings.ollama_base_url,
                         help="URL de Ollama")
@@ -145,20 +147,23 @@ def main():
     print(f"{'─' * 50}")
 
     # ─── PASO 1: Verificar servicios ─────────────────────────────────────────
-    header("PASO 1: Verificando servicios Docker")
+    header(f"PASO 1: Verificando servicios (Modo: {settings.execution_mode.upper()})")
 
     # Qdrant
-    if check_qdrant(args.qdrant_url):
-        status(f"Qdrant activo en {args.qdrant_url}")
+    if check_qdrant():
+        status(f"Qdrant activo en {settings.active_qdrant_url}")
     else:
-        status(f"Qdrant NO responde en {args.qdrant_url}", ok=False)
-        print(f"\n  {YELLOW}Ejecuta: docker compose up -d qdrant{RESET}")
+        status(f"Qdrant NO responde en {settings.active_qdrant_url}", ok=False)
+        if settings.execution_mode == "local":
+            print(f"\n  {YELLOW}Ejecuta: docker compose -f docker-compose.yml -f docker-compose.local.yml up -d qdrant{RESET}")
+        else:
+            print(f"\n  {YELLOW}Revisa tus credenciales de Qdrant Cloud en .env (URL y API_KEY){RESET}")
         print(f"  {YELLOW}Esperando 10s y reintentando...{RESET}")
         time.sleep(10)
-        if not check_qdrant(args.qdrant_url):
+        if not check_qdrant():
             print(f"\n  {RED}ERROR: Qdrant no está disponible.{RESET}")
             sys.exit(1)
-        status(f"Qdrant ahora activo en {args.qdrant_url}")
+        status(f"Qdrant ahora activo en {settings.active_qdrant_url}")
 
     # Ollama
     if not args.skip_ollama:
@@ -173,7 +178,7 @@ def main():
                 ollama_pull_model(args.ollama_url, args.model)
             
             # 2. Verificar Embeddings
-            emb_model = settings.default_embedding_model
+            emb_model = settings.default_embedding_model_local
             if settings.default_embedding_provider == "ollama":
                 if ollama_has_model(args.ollama_url, emb_model):
                      status(f"Embeddings '{emb_model}' ya disponible")
