@@ -71,6 +71,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+corpus/raw
 
 # PyBuilder
 target/
