@@ -34,15 +34,14 @@ def load_model_registry():
         return json.load(f)
 
 @st.cache_resource
-def get_rag_engine():
-    return RAGEngine()
+def get_rag_engine(db_type="qdrant"):
+    return RAGEngine(db_type=db_type)
 
 @st.cache_resource
 def get_agent_v2(provider_name=None, model_name=None):
     return AgentGraph(provider=provider_name, model_id=model_name)
 
 registry = load_model_registry()
-rag_engine = get_rag_engine()
 
 # --- Session State ---
 if "messages_v0" not in st.session_state: st.session_state.messages_v0 = []
@@ -82,12 +81,23 @@ with st.sidebar:
     use_metrics = st.checkbox("📊 Calcular Métricas", value=False, help="Evalúa Fidelidad, Relevancia y FactScore en V1/V2")
 
     st.divider()
+    st.write("🗄️ **Base de Datos Vectorial**")
+    vector_db_type = st.selectbox(
+        "Motor de Búsqueda",
+        ["Qdrant", "FAISS"],
+        index=0,
+        help="Selecciona qué base de datos vectorial usar para el proceso de Recuperación (RAG). FAISS cargará los índices generados en la matriz."
+    )
+
+    st.divider()
     if st.button("🗑️ Limpiar Todos los Historiales"):
         st.session_state.messages_v0 = []
         st.session_state.messages_v1 = []
         st.session_state.messages_v2 = []
         st.session_state.messages_comp = []
         st.rerun()
+
+rag_engine = get_rag_engine(db_type=vector_db_type.lower())
 
 # --- Main Tabs Orchestration ---
 st.title("🍇 Plataforma TFM: Arándanos AI")
