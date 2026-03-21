@@ -1,16 +1,20 @@
 """
 preprocess_corpus.py — Orquestador de Pre-procesamiento de Corpus
 
-Lee corpus/registry.yaml, convierte cada PDF/DOCX a Markdown estructurado
-usando Docling, aplana tablas a oraciones descriptivas, filtra imágenes
-opcionales vía VLM, e inyecta metadatos YAML en cada fragmento.
+Lee corpus/registry.yaml, convierte cada PDF a Markdown estructurado usando Docling
+(con soporte para fórmulas LaTeX), aplana tablas a oraciones descriptivas amigables
+para embeddings, analiza imágenes técnicas vía VLM (Ollama) e inyecta metadatos YAML.
 
 El resultado se guarda en corpus/parsed/{doc_id}.md
 
 Uso:
-    uv run python scripts/preprocess_corpus.py
-    uv run python scripts/preprocess_corpus.py --skip-images
-    uv run python scripts/preprocess_corpus.py --only-ids frac-code-list-2024,irac-mos-2024
+    uv run python scripts/preprocess_corpus.py [OPCIONES]
+
+Opciones:
+    --skip-images   Omitir el análisis de imágenes con VLM (proceso mucho más rápido).
+    --no-flatten    Conservar tablas en formato Markdown puro (sin aplanar a oraciones).
+    --force         Forzar el reprocesamiento de archivos aunque ya existan en corpus/parsed/.
+    --only-ids ID   Procesar solo IDs específicos separados por coma (ej: --only-ids id1,id2).
 """
 
 import argparse
