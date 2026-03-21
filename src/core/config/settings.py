@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     # ── Embeddings Configuration ─────────────────────────────────────────
     default_embedding_provider: str = Field(default="ollama", description="Provider for embeddings: ollama or gemini")
     default_embedding_model_cloud: str = "gemini-embedding-001"
-    default_embedding_model_local: str = "mxbai-embed-large"
+    default_embedding_model_local: str = "qwen3-embedding"
 
     # ── Qdrant LOCAL ─────────────────────────────────────────────────────
     qdrant_local_url: str = "http://localhost:6333"
