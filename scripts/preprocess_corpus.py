@@ -177,7 +177,7 @@ def main():
     if not args.skip_images:
         try:
             image_filter = ImageFilter()
-            logger.info("ImageFilter activado (VLM: llava:7b)")
+            logger.info("ImageFilter activado (VLM: llama3.2-vision)")
         except Exception as e:
             logger.warning(f"ImageFilter no disponible: {e}. Continuando sin imágenes.")
 

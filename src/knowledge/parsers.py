@@ -188,7 +188,7 @@ class ImageFilter:
 
     def __init__(
         self,
-        model: str = "llava:7b",
+        model: str = "llama3.2-vision",
         ollama_base_url: str = "http://localhost:11434"
     ):
         self.model = model
