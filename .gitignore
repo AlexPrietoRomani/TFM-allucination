@@ -144,20 +144,21 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# --- TFM Specific ---
 # Qdrant local storage
 qdrant_storage/
 
 # Docker volumes & Local Data
 ollama_data/
 runs/
+Documents/
 
-# IDE/System
+# --- IDE & System ---
 .vscode/
 .idea/
 .DS_Store
-.agent/
 
-# Documents
-Documents/
-corpus/raw/
-corpus/raws/
+# --- Agentic Internals (DO NOT COMMIT) ---
+.agent/
+.agents/
+plan_a_seguir.md
