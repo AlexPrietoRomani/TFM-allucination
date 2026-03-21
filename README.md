@@ -40,6 +40,7 @@ TFM-allucination/
 ├── corpus/                         # Corpus de conocimiento
 │   ├── registry.yaml               # Registro de metadatos de documentos
 │   ├── raw/                        # PDFs y documentos fuente (NO en git)
+│   ├── parsed/                     # Markdown pre-procesado con Docling (NO en git)
 │   ├── curated_arxiv_ids.json      # IDs curados de ArXiv por batch
 │   ├── fetch_phytosanitary_articles.py   # Descarga Batch 1 (IA/DL)
 │   └── fetch_phytosanitary_batch2.py     # Descarga Batch 2 (Agronomía)
@@ -48,12 +49,16 @@ TFM-allucination/
 │   ├── core/                       # Configuración, proveedores, embeddings
 │   │   ├── config/settings.py      # Settings con EXECUTION_MODE (local/cloud)
 │   │   └── providers/              # Factory de LLM y Embeddings
-│   ├── knowledge/                  # Indexador y cargadores de documentos
+│   ├── knowledge/                  # Indexador, cargadores y parsers
+│   │   ├── parsers.py              # Docling + TableFlattener + ImageFilter
+│   │   ├── loaders.py              # Cargadores polimórficos (PDF/DOCX/XLSX/MD)
+│   │   └── indexer.py              # Indexación vectorial (Qdrant)
 │   ├── chat/                       # Motor RAG (V1)
 │   ├── agent/                      # Agente autónomo LangGraph (V2)
 │   └── metrics/                    # Evaluadores (Fidelidad, Relevancia, FactScore)
 │
 ├── scripts/
+│   ├── preprocess_corpus.py        # ⭐ Pre-procesamiento de PDFs con Docling
 │   ├── setup_and_ingest.py         # ⭐ Script de setup automático
 │   ├── acquire_corpus.py           # Adquisición manual de corpus
 │   └── verify_ingestion.py         # Verificar estado de Qdrant
@@ -123,13 +128,13 @@ docker compose up -d redis
 
 ```bash
 ollama pull qwen2.5:3b
-ollama pull mxbai-embed-large
+ollama pull qwen3-embedding
 ```
 
 | Modelo | Uso | Tamaño |
 |--------|-----|--------|
 | `qwen2.5:3b` | LLM para chat/métricas | 1.9 GB |
-| `mxbai-embed-large` | Embeddings SOTA (Recomendado) | 670 MB |
+| `qwen3-embedding` | Embeddings (por defecto) | 4.7 GB |
 
 ### Paso 5: Obtener Documentos del Corpus
 
@@ -137,6 +142,16 @@ ollama pull mxbai-embed-large
 uv run corpus/fetch_phytosanitary_articles.py
 uv run corpus/fetch_phytosanitary_batch2.py
 ```
+
+### Paso 5.5: Pre-procesar PDFs *(opcional pero recomendado)*
+
+```bash
+# Convierte PDFs tabulares a Markdown estructurado con Docling
+uv run scripts/preprocess_corpus.py --skip-images
+```
+
+Esto genera archivos `.md` en `corpus/parsed/` que preservan tablas y metadata.
+El indexador prioriza estos archivos sobre los PDFs crudos.
 
 ### Paso 6: Setup Automático (Indexación + Verificación)
 
