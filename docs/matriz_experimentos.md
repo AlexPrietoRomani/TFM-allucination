@@ -14,7 +14,7 @@ Para que el TFM tenga validez científica, cada combinación aislará variables 
     *   `gemini-3.1-flash-lite-preview`: Modelo ultraligero. Útil para medir si arquitecturas RAG perfectas compensan a un modelo generativo débil.
 *   **Locales (Pesos Abiertos vía Ollama):**
     *   `deepseek-r1:8b`: Destaca por su arquitectura orientada al razonamiento profundo (MoE/Distill).
-    *   `qwen3`: (Versiones 7B o 14B) Estado del arte en multilingüismo.
+    *   `qwen3:8b`: (Versiones 8B) Estado del arte en multilingüismo.
     *   `gpt-oss:20b`: (Representando un modelo de 20B). *Nota de Hardware:* Requerirá al menos 12-16GB de VRAM en cuantización de 4-bits.
 
 ### B. Modelos de Embedding (Recuperación)
