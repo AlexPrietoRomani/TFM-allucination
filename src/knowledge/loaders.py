@@ -1,5 +1,6 @@
+import re
 import pandas as pd
-from typing import List
+from typing import List, Optional
 from pathlib import Path
 from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader
@@ -47,11 +48,61 @@ class DocumentLoader:
         return docs
 
     @staticmethod
-    def load_document(file_path: Path, doc_id: str = None, extra_metadata: dict = None) -> List[Document]:
+    def load_parsed_md(file_path: Path, doc_id: str = None) -> List[Document]:
         """
-        Cargador unificado que despacha según la extensión del archivo y enriquece los metadatos.
+        Carga un Markdown pre-procesado (de corpus/parsed/) extrayendo
+        metadatos del front-matter YAML y el contenido como page_content.
         """
         file_path = Path(file_path)
+        if not file_path.exists():
+            raise FileNotFoundError(f"Archivo parsed no encontrado: {file_path}")
+
+        text = file_path.read_text(encoding="utf-8")
+
+        # Extraer YAML front-matter
+        metadata = {}
+        content = text
+        fm_match = re.match(r"^---\s*\n(.*?)\n---\s*\n", text, re.DOTALL)
+        if fm_match:
+            import yaml
+            try:
+                metadata = yaml.safe_load(fm_match.group(1)) or {}
+            except Exception:
+                pass
+            content = text[fm_match.end():]
+
+        if doc_id:
+            metadata["doc_id"] = doc_id
+        metadata["filename"] = file_path.name
+        metadata["file_extension"] = ".md"
+        metadata["parsed"] = True  # Flag para distinguir de raw
+
+        return [Document(page_content=content, metadata=metadata)]
+
+    @staticmethod
+    def load_document(
+        file_path: Path,
+        doc_id: str = None,
+        extra_metadata: dict = None,
+        parsed_dir: Optional[Path] = None
+    ) -> List[Document]:
+        """
+        Cargador unificado que despacha según la extensión del archivo y enriquece los metadatos.
+        Si parsed_dir está definido y existe un .md pre-procesado, lo prioriza sobre el raw.
+        """
+        file_path = Path(file_path)
+
+        # Priorizar archivo pre-procesado si existe
+        if parsed_dir and doc_id:
+            parsed_path = Path(parsed_dir) / f"{doc_id}.md"
+            if parsed_path.exists():
+                print(f"  📄 Usando parsed: {parsed_path.name}")
+                docs = DocumentLoader.load_parsed_md(parsed_path, doc_id=doc_id)
+                if extra_metadata:
+                    for doc in docs:
+                        doc.metadata.update(extra_metadata)
+                return docs
+
         if not file_path.exists():
             raise FileNotFoundError(f"Archivo no encontrado: {file_path}")
         
