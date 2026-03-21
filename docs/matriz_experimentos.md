@@ -21,17 +21,17 @@ Para que el TFM tenga validez científica, cada combinación aislará variables 
 
 Usar modelos locales permite la reproducibilidad sin costos de API recurrentes.
 
-| Característica | `mxbai-embed-large` (Ligero) | `multilingual-e5-large` (Intermedio) | `qwen3-embedding` (Pesado) |
+| Característica | `mxbai-embed-large` (Ligero) | `nomic-embed-text-v2-moe` (Intermedio) | `qwen3-embedding` (Pesado) |
 | :--- | :--- | :--- | :--- |
-| **Parámetros** | ~335 Millones | ~560 Millones | > 7 Billones |
+| **Parámetros** | ~335 Millones | 475M (305M activos MoE) | > 7 Billones |
 | **Ventana de Contexto Max** | 512 tokens | 512 tokens | Hasta 32,768 tokens |
-| **Arquitectura Base** | BERT / AnglE-Optimized | XLM-RoBERTa | Qwen (Decoder-only Transformer) |
-| **Capacidad Multilingüe**| Moderada (Principalmente Inglés) | Excelente (+100 idiomas) | SOTA Absoluto (Dominio Nativo) |
-| **Tolerancia a Edge Cases**| Alta | Muy Alta (Previene colapso) | Alta (Arquitectura LLM completa) |
-| **Rol en el TFM** | Baseline de eficiencia y velocidad. | Gold Standard para recuperación semántica. | Límite superior (Upper Bound) científico. |
-| **Comando en Ollama** | `ollama pull mxbai-embed-large` | `ollama pull qllama/multilingual-e5-large` | `ollama pull qwen` (adaptado) |
+| **Arquitectura Base** | BERT / AnglE-Optimized | Mixture of Experts (MoE, 8 exp) | Qwen (Decoder-only) |
+| **Capacidad Multilingüe**| Moderada (Principalmente Inglés) | Excelente (~100 idiomas, 1.6B+ pairs)| SOTA Absoluto (Dominio Nativo) |
+| **Tolerancia a Edge Cases**| Alta | Muy Alta (Previene NaNs algebraicos) | Alta (Arquitectura LLM completa) |
+| **Rol en el TFM** | Baseline de eficiencia y velocidad. | Gold Standard para recuperación multilingüe. | Límite superior (Upper Bound) científico. |
+| **Comando en Ollama** | `ollama pull mxbai-embed-large` | `ollama pull nomic-embed-text-v2-moe` | `ollama pull qwen` (adaptado) |
 
-*Nota:* `multilingual-e5-large` reemplaza a `bge-m3` por presentar mayor estabilidad numérica en llamadas consecutivas batch.
+*Nota:* `nomic-embed-text-v2-moe` es el modelo seleccionado por ofrecer SOTA en recuperación multilingüe operando 100% libre de colapsos numéricos (`NaN`) en Ollama.
 
 ### C. Estrategias de Chunking y Ventanas de Contexto
 

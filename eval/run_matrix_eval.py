@@ -25,7 +25,7 @@ FAISS_DIR = Path("data/vector_matrix/faiss")
 QDRANT_DIR = Path("data/vector_matrix/qdrant_local")
 
 # Parámetros de la Matriz (Adaptables por el usuario)
-EMBEDDING_MODELS = ["mxbai-embed-large", "qllama/multilingual-e5-large", "qwen3-embedding"]
+EMBEDDING_MODELS = ["mxbai-embed-large", "nomic-embed-text-v2-moe", "qwen3-embedding"]
 CHUNK_STRATEGIES = [500, 1000, "semantic"]
 DB_MOTORS = ["faiss", "qdrant_local"]
 GENERATORS = ["qwen2.5:3b", "deepseek-r1:8b"]  # Modelos de generación de respuestas
