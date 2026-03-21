@@ -100,8 +100,8 @@ def preprocess_document(
         return None
 
     try:
-        # 1. PDF → Markdown con Docling
-        md_content = parser.parse(file_path)
+        # 1. PDF → Markdown con Docling (con VLM si aplica)
+        md_content = parser.parse(file_path, image_filter=image_filter)
 
         if not md_content or len(md_content.strip()) < 50:
             logger.warning(f"Contenido vacío/muy corto para {doc_id}")

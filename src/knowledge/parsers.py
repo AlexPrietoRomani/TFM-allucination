@@ -32,18 +32,29 @@ class DoclingParser:
     def __init__(self):
         # Lazy import para no penalizar el arranque de la app
         try:
-            from docling.document_converter import DocumentConverter
-            self._converter = DocumentConverter()
+            from docling.document_converter import DocumentConverter, PdfFormatOption
+            from docling.datamodel.pipeline_options import PdfPipelineOptions
+            
+            options = PdfPipelineOptions()
+            options.do_formula_enrichment = True
+            options.generate_picture_images = True
+            
+            self._converter = DocumentConverter(
+                format_options={
+                    "pdf": PdfFormatOption(pipeline_options=options)
+                }
+            )
         except ImportError:
             raise ImportError(
                 "docling no está instalado. Ejecuta: uv add docling"
             )
 
-    def parse(self, pdf_path: Path) -> str:
-        """Convierte un PDF a Markdown estructurado.
+    def parse(self, pdf_path: Path, image_filter: Optional[Any] = None) -> str:
+        """Convierte un PDF a Markdown estructurado. Opcionalmente inyecta descripciones VLM.
 
         Args:
             pdf_path: Ruta al archivo PDF.
+            image_filter: Instancia de ImageFilter para describir gráficos.
 
         Returns:
             String con el contenido en formato Markdown.
@@ -54,7 +65,41 @@ class DoclingParser:
 
         logger.info(f"Parseando con Docling: {pdf_path.name}")
         result = self._converter.convert(str(pdf_path))
-        md_content = result.document.export_to_markdown()
+        doc = result.document
+
+        # 1. Analizar imágenes con VLM consecutivamente si se pasan
+        image_descriptions = []
+        if image_filter and hasattr(doc, "pictures"):
+            logger.info(f"  → Analizando {len(doc.pictures)} imágenes con VLM...")
+            for i, pic in enumerate(doc.pictures):
+                try:
+                    img = pic.get_image(result.document)
+                    import io
+                    img_byte_arr = io.BytesIO()
+                    img.save(img_byte_arr, format='PNG')
+                    
+                    desc = image_filter.analyze(img_byte_arr.getvalue())
+                    image_descriptions.append(desc)
+                except Exception as e:
+                    logger.warning(f"  → Error procesando imagen {i} en VLM: {e}")
+                    image_descriptions.append(None)
+
+        md_content = doc.export_to_markdown()
+
+        # 2. Inyectar descripciones VLM en las etiquetas <!-- image -->
+        if image_descriptions:
+            count = 0
+            def _replace_image(match):
+                nonlocal count
+                if count < len(image_descriptions):
+                    desc = image_descriptions[count]
+                    count += 1
+                    if desc:
+                        return f"\n\n> **[💡 Descripción de Imagen VLM]:** {desc}\n\n"
+                return match.group(0)
+            
+            md_content = re.sub(r"<!--\s*image\s*-->", _replace_image, md_content)
+
         logger.info(
             f"  → {len(md_content)} caracteres extraídos de {pdf_path.name}"
         )
@@ -194,11 +239,11 @@ class ImageFilter:
         self.model = model
         self.base_url = ollama_base_url
 
-    def analyze(self, image_path: Path) -> Optional[str]:
+    def analyze(self, image_input: Optional[Any] = None) -> Optional[str]:
         """Analiza una imagen y retorna su descripción o None si es decorativa.
 
         Args:
-            image_path: Ruta a la imagen extraída del PDF.
+            image_input: Ruta a la imagen (Path, str) o bytes de la imagen.
 
         Returns:
             Descripción textual de la imagen, o None si debe descartarse.
@@ -209,10 +254,20 @@ class ImageFilter:
             logger.warning("ollama SDK no instalado. Omitiendo análisis de imagen.")
             return None
 
-        image_path = Path(image_path)
-        if not image_path.exists():
-            logger.warning(f"Imagen no encontrada: {image_path}")
+        if image_input is None:
             return None
+
+        # Resolver payload
+        img_payload = image_input
+        img_name = "Imagen"
+        
+        if isinstance(image_input, (str, Path)):
+            image_path = Path(image_input)
+            if not image_path.exists():
+                logger.warning(f"Imagen no encontrada: {image_path}")
+                return None
+            img_payload = str(image_path)
+            img_name = image_path.name
 
         try:
             client = ollama.Client(host=self.base_url)
@@ -221,21 +276,19 @@ class ImageFilter:
                 messages=[{
                     "role": "user",
                     "content": self.SYSTEM_PROMPT,
-                    "images": [str(image_path)]
+                    "images": [img_payload]
                 }]
             )
 
             text = response["message"]["content"].strip()
 
             if "DESCARTAR" in text.upper():
-                logger.info(f"  → Imagen descartada: {image_path.name}")
+                logger.info(f"  → {img_name} descartada")
                 return None
 
-            logger.info(
-                f"  → Imagen descrita ({len(text)} chars): {image_path.name}"
-            )
+            logger.info(f"  → {img_name} descrita ({len(text)} chars)")
             return text
 
         except Exception as e:
-            logger.warning(f"Error analizando imagen {image_path.name}: {e}")
+            logger.warning(f"Error analizando {img_name}: {e}")
             return None
