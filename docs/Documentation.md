@@ -19,20 +19,39 @@ Antes de que cualquier fase (V0, V1, V2) pueda operar, el corpus de documentos t
 ### Pipeline de Ingesta
 
 ```mermaid
-graph LR
-    classDef step fill:#2d3748,stroke:#4a5568,stroke-width:2px,color:#e2e8f0;
-    classDef parser fill:#2c7a7b,stroke:#4fd1c5,stroke-width:2px,color:#fff;
-    classDef db fill:#2b6cb0,stroke:#63b3ed,stroke-width:2px,color:#fff;
+graph TD
+    classDef step fill:#2d3748,stroke:#4a5568,stroke-width:1.5px,color:#e2e8f0;
+    classDef parser fill:#2c7a7b,stroke:#4fd1c5,stroke-width:1.5px,color:#fff;
+    classDef db fill:#2b6cb0,stroke:#63b3ed,stroke-width:1.5px,color:#fff;
 
-    PDF([PDF Raw]):::step --> Docling[Docling Parser]:::parser
-    Docling --> MD[Markdown Estructurado]:::step
-    MD --> Flatten[TableFlattener]:::parser
-    YAML([registry.yaml]):::step --> Meta[Inyección Metadatos]:::step
-    Flatten --> Meta
-    Meta --> Chunks[Chunks Semánticos]:::step
-    Chunks --> Embed[qwen3-embedding]:::db
-    Embed --> Qdrant[(Qdrant Vector DB)]:::db
+    subgraph "🤖 Fase 0: Corpus Pre-procesamiento"
+        PDF([📄 PDF Raw]):::step --> Docling[Docling Parser]:::parser
+        Docling --> MD[Markdown Estructurado]:::step
+        MD --> Flatten[TableFlattener]:::parser
+        YAML([📋 registry.yaml]):::step --> Meta[Inyección Metadatos]:::step
+        Flatten --> Meta
+        Meta --> Parsed["📂 corpus/parsed (*.md)"]:::step
+    end
+
+    subgraph "🔋 Fase 1: Matriz de Indexación"
+        Parsed --> Chunks{Chunks: 500, 1000, Semantic}:::step
+        Chunks --> Embed[nomic / mxbai / qwen3]:::db
+        Embed --> DB{Motor DB}:::db
+        DB -->|Local| FA[(FAISS Local)]:::db
+        DB -->|Local / Cloud| QD[(Qdrant DB)]:::db
+    end
 ```
+
+### 📌 Flujo Ideal de Inferencia Visual (Llama-3.2-Vision)
+
+Para enriquecer los documentos `.md` con descripciones de imágenes/gráficas, el pipeline conceptual diseñado es el siguiente:
+
+1. **Extracción Determinista**: Docling lee el PDF. Todo el texto y las tablas se extraen directamente a Markdown de forma rápida y 100% fiel al documento original.
+2. **Detección de Imágenes**: Cuando Docling encuentra un gráfico, un esquema de un insecto o una curva de degradación de pesticidas, extrae esa región específica como un archivo de imagen recortado.
+3. **Inferencia Visual (Llama-3.2-Vision)**: Solo esa imagen recortada se envía a Ollama con Llama-3.2-Vision, acompañada del texto que estaba antes y después de la imagen en el PDF (para darle anclaje factual). El prompt sería: *"Describe este gráfico técnico basándote en el texto circundante"*.
+4. **Fusión**: La descripción en texto que devuelve Llama-3.2-Vision sustituye la etiqueta `<!-- image -->` en el archivo Markdown final.
+
+*Nota: Esto combina la precisión del OCR determinista para el texto y las tablas, con la comprensión semántica de Llama-3.2-Vision para interpretar diagramas visuales.*
 
 ### Componentes Clave
 
@@ -72,18 +91,28 @@ El sistema evalúa la consulta del usuario y, dependiendo del modo seleccionado 
 ```mermaid
 graph TD
     User([Usuario Agrónomo]) -->|Consulta sobre Plagas| InputGateway
-    InputGateway --> Router{Selección de Interfaz}
+    InputGateway --> Sidebar{Sidebar: Parámetros del Experimento}
+    
+    Sidebar -->|Selecciona| LLM[🧠 Modelo LLM]
+    Sidebar -->|Selecciona| Embedding[🔋 Modelo Embedding]
+    Sidebar -->|Selecciona| DB[(📂 Vector DB: Qdrant / FAISS)]:::db
+
+    Sidebar --> Router{Selección de Pestaña/Modo}
 
     Router -->|Pestaña 1| FlowComp[Comparativa]
     Router -->|Pestaña 2| FlowV0[Fase V0: Baseline LLM]
     Router -->|Pestaña 3| FlowV1[Fase V1: RAG Estático]
     Router -->|Pestaña 4| FlowV2[Fase V2: Agente Autónomo]
     Router -->|Pestaña 5| FlowRep[Reportes & Eval]
+    Router -->|Pestaña 6| FlowMatrix[Matriz de Experimentos]
     
     %% Indicación global de Métricas
-    FlowV1 -.-> |Métricas calculadas Post-Gen| MetricsUI([Métricas en Interfaz])
+    FlowV1 -.-> |Métricas calculadas Post-Gen| MetricsUI([📊 Métricas en Interfaz])
     FlowV2 -.-> |Métricas evaluadas In-Gen| MetricsUI
     FlowComp -.-> |Compara modelos y Métricas| MetricsUI
+    FlowMatrix -.-> |Visualiza Benchmarks Cruzados| MetricsUI
+
+    classDef db fill:#2b6cb0,stroke:#63b3ed,stroke-width:1.2px,color:#fff;
 ```
 
 ---
@@ -208,15 +237,16 @@ Para dar validez científica al TFM, se incluye un módulo de **Evaluación Cruz
 
 ```mermaid
 graph TD
-    classDef step fill:#2d3748,stroke:#4a5568,stroke-width:2px,color:#e2e8f0;
-    classDef metrics fill:#6b46c1,stroke:#b794f4,stroke-width:2px,color:#fff;
+    classDef step fill:#2d3748,stroke:#4a5568,stroke-width:1.5px,color:#e2e8f0;
+    classDef metrics fill:#6b46c1,stroke:#b794f4,stroke-width:1.5px,color:#fff;
+    classDef file fill:#2b6cb0,stroke:#63b3ed,stroke-width:1.5px,color:#fff;
 
-    Params([Combinaciones de Matriz]) --> Build[build_vector_matrix.py]:::step
-    Build --> Index[Guardado 27 Índices/Colecciones]:::step
-    Index --> Eval[run_matrix_eval.py]:::step
-    Eval --> Juez[Evaluador por Juez Único local]:::metrics
-    Eval --> JSON([Resultados JSONL + Telemetría]):::step
-    JSON --> UI([Pestaña Matriz Streamlit - Visualización]):::step
+    Params([🧬 Combinaciones: 3 Embeddings × 3 Chunks × 2 Motores DB]) --> Build[🔨 build_vector_matrix.py]:::step
+    Build --> Index[(📂 Índices FAISS / Colecciones Qdrant)]:::step
+    Index --> Eval[⚖️ run_matrix_eval.py]:::step
+    Eval --> Juez[🤖 LLM-as-a-judge local]:::metrics
+    Eval --> JSON([📄 Resultados JSONL + Telemetría]):::file
+    JSON --> UI([🖥️ App.py: Pestaña Matriz - Dashboard]):::step
 ```
 
 ---
