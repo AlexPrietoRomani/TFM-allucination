@@ -21,9 +21,17 @@ Para que el TFM tenga validez científica, cada combinación aislará variables 
 
 Usar modelos locales permite la reproducibilidad sin costos de API recurrentes.
 
-*   **Ligero:** `mxbai-embed-large` (335M parámetros). Excelente rendimiento general, bajo consumo de memoria.
-*   **Intermedio (Recomendado):** `bge-m3` (567M parámetros). Mejor opción intermedia por su capacidad de procesar múltiples idiomas (español/inglés simétrico) y admitir hasta 8192 tokens.
-*   **Pesado:** `qwen3-embedding:8b` (8B parámetros). Captura semántica densa de artículos científicos, pero requiere cargar 8 mil millones de parámetros solo para vectorizar.
+| Característica | `mxbai-embed-large` (Ligero) | `multilingual-e5-large` (Intermedio) | `qwen3-embedding` (Pesado) |
+| :--- | :--- | :--- | :--- |
+| **Parámetros** | ~335 Millones | ~560 Millones | > 7 Billones |
+| **Ventana de Contexto Max** | 512 tokens | 512 tokens | Hasta 32,768 tokens |
+| **Arquitectura Base** | BERT / AnglE-Optimized | XLM-RoBERTa | Qwen (Decoder-only Transformer) |
+| **Capacidad Multilingüe**| Moderada (Principalmente Inglés) | Excelente (+100 idiomas) | SOTA Absoluto (Dominio Nativo) |
+| **Tolerancia a Edge Cases**| Alta | Muy Alta (Previene colapso) | Alta (Arquitectura LLM completa) |
+| **Rol en el TFM** | Baseline de eficiencia y velocidad. | Gold Standard para recuperación semántica. | Límite superior (Upper Bound) científico. |
+| **Comando en Ollama** | `ollama pull mxbai-embed-large` | `ollama pull qllama/multilingual-e5-large` | `ollama pull qwen` (adaptado) |
+
+*Nota:* `multilingual-e5-large` reemplaza a `bge-m3` por presentar mayor estabilidad numérica en llamadas consecutivas batch.
 
 ### C. Estrategias de Chunking y Ventanas de Contexto
 
@@ -64,7 +72,7 @@ El script `eval/run_matrix_eval.py` retornará diccionarios exhaustivos por ejec
   "llm_generador": "gemini-3.1-flash-lite",
   "llm_evaluador": "gemini-3.1-pro",
   "vector_db": "faiss_local",
-  "embedding_model": "bge-m3",
+  "embedding_model": "qllama/multilingual-e5-large",
   "chunk_size": 500,
   "metricas": {
       "faithfulness": 0.95,
@@ -92,7 +100,7 @@ A continuación, se ilustra gráfica y temporalmente el paso a paso del ciclo de
 graph TD
     subgraph "Fase 1: Preparación Vectorial"
         A[Corpus Markdown Parsed] --> B{Iteración Modelos Embeddings}
-        B -->|mxbai, bge-m3, qwen3| C{Iteración Estrategias Chunking}
+        B -->|mxbai, e5-large, qwen3| C{Iteración Estrategias Chunking}
         C -->|500, 1000, semantic| D{Escribir en Motores DB}
         D -->|faiss| E[(Carpeta FAISS)]
         D -->|qdrant_local| F[(Carpetas Qdrant Local)]

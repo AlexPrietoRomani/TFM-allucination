@@ -23,7 +23,7 @@ OUTPUT_FAISS_DIR = Path("data/vector_matrix/faiss")
 OUTPUT_QDRANT_DIR = Path("data/vector_matrix/qdrant_local")
 
 # Definición de la Matriz de Experimentos
-EMBEDDING_MODELS = ["mxbai-embed-large", "bge-m3", "qwen3-embedding"]
+EMBEDDING_MODELS = ["mxbai-embed-large", "qllama/multilingual-e5-large", "qwen3-embedding"]
 CHUNK_STRATEGIES = [500, 1000, "semantic"]
 DB_MOTORS = ["faiss", "qdrant_local"]  # Se puede expandir a qdrant_cloud si está configurado
 

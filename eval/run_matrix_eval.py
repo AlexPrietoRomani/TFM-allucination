@@ -15,14 +15,17 @@ from src.core.config.settings import settings
 from src.chat.rag import RAGEngine
 from src.metrics.faithfulness import FaithfulnessMetric
 from src.metrics.context_relevance import ContextRelevanceMetric
+from src.metrics.context_precision import ContextPrecisionMetric
+from src.metrics.answer_relevancy import AnswerRelevancyMetric
 
 # Directorios
 INPUT_FILE = Path("eval/question_bank_v1.csv")
 RESULTS_DIR = Path("eval/results/Matrix")
 FAISS_DIR = Path("data/vector_matrix/faiss")
+QDRANT_DIR = Path("data/vector_matrix/qdrant_local")
 
 # Parámetros de la Matriz (Adaptables por el usuario)
-EMBEDDING_MODELS = ["mxbai-embed-large", "bge-m3", "qwen3-embedding"]
+EMBEDDING_MODELS = ["mxbai-embed-large", "qllama/multilingual-e5-large", "qwen3-embedding"]
 CHUNK_STRATEGIES = [500, 1000, "semantic"]
 DB_MOTORS = ["faiss", "qdrant_local"]
 GENERATORS = ["qwen2.5:3b", "deepseek-r1:8b"]  # Modelos de generación de respuestas
@@ -44,7 +47,10 @@ def get_vector_store(db_motor: str, e_model: str, c_strat: str, embeddings):
         return FAISS.load_local(str(path), embeddings, allow_dangerous_deserialization=True)
         
     elif db_motor == "qdrant_local":
-        client = QdrantClient(url=settings.qdrant_local_url)
+        path = QDRANT_DIR / comb_id
+        if not path.exists():
+            raise FileNotFoundError(f"Base Qdrant no encontrada para {comb_id}")
+        client = QdrantClient(path=str(path))
         collection_name = f"tfm_matrix_{comb_id.lower()}"
         if not client.collection_exists(collection_name):
             raise FileNotFoundError(f"Colección Qdrant no encontrada: {collection_name}")
@@ -70,6 +76,8 @@ async def run_evaluation(limit: int = 0):
     print(f"Inicializando métricas con Juez: {JUDGE_MODEL}")
     faithfulness_metric = FaithfulnessMetric(provider="ollama", model_id=JUDGE_MODEL)
     relevance_metric = ContextRelevanceMetric(provider="ollama", model_id=JUDGE_MODEL)
+    precision_metric = ContextPrecisionMetric(provider="ollama", model_id=JUDGE_MODEL)
+    answer_rel_metric = AnswerRelevancyMetric(provider="ollama", model_id=JUDGE_MODEL)
 
     # 3. Bucles de la Matriz de Permutaciones
     for gen_model in GENERATORS:
@@ -128,6 +136,8 @@ async def run_evaluation(limit: int = 0):
                             # 3.3 Calcular Métricas
                             faith_res = faithfulness_metric.evaluate(response, docs)
                             rel_res = relevance_metric.evaluate(question, docs)
+                            prec_res = precision_metric.evaluate(question, docs)
+                            ans_res = answer_rel_metric.evaluate(question, response)
 
                             # Costo estático (Ollama es gratis, 1M tokens gemini se puede proyectar)
                             cost_est = 0.0 # Ollama = 0
@@ -149,14 +159,16 @@ async def run_evaluation(limit: int = 0):
                                 "faithfulness_score": faith_res.get('score', 0.0),
                                 "faithfulness_reason": faith_res.get('reason', ""),
                                 "relevance_score": rel_res.get('score', 0.0),
-                                "relevance_reason": rel_res.get('reason', "")
+                                "relevance_reason": rel_res.get('reason', ""),
+                                "context_precision_score": prec_res.get('score', 0.0),
+                                "answer_relevancy_score": ans_res.get('score', 0.0)
                             }
 
                             # Guardar incrementalmente en JSONL
                             with open(output_file, "a", encoding="utf-8") as f:
                                 f.write(json.dumps(result_data, ensure_ascii=False) + "\n")
 
-                            print(f"Fid: {result_data['faithfulness_score']} | Rel: {result_data['relevance_score']}")
+                            print(f"Fid: {result_data['faithfulness_score']} | Rel: {result_data['relevance_score']} | Prec: {result_data['context_precision_score']} | AnsRel: {result_data['answer_relevancy_score']}")
 
                     except Exception as e:
                         print(f"    ❌ Error procesando combinación {comb_id}: {str(e)}")
