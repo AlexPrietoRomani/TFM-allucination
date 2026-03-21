@@ -13,6 +13,7 @@ from src.ui.tabs.tab_v1 import render_tab_v1
 from src.ui.tabs.tab_v2 import render_tab_v2
 from src.ui.tabs.tab_comparison import render_tab_comparison
 from src.ui.tabs.tab_reports import render_tab_reports
+from src.ui.tabs.tab_matrix import render_tab_matrix
 
 # --- Page Config ---
 st.set_page_config(
@@ -92,8 +93,8 @@ with st.sidebar:
 st.title("🍇 Plataforma TFM: Arándanos AI")
 
 # Definir pestañas
-tab_comp, tab_v0, tab_v1, tab_v2, tab_reports = st.tabs([
-    "⚔️ Comparativa", "🧠 V0 (Baseline)", "📚 V1 (RAG)", "🤖 V2 (Agente)", "📊 Reportes & Eval"
+tab_comp, tab_v0, tab_v1, tab_v2, tab_reports, tab_matrix = st.tabs([
+    "⚔️ Comparativa", "🧠 V0 (Baseline)", "📚 V1 (RAG)", "🤖 V2 (Agente)", "📊 Reportes & Eval", "📊 Matriz de Experimentos"
 ])
 
 # Obtener instancia del agente para reutilizar en pestañas relevantes
@@ -118,3 +119,7 @@ with tab_v2:
 # Renderizar Pestaña Reportes
 with tab_reports:
     render_tab_reports(provider, model_id, rag_engine, current_agent)
+
+# Renderizar Pestaña Matriz de Experimentos
+with tab_matrix:
+    render_tab_matrix()
