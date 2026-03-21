@@ -9,16 +9,25 @@ from src.core.providers.embeddings import EmbeddingFactory
 from src.knowledge.indexer import get_collection_name, get_qdrant_client
 
 class RAGEngine:
-    def __init__(self):
-        # 1. Configurar Embeddings (mismo que indexación)
-        self.embeddings = EmbeddingFactory.get_embeddings()
+    def __init__(self, vector_store=None):
+        """
+        Inicializa el motor RAG.
+        Permite inyectar un vector_store opcional (útil para pruebas y evaluaciones de matriz).
+        """
+        if vector_store is not None:
+            self.vector_store = vector_store
+            # Intentar propagar embeddings si el store los expone
+            self.embeddings = getattr(vector_store, "embedding", None)
+        else:
+            # 1. Configurar Embeddings (mismo que indexación)
+            self.embeddings = EmbeddingFactory.get_embeddings()
 
-        # 2. Conectar a Qdrant (modo lectura) — respeta EXECUTION_MODE
-        self.vector_store = QdrantVectorStore(
-            client=get_qdrant_client(),
-            collection_name=get_collection_name(),
-            embedding=self.embeddings
-        )
+            # 2. Conectar a Qdrant (modo lectura) — respeta EXECUTION_MODE
+            self.vector_store = QdrantVectorStore(
+                client=get_qdrant_client(),
+                collection_name=get_collection_name(),
+                embedding=self.embeddings
+            )
 
         # 3. Configurar Retriever
         # 'k': número de documentos a recuperar. Ajustable.
