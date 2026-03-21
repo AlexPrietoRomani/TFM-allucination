@@ -9,10 +9,11 @@ from src.core.providers.embeddings import EmbeddingFactory
 from src.knowledge.indexer import get_collection_name, get_qdrant_client
 
 class RAGEngine:
-    def __init__(self, vector_store=None):
+    def __init__(self, vector_store=None, db_type="qdrant"):
         """
         Inicializa el motor RAG.
-        Permite inyectar un vector_store opcional (útil para pruebas y evaluaciones de matriz).
+        Permite inyectar un vector_store opcional (útil para pruebas y evaluaciones de matriz)
+        o especificar un db_type ("qdrant" o "faiss").
         """
         if vector_store is not None:
             self.vector_store = vector_store
@@ -22,12 +23,45 @@ class RAGEngine:
             # 1. Configurar Embeddings (mismo que indexación)
             self.embeddings = EmbeddingFactory.get_embeddings()
 
-            # 2. Conectar a Qdrant (modo lectura) — respeta EXECUTION_MODE
-            self.vector_store = QdrantVectorStore(
-                client=get_qdrant_client(),
-                collection_name=get_collection_name(),
-                embedding=self.embeddings
-            )
+            if db_type.lower() == "faiss":
+                from langchain_community.vectorstores import FAISS
+                import glob
+                from pathlib import Path
+
+                # Obtener el nombre del modelo activo para buscar su carpeta en la matriz
+                model_name = "mxbai-embed-large"
+                if hasattr(self.embeddings, "model"):
+                    model_name = self.embeddings.model
+                elif hasattr(self.embeddings, "model_name"):
+                    model_name = self.embeddings.model_name
+                
+                # Buscar un índice que contenga el modelo
+                search_pattern = f"data/vector_matrix/faiss/*{model_name}*"
+                matches = glob.glob(search_pattern)
+                
+                if not matches:
+                    # Fallback a cualquier índice FAISS que exista en la carpeta de la matriz
+                    matches = glob.glob("data/vector_matrix/faiss/*")
+                    
+                if matches:
+                    print(f"📂 Cargando FAISS desde matriz: {matches[0]}")
+                    self.vector_store = FAISS.load_local(
+                        matches[0], 
+                        self.embeddings, 
+                        allow_dangerous_deserialization=True
+                    )
+                else:
+                    raise ValueError(
+                        "No se encontró ningún índice FAISS en `data/vector_matrix/faiss`. "
+                        "Ejecuta primero `scripts/build_vector_matrix.py`."
+                    )
+            else:
+                # 2. Conectar a Qdrant (modo lectura) — respeta EXECUTION_MODE
+                self.vector_store = QdrantVectorStore(
+                    client=get_qdrant_client(),
+                    collection_name=get_collection_name(),
+                    embedding=self.embeddings
+                )
 
         # 3. Configurar Retriever
         # 'k': número de documentos a recuperar. Ajustable.
