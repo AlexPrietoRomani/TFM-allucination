@@ -1,3 +1,10 @@
+"""
+test_embeding_cleanup.py — Prueba de Limpieza para Embeddings
+
+Valida que el modelo de embeddings (Ollama / nomic-embed) no falle
+al procesar secuencias de texto con caracteres residuales como "<!-- image -->" o "..".
+"""
+
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))

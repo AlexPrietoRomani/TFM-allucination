@@ -1,3 +1,10 @@
+"""
+test_embeding_nan.py — Prueba de Embeddings fragmento a fragmento
+
+Divide el corpus en trozos de 500 tokens y prueba las solicitudes de embeddings
+(BGE-M3) uno a uno para aislar qué fragmentos específicos arrojan valores nulos o errores.
+"""
+
 import os
 import argparse
 from tqdm import tqdm

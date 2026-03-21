@@ -1,3 +1,9 @@
+"""
+test_ui_eval.py — Pruebas de Integración y Mock para la Interfaz (UI)
+
+Simula llamadas Async generadoras al app y evalua el comportamiento del flujo V2 
+de los agentes en Streamlit con mocks dinámicos de respuestas.
+"""
 
 import asyncio
 import pandas as pd

@@ -1,3 +1,10 @@
+"""
+test_telenomus_retrieval.py — Prueba de Recuperación Vectorial (Retrieval)
+
+Consulta al motor RAG un enunciado sobre control de plagas (`Telenomus podisi`)
+para verificar si los documentos correctos aparecen en el Top-K resultados.
+"""
+
 import sys
 import os
 

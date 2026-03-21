@@ -1,3 +1,15 @@
+"""
+test_integrated_pipeline.py — Test de Integración para el Pipeline de Ingesta
+
+Simula el flujo completo de preprocess_document() para un único documento de prueba:
+PDF -> Docling (fórmulas + OCR) -> ImageFilter VLM -> TableFlattener -> Metadata.
+
+Guarda el Markdown resultante en tests/outputs/ para revisión visual.
+
+Uso:
+    uv run python tests/test_integrated_pipeline.py
+"""
+
 import sys
 from pathlib import Path
 

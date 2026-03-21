@@ -1,3 +1,10 @@
+"""
+test_utils.py — Pruebas Unitarias de Utilidades de la Interfaz
+
+Valida cálculos de métricas y comportamientos de borde de las funciones helper
+localizadas en `src/ui/utils.py`.
+"""
+
 import pytest
 import sys
 import os

@@ -1,3 +1,10 @@
+"""
+test_vlm_injector.py — Sandbox-Script para el Inyector VLM 
+
+Carga Docling en un script aislado para extraer la lista `.pictures`, correr
+Ollama (Llama3.2-Vision) e intentar fusionar las respuestas de vuelta en `<!-- image -->`.
+"""
+
 import ollama
 from pathlib import Path
 from docling.document_converter import DocumentConverter, PdfFormatOption

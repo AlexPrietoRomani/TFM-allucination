@@ -1,3 +1,10 @@
+"""
+test_format_json.py — Prueba de Salida Estructurada JSON
+
+Valida que el modelo local (ChatOllama / llama3.1) responda adecuadamente 
+empleando el parámetro format="json" proporcionado por LangChain.
+"""
+
 from langchain_ollama import ChatOllama
 
 def test():

@@ -1,3 +1,10 @@
+"""
+test_new_metrics.py — Pruebas de Métricas de Evaluación LLM-as-a-Judge
+
+Testea las métricas de precisión de contexto (`ContextPrecision`) y relevancia 
+de respuesta (`AnswerRelevancy`) utilizando el modelo juzgador local (llama3.1).
+"""
+
 import unittest
 from langchain_core.documents import Document
 from src.metrics.context_precision import ContextPrecisionMetric

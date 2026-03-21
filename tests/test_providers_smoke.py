@@ -1,3 +1,10 @@
+"""
+test_providers_smoke.py — Pruebas de Humo para Proveedores de LLM
+
+Verifica la conectividad y respuesta básica de los motores externos
+como Google Gemini y OpenRouter según las API Keys configuradas en el entorno.
+"""
+
 import pytest
 import os
 from src.core.config.settings import settings
