@@ -1,6 +1,7 @@
 import os
 import yaml
 import time
+import argparse
 from pathlib import Path
 from tqdm import tqdm
 from langchain_core.documents import Document
@@ -19,6 +20,7 @@ from src.knowledge.loaders import DocumentLoader
 REGISTRY_PATH = Path("corpus/registry.yaml")
 PARSED_DIR = Path("corpus/parsed")
 OUTPUT_FAISS_DIR = Path("data/vector_matrix/faiss")
+OUTPUT_QDRANT_DIR = Path("data/vector_matrix/qdrant_local")
 
 # Definición de la Matriz de Experimentos
 EMBEDDING_MODELS = ["mxbai-embed-large", "bge-m3", "qwen3-embedding"]
@@ -31,15 +33,20 @@ MD_HEADERS_TO_SPLIT = [
     ("###", "Header 3"),
 ]
 
-def load_all_docs():
-    """Carga todos los documentos de corpus/parsed/ en memoria."""
+def load_all_docs(limit: int = 0):
+    """Carga documentos de corpus/parsed/ en memoria, con opción de límite."""
     if not PARSED_DIR.exists():
         print(f"❌ El directorio {PARSED_DIR} no existe.")
         return []
 
     print(f"Cargando archivos desde {PARSED_DIR}...")
     all_docs = []
-    for file_path in tqdm(list(PARSED_DIR.glob("*.md"))):
+    files = list(PARSED_DIR.glob("*.md"))
+    if limit > 0:
+        files = files[:limit]
+        print(f"Limitiando carga a los primeros {limit} archivos...")
+
+    for file_path in tqdm(files):
         try:
             doc_id = file_path.stem
             docs = DocumentLoader.load_parsed_md(file_path, doc_id=doc_id)
@@ -59,15 +66,20 @@ def get_chunks(all_docs, strategy):
         splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         return splitter.split_documents(all_docs)
     elif strategy == "semantic":
+        # Divide por headers pero aplica un fallback para que no exceda límites de token
         md_splitter = MarkdownHeaderTextSplitter(headers_to_split_on=MD_HEADERS_TO_SPLIT, strip_headers=False)
+        recursive_sub_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        
         all_chunks = []
         for doc in all_docs:
             try:
-                # md_splitter opera sobre strings
-                chunks = md_splitter.split_text(doc.page_content)
-                for chunk in chunks:
+                header_chunks = md_splitter.split_text(doc.page_content)
+                # Aplicar sub-splitter por caracteres para sub-dividir bloques gigantes
+                final_sub_chunks = recursive_sub_splitter.split_documents(header_chunks)
+                for chunk in final_sub_chunks:
+                    # Conservar metadatos del documento original
                     chunk.metadata.update(doc.metadata)
-                all_chunks.extend(chunks)
+                all_chunks.extend(final_sub_chunks)
             except Exception as e:
                  print(f"Error en split semántico para {doc.metadata.get('filename')}: {e}")
         return all_chunks
@@ -118,19 +130,21 @@ def create_qdrant_collection(chunks, embeddings, collection_name: str, client: Q
     print(f"-> Guardado Qdrant en {time.time() - start_time:.2f}s")
 
 def main():
+    parser = argparse.ArgumentParser(description="Construye la Matriz de Bases de Datos Vectoriales")
+    parser.add_argument("--limit", type=int, default=0, help="Limitar número de documentos a procesar (para pruebas rápidas)")
+    args = parser.parse_args()
+
     print("═══ CONSTRUCCIÓN DE LA MATRIZ DE EXPERIMENTOS VECTORIALES ═══")
     
     # Asegurar que existan los directorios
     OUTPUT_FAISS_DIR.mkdir(parents=True, exist_ok=True)
+    OUTPUT_QDRANT_DIR.mkdir(parents=True, exist_ok=True)
     
     # 1. Carga masiva de documentos
-    all_docs = load_all_docs()
+    all_docs = load_all_docs(limit=args.limit)
     if not all_docs:
         print("No hay documentos que indexar.")
         return
-
-    # Cliente Qdrant Local
-    qdrant_client = QdrantClient(url=settings.qdrant_local_url)
 
     # Bucles de la Matriz
     for emb_model in EMBEDDING_MODELS:
@@ -161,8 +175,10 @@ def main():
                         faiss_path = OUTPUT_FAISS_DIR / comb_id
                         create_faiss_index(chunks, embeddings, faiss_path)
                     elif db_motor == "qdrant_local":
+                        qdrant_path = OUTPUT_QDRANT_DIR / comb_id
+                        qclient = QdrantClient(path=str(qdrant_path))
                         collection_name = f"tfm_matrix_{comb_id.lower()}"
-                        create_qdrant_collection(chunks, embeddings, collection_name, qdrant_client)
+                        create_qdrant_collection(chunks, embeddings, collection_name, qclient)
                 except Exception as e:
                     print(f"❌ Error en combinación {comb_id}: {e}")
 
