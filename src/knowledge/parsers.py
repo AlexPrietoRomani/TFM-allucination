@@ -33,9 +33,18 @@ class DoclingParser:
         # Lazy import para no penalizar el arranque de la app
         try:
             from docling.document_converter import DocumentConverter, PdfFormatOption
-            from docling.datamodel.pipeline_options import PdfPipelineOptions
+            from docling.datamodel.pipeline_options import PdfPipelineOptions, AcceleratorOptions, AcceleratorDevice
+            import torch
+            
+            # 1. Configurar el Acelerador (GPU si está disponible, sino CPU)
+            device = AcceleratorDevice.CUDA if torch.cuda.is_available() else AcceleratorDevice.CPU
+            accel_options = AcceleratorOptions(
+                num_threads=8, # Aumentar hilos para pre-procesamiento
+                device=device
+            )
             
             options = PdfPipelineOptions()
+            options.accelerator_options = accel_options # <- INYECCIÓN CRÍTICA
             options.do_formula_enrichment = True
             options.generate_picture_images = True
             
@@ -44,10 +53,11 @@ class DoclingParser:
                     "pdf": PdfFormatOption(pipeline_options=options)
                 }
             )
-        except ImportError:
-            raise ImportError(
-                "docling no está instalado. Ejecuta: uv add docling"
-            )
+            logger.info(f"✅ Docling inicializado con acelerador: {device.name}")
+            
+        except ImportError as e:
+            logger.error(f"Falta una dependencia para Docling: {e}")
+            raise
 
     def parse(self, pdf_path: Path, image_filter: Optional[Any] = None) -> str:
         """Convierte un PDF a Markdown estructurado. Opcionalmente inyecta descripciones VLM.
