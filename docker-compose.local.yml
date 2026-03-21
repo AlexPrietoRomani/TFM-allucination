@@ -41,6 +41,11 @@ services:
       resources:
         limits:
           memory: 6G
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
   # ─── Override: App depende de Qdrant + Ollama locales ──────────────────────
   app:
@@ -53,6 +58,13 @@ services:
         condition: service_healthy
       ollama:
         condition: service_healthy
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
   # ─── Override: Worker depende de Qdrant + Ollama locales ───────────────────
   worker:
@@ -65,6 +77,13 @@ services:
         condition: service_healthy
       ollama:
         condition: service_healthy
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
 # ─── Volúmenes nombrados adicionales (Solo Local) ─────────────────────────
 volumes:
