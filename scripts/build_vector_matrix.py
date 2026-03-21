@@ -90,8 +90,24 @@ def create_faiss_index(chunks, embeddings, output_path: Path):
     """Crea y persiste un índice FAISS local."""
     print(f"-> Creando FAISS en: {output_path}")
     start_time = time.time()
-    db = FAISS.from_documents(chunks, embeddings)
-    db.save_local(str(output_path))
+    try:
+        db = FAISS.from_documents(chunks, embeddings)
+        db.save_local(str(output_path))
+    except Exception as e:
+        print(f"  ⚠️ Error de indexación masiva ({e}). Filtrando fragmentos erróneos...")
+        valid_chunks = []
+        for chunk in tqdm(chunks, desc="Validando fragmentos"):
+            try:
+                embeddings.embed_query(chunk.page_content)
+                valid_chunks.append(chunk)
+            except Exception:
+                continue
+        if valid_chunks:
+             print(f"  -> Indexando {len(valid_chunks)} fragmentos válidos restantes.")
+             db = FAISS.from_documents(valid_chunks, embeddings)
+             db.save_local(str(output_path))
+        else:
+             print("  ⚠️ No quedaron fragmentos válidos.")
     print(f"-> Guardado FAISS en {time.time() - start_time:.2f}s")
 
 def create_qdrant_collection(chunks, embeddings, collection_name: str, client: QdrantClient):
@@ -125,7 +141,18 @@ def create_qdrant_collection(chunks, embeddings, collection_name: str, client: Q
     # Inserción por lotes
     for i in tqdm(range(0, len(chunks), batch_size), desc=f"Indexando {collection_name}"):
         batch = chunks[i:i+batch_size]
-        vector_store.add_documents(batch)
+        try:
+            vector_store.add_documents(batch)
+        except Exception as e:
+            print(f"\n  ⚠️ Error en lote {i} ({e}). Procesando individualmente...")
+            for chunk in batch:
+                try:
+                    # Validar si el embedding explota
+                    embeddings.embed_query(chunk.page_content)
+                    vector_store.add_documents([chunk])
+                except Exception:
+                    # Omitir fragmento que causa NaN u otros errores
+                    continue
         
     print(f"-> Guardado Qdrant en {time.time() - start_time:.2f}s")
 
