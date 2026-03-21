@@ -79,14 +79,46 @@ $$
 
 ---
 
+---
+
+## 4. Precisión del Contexto (Context Precision)
+
+**Context Precision** evalúa si los fragmentos de información relevante recuperados por el sistema RAG están posicionados en los primeros lugares de la lista de contexto. Es una medida basada en el orden (Ranking-aware).
+
+### Metodología
+
+1. El Juez analiza el fragmento $k$ y dictamina si es útil ($1$) o no ($0$).
+2. Se calcula el **Average Precision (AP)**:
+
+$$
+\text{Context Precision} = \frac{1}{|S_{relevantes}|} \sum_{k=1}^{|S|} (\text{Precision}@k \times rel_k)
+$$
+
+Donde $\text{Precision}@k$ es la proporción de fragmentos relevantes hasta la posición $k$, y $rel_k \in \{0, 1\}$.
+
+**Rango:** $[0.0, 1.0]$  
+**Implementación:** `src/metrics/context_precision.py`
+
+---
+
+## 5. Relevancia de la Respuesta (Answer Relevancy)
+
+Evalúa si la respuesta del asistente ataca directamente la pregunta del usuario sin incluir información irrelevante o evasivas. Se calcula mediante una rúbrica de calificación cualitativa de $0.0$ a $1.0$ ejecutada por el modelo Juez.
+
+**Rango:** $[0.0, 1.0]$  
+**Implementación:** `src/metrics/answer_relevancy.py`
+
+---
+
 ## Comparativa de Versiones
 
 | Métrica | V0 (Baseline) | V1 (RAG) | V2 (Agente) |
 | :--- | :---: | :---: | :---: |
-| **Latencia** | Baja | Media (Retrieval overhead) | Alta (Ciclos de reflexión) |
-| **Fidelidad** | N/A (No usa contexto) | Medida post-generación | **Optimizada activamente** (Self-Correction) |
-| **FactScore** | N/A | Calculado asíncronamente | Usado como criterio de parada |
+| **Latencia** | Baja | Media | Alta |
+| **Fidelidad** | N/A | Medida post-gen | **Optimizada** |
+| **Context Precision** | N/A | **Crítica para Matriz** | Crítica |
+| **Answer Relevancy** | Alta | Varía | Alta |
 
 ---
 
-*Referencia Técnica:* Las definiciones están alineadas con la literatura reciente sobre evaluación de RAG (RAGAS, DeepEval) y el concepto de FactScore (Min et al., 2023).
+*Referencia Técnica:* Las definiciones están alineadas con la literatura reciente sobre evaluación de RAG (RAGAS, DeepEval) y el concepto de FactScore (Min et al., 2023). El Juez robusto es `llama3.1` para evitar Sesgo de Confirmación.
