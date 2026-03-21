@@ -222,13 +222,13 @@ class ImageFilter:
     """
 
     SYSTEM_PROMPT = (
-        "Analiza esta imagen en el contexto de un documento técnico agrícola. "
-        "Si es solo un logo institucional, gráfico decorativo, portada o "
-        "elemento sin información técnica, responde ÚNICAMENTE: DESCARTAR. "
-        "Si es un diagrama de flujo, esquema químico, tabla visual, mapa, "
-        "ciclo de vida de plaga o gráfico con datos, descríbelo "
-        "detalladamente en español para que un sistema de búsqueda pueda "
-        "encontrar esta información."
+        "Eres un analista experto en extracción de datos científicos. "
+        "Analiza esta imagen extraída de un documento. "
+        "REGLAS ESTRICTAS:\n"
+        "1. Describe de forma concisa qué representa la imagen (gráfico de líneas, diagrama, foto) y su tendencia o conclusión principal.\n"
+        "2. NO inventes datos, números ni nombres que no sean legibles.\n"
+        "3. NO repitas la misma palabra múltiples veces.\n"
+        "4. Si la imagen es un logotipo, un adorno, o texto borroso ilegible, responde EXACTAMENTE con la palabra: DESCARTAR."
     )
 
     def __init__(
@@ -277,10 +277,25 @@ class ImageFilter:
                     "role": "user",
                     "content": self.SYSTEM_PROMPT,
                     "images": [img_payload]
-                }]
+                }],
+                options={
+                    "num_predict": 250,      # Limitar la longitud máxima
+                    "temperature": 0.0,      # Eliminamos la creatividad (determinismo total)
+                    "top_p": 0.5,            # Reduce el espacio de tokens probables
+                    "repeat_penalty": 1.1,   # Penalización suave, suficiente para evitar bucles de palabras normales
+                }
             )
 
             text = response["message"]["content"].strip()
+            logger.info(f"DEBUG: VLM {img_name} response raw text = {repr(text)}")
+
+            # Limpieza contra alucinaciones de tokens invisibles y bucles
+            import re
+            text = text.replace('\xa0', ' ').replace('\xad', '') # Limpiar caracteres invisibles
+            text = re.sub(r'([.…] ?){3,}', '...', text) # Colapsar múltiples puntos
+            text = re.sub(r'(\s){2,}', ' ', text) # Colapsar múltiples espacios
+            text = re.sub(r'(.{5,}?)\1+', r'\1', text) # Detectar y colapsar n-gramas repetidos en bucle
+            text = text.strip()
 
             if "DESCARTAR" in text.upper():
                 logger.info(f"  → {img_name} descartada")
