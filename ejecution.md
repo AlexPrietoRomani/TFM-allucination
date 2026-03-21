@@ -181,6 +181,30 @@ uv run reports/generate_report.py --mode all
 
 ---
 
+## 🔬 Opción 4: Matriz de Experimentos (FAISS vs Qdrant)
+
+Para pruebas masivas iterando múltiples modelos de Embeddings, estrategias de chunking y bases de datos:
+
+### 1. Construir la Matriz Vectorial
+Este script leerá el corpus y generará bases de datos para todas las combinaciones posibles en `data/vector_matrix/faiss`.
+
+```bash
+uv run scripts/build_vector_matrix.py
+```
+
+### 2. Ejecutar la Evaluación Matricial
+Calcula fidelidad y relevancia en preguntas dinámicas, guardando la telemetría (latencia, costes).
+
+```bash
+# --limit 1 procesará 1 pregunta para verificar que la red local funciona
+uv run eval/run_matrix_eval.py --limit 3
+```
+
+### 3. Visualizar
+Los resultados se consolidan automáticamente y puedes abrirlos en la pestaña especializada de la UI en **http://localhost:8501**, que renderizará los datos instantáneamente.
+
+---
+
 ## 🔧 Resumen de Comandos
 
 | Escenario | Comando |

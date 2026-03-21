@@ -59,11 +59,14 @@ TFM-allucination/
 │
 ├── scripts/
 │   ├── preprocess_corpus.py        # ⭐ Pre-procesamiento de PDFs con Docling
+│   ├── build_vector_matrix.py      # 🔬 Construcción masiva de bases vectoriales (Matriz)
 │   ├── setup_and_ingest.py         # ⭐ Script de setup automático
 │   ├── acquire_corpus.py           # Adquisición manual de corpus
 │   └── verify_ingestion.py         # Verificar estado de Qdrant
 │
 ├── eval/                           # Benchmarks y banco de preguntas
+│   ├── run_matrix_eval.py          # 🧪 Orquestador de evaluaciones matriciales
+│   └── run_eval.py                 # Evaluaciones V0/V1/V2 standard
 ├── reports/                        # Generación de reportes comparativos
 ├── services/worker/                # Worker asíncrono (RQ/Redis)
 └── docs/                           # Documentación adicional
@@ -183,6 +186,7 @@ uv run streamlit run app.py
 | 🧠 **V0 (Baseline)** | Chat directo con el LLM sin contexto |
 | 📚 **V1 (RAG)** | Chat con documentos + métricas de calidad |
 | 🤖 **V2 (Agente)** | Agente autónomo con pasos de razonamiento + métricas |
+| 📊 **Matriz de Experimentos** | Tablero visual con Boxplots, Pareto y Desglose de Latencia interactivo |
 | 📊 **Reportes** | Benchmarks automáticos y generación de informes |
 
 ### Métricas en la UI
