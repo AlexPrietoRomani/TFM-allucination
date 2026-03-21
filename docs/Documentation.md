@@ -195,6 +195,32 @@ graph TD
 
 ---
 
+## 5. Matriz de Experimentos y Evaluaciones Cruzadas
+
+Para dar validez científica al TFM, se incluye un módulo de **Evaluación Cruzada (Matriz de Experimentos)** que aísla variables y mide el impacto de la precisión de recuperación vs el razonamiento del LLM.
+
+### Arquitectura de la Matriz
+
+*   **Variables de Entrada:**
+    *   *Slicing:* 3 modelos de embeddings × 3 estrategias de chunking × 2 motores DB (FAISS y Qdrant local).
+*   **Orquestación:** `eval/run_matrix_eval.py` itera permutaciones, inyecta el `vector_store` configurado en `RAGEngine` y computa las métricas de Calidad de Contexto y Fidelidad.
+*   **Telemetría:** Mide y desglosa el tiempo de espera por llamada a base de datos vs. llamadas de inferencia LLM.
+
+```mermaid
+graph TD
+    classDef step fill:#2d3748,stroke:#4a5568,stroke-width:2px,color:#e2e8f0;
+    classDef metrics fill:#6b46c1,stroke:#b794f4,stroke-width:2px,color:#fff;
+
+    Params([Combinaciones de Matriz]) --> Build[build_vector_matrix.py]:::step
+    Build --> Index[Guardado 27 Índices/Colecciones]:::step
+    Index --> Eval[run_matrix_eval.py]:::step
+    Eval --> Juez[Evaluador por Juez Único local]:::metrics
+    Eval --> JSON([Resultados JSONL + Telemetría]):::step
+    JSON --> UI([Pestaña Matriz Streamlit - Visualización]):::step
+```
+
+---
+
 ## Logros e Hitos del Plan (Estado: Finalizado Completamente)
 
 Todas las implementaciones listadas en el `PLAN_HITOS_TFM.md` original han sido marcadas como cumplidas exitosamente:
