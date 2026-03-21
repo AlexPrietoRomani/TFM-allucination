@@ -11,4 +11,13 @@ class JudgeFactory:
         jud_provider = provider or "ollama"
         jud_model = model or settings.default_ollama_model
         
-        return ProviderFactory.get_provider(jud_provider, jud_model)
+        # Si el usuario pide ollama explícitamente, forzar local para que el modo Cloud
+        # no lo redirigiera a Gemini, manteniendo la independencia del evaluador.
+        force_local = (jud_provider == "ollama")
+        
+        # Forzar formato JSON para Ollama en tareas de dictaminación de métricas
+        kwargs = {}
+        if jud_provider == "ollama":
+            kwargs["format"] = "json"
+            
+        return ProviderFactory.get_provider(jud_provider, jud_model, force_local=force_local, **kwargs)
