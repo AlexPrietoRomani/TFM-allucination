@@ -90,22 +90,22 @@ A continuación, se ilustra gráfica y temporalmente el paso a paso del ciclo de
 
 ```mermaid
 graph TD
-    subgraph "Fase 1: Preparación Vectorial (build_vector_matrix.py)"
-        A[Corpus (Markdown Parsed)] --> B{Iteración Modelos Embeddings}
+    subgraph "Fase 1: Preparación Vectorial"
+        A[Corpus Markdown Parsed] --> B{Iteración Modelos Embeddings}
         B -->|mxbai, bge-m3, qwen3| C{Iteración Estrategias Chunking}
         C -->|500, 1000, semantic| D{Escribir en Motores DB}
         D -->|faiss| E[(Carpeta FAISS)]
         D -->|qdrant_local| F[(Carpetas Qdrant Local)]
     end
 
-    subgraph "Fase 2: Evaluación Matemática (run_matrix_eval.py)"
+    subgraph "Fase 2: Evaluación Matemática"
         G[Banco de Preguntas CSV] --> H{Iteración Modelos Generadores}
         E --> H
         F --> H
         H -->|qwen2.5, deepseek-r1| I[Instanciar RAGEngine]
         I -->|"1. Retriever (Telemetría)"| J[Recuperar Contexto]
         J -->|"2. Generator (Telemetría)"| K[Emitir Respuesta]
-        K --> L((Juez: Llama3.1-8B))
+        K --> L((Juez Llama3.1 8B))
         L -->|"Evalúa"| M(Faithfulness)
         L -->|"Evalúa"| N(Context Precision)
         L -->|"Evalúa"| O(Answer Relevancy)
@@ -114,7 +114,7 @@ graph TD
         O --> P
     end
 
-    subgraph "Fase 3: Visualización (Streamlit GUI)"
+    subgraph "Fase 3: Visualización"
         P --> Q[tab_matrix.py]
         Q --> R{Filtro por Generador}
         R --> S[KPIs Generales]
