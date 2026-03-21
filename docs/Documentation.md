@@ -6,17 +6,28 @@ Este documento proporciona una revisión a fondo del Trabajo de Fin de Máster (
 
 ## 0. Pre-procesamiento del Corpus (Ingesta Estructurada)
 
-Antes de que cualquier fase (V0, V1, V2) pueda operar, el corpus de documentos técnicos debe ser procesado e indexado. El problema central es que los PDFs del dominio agrícola (FRAC, IRAC, SENASA) son **altamente tabulares** — si se extraen con métodos tradicionales (`PyPDFLoader`), las relaciones semánticas entre columnas se pierden completamente.
+Antes de que cualquier fase (V0, V1, V2) pueda operar, el corpus de documentos técnicos (PDFs) debe ser procesado e indexado en un formato enriquecido y estructurado que preserve el significado original para maximizar la calidad del contexto del RAG.
 
-### ¿Por qué es necesario?
+El orquestador central de este proceso se encuentra en `scripts/preprocess_corpus.py`, el cual se integra íntimamente con los analizadores y extractores robustos definidos en `src/knowledge/parsers.py`.
 
-| Método | Resultado para tablas FRAC/IRAC |
-|--------|--------------------------------|
-| **PyPDFLoader** (texto plano) | Mezcla columnas, pierde relación ingrediente → grupo → código |
-| **Docling** (estructura) | Preserva tablas en Markdown con `\|col\|` syntax |
-| **Docling + Flattening** | Transforma cada fila en oración natural enriquecida |
+### Funcionalidad Clave del Pipeline (`preprocess_corpus.py` & `parsers.py`)
 
-### Pipeline de Ingesta
+1. **Extracción Estructurada y Matemática (`DoclingParser`)**: 
+   Se utiliza **Docling** para procesar los PDFs. A diferencia de un OCR tradicional de texto plano (como `PyPDFLoader`), preserva de forma nativa la estructura semántica de hojas y documentos, como listas, relaciones y componentes jerárquicos. Además, convierte todas las **fórmulas matemáticas** en sintaxis renderizable LaTeX nativamente.
+   
+2. **Inferencia Visual Integrada (`ImageFilter` y VLM Local)**: 
+   Cuando el sistema cuenta con parámetros para ello, si `DoclingParser` detecta una imagen (gráfico, diagrama de flujo, mapa o fotografía útil), la extrae, formatea y la envía a un modelo visual ligero local (por defecto `llama3.2-vision` gestionado por Ollama configurado de forma **determinista** limitando temperatura y penalizaciones agresivas de tokens repetitivos en CPU).
+   - El script actual actúa como un estricto **Guardarraíl (Guardrail)**: Si la imagen es detectada como un simple logo de senasa, una barra de decoración vertical o un elemento decorativo de marca sin datos útiles, el modelo omite el texto respondiendo de forma exacta la marca `DESCARTAR`.
+   - Si la imagen contiene información semántica técnica real, genera su descripción textual (anclada según sus instrucciones de prompt de 2 o 3 sentencias) y automáticamente la inyecta en el documento de origen estructurado Markdown a través de la etiqueta de identificación semántica `> **[💡 Descripción de Imagen VLM]:** ...`.
+
+3. **Aplanamiento Analítico de Tablas (`TableFlattener`)**: 
+   Los LLMs padecen de rendimiento al leer grandes tablas de Markdown, y los generadores de `Embeddings` tienden a estropear el contexto al realizar un *chunking* ciego seccionándolas de manera errática. 
+   El script orquestador utiliza `TableFlattener` para buscar mediante una regex los bloques de sintaxis nativa de tabla insertada, e itera relacionando individualmente los valores de cada celda de contenido referenciándolas siempre con sus cabeceras estéticas principales y nombre del archivo original de dónde proviene dicha relación general y año, convirtiendo finalmente matrices enteras tubulares o cuadriculadas en oraciones descriptivas amigables naturales para ser altamente leídas (`Dense High-Quality Retrieval`).
+
+4. **Inyección de YAML y Metadatos (Front-matter)**: 
+   A partir del índice manual central (`corpus/registry.yaml`), el orquestador se provee de datos crudos, para finalmente anexar un encabezado a cada documento extraído y refinado (Front-matter) con ID oficial de registro, País, Título, Año o Tags de dominio predeterminando enriquecimientos finales. Todo ello se extrae directamente para uso de la fase posterior y vector store a la carpeta de ingesta final listada `corpus/parsed`.
+
+### Diagrama del Proceso de Pre-procesamiento de Archivos
 
 ```mermaid
 graph TD
@@ -24,54 +35,29 @@ graph TD
     classDef parser fill:#2c7a7b,stroke:#4fd1c5,stroke-width:1.5px,color:#fff;
     classDef db fill:#2b6cb0,stroke:#63b3ed,stroke-width:1.5px,color:#fff;
 
-    subgraph "🤖 Fase 0: Corpus Pre-procesamiento"
-        PDF([📄 PDF Raw]):::step --> Docling[Docling Parser]:::parser
-        Docling --> MD[Markdown Estructurado]:::step
+    subgraph "🤖 Fase 0: Pre-procesamiento del Corpus"
+        PDF([📄 PDFs Base / .docx]):::step --> Docling[DoclingParser + Fórmulas]:::parser
+        Docling -->|Analiza Imágenes| VLM[Ollama: llama3.2-vision]:::db
+        VLM -->|Filtro & Descripción Textual| Docling
+        Docling --> MD[Markdown Crudo + VLM Descripciones]:::step
         MD --> Flatten[TableFlattener]:::parser
-        YAML([📋 registry.yaml]):::step --> Meta[Inyección Metadatos]:::step
+        YAML([📋 registry.yaml]):::step --> Meta[Inyección Front-matter]:::step
         Flatten --> Meta
-        Meta --> Parsed["📂 corpus/parsed (*.md)"]:::step
-    end
-
-    subgraph "🔋 Fase 1: Matriz de Indexación"
-        Parsed --> Chunks{Chunks: 500, 1000, Semantic}:::step
-        Chunks --> Embed[nomic / mxbai / qwen3]:::db
-        Embed --> DB{Motor DB}:::db
-        DB -->|Local| FA[(FAISS Local)]:::db
-        DB -->|Local / Cloud| QD[(Qdrant DB)]:::db
+        Meta --> Parsed["📂 corpus/parsed (*.md final)"]:::step
     end
 ```
 
-### 📌 Flujo Ideal de Inferencia Visual (Llama-3.2-Vision)
+### Ejemplo Crítico: Impacto Semántico de Tablas (Flattening)
 
-Para enriquecer los documentos `.md` con descripciones de imágenes/gráficas, el pipeline conceptual diseñado es el siguiente:
-
-1. **Extracción Determinista**: Docling lee el PDF. Todo el texto y las tablas se extraen directamente a Markdown de forma rápida y 100% fiel al documento original.
-2. **Detección de Imágenes**: Cuando Docling encuentra un gráfico, un esquema de un insecto o una curva de degradación de pesticidas, extrae esa región específica como un archivo de imagen recortado.
-3. **Inferencia Visual (Llama-3.2-Vision)**: Solo esa imagen recortada se envía a Ollama con Llama-3.2-Vision, acompañada del texto que estaba antes y después de la imagen en el PDF (para darle anclaje factual). El prompt sería: *"Describe este gráfico técnico basándote en el texto circundante"*.
-4. **Fusión**: La descripción en texto que devuelve Llama-3.2-Vision sustituye la etiqueta `<!-- image -->` en el archivo Markdown final.
-
-*Nota: Esto combina la precisión del OCR determinista para el texto y las tablas, con la comprensión semántica de Llama-3.2-Vision para interpretar diagramas visuales.*
-
-### Componentes Clave
-
-- **`src/knowledge/parsers.py`** — Contiene `DoclingParser`, `TableFlattener` e `ImageFilter`
-- **`scripts/preprocess_corpus.py`** — Script orquestador ejecutable antes del setup
-- **`corpus/parsed/`** — Directorio de salida con `.md` pre-procesados
-
-### Ejemplo de Flattening
-
-Una fila de tabla FRAC como:
+Si Docling expulsa una tabla de `FRAC Code List`:
 
 | FRAC Code | Chemical Group | Active Ingredient | Comments |
 |-----------|---------------|-------------------|----------|
 | 11 | QoI | azoxystrobin | Resistance common |
 
-Se transforma en:
+Se transformará programáticamente de celda-a-cabecera iterativamente para ser *chunking-friendly* de esta robusta manera inyectando también el origen de dicha fila desde el *registry*:
 
 > *"Según FRAC Code List (2024), FRAC Code: 11, Chemical Group: QoI, Active Ingredient: azoxystrobin, Comments: Resistance common."*
-
-Esta oración descriptiva captura la relación semántica completa, produciendo embeddings de alta calidad.
 
 ## 1. Visión General del Sistema y Arquitectura Core
 
