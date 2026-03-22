@@ -164,6 +164,27 @@ def render_tab_matrix():
     # --- DATA TABLE & EXPORT ---
     st.markdown("### 📋 Tabla de Resultados")
     
+    st.write("🔍 **Sub-filtros Avanzados para la Tabla**")
+    cols_to_filter = st.multiselect(
+        "Filtrar contenido de columnas específicas:", 
+        ["question_id", "generator", "embedding", "chunk_strategy", "db_motor", "architecture"], 
+        default=[], 
+        key="adv_tbl_filters"
+    )
+    
+    table_filtered_df = filtered_df.copy()
+    
+    if cols_to_filter:
+        st.info("💡 Desmarca valores en las columnas inferiores para reducir las filas de la tabla.")
+        cols_grid = st.columns(len(cols_to_filter))
+        for i, col in enumerate(cols_to_filter):
+            with cols_grid[i]:
+                if col in table_filtered_df.columns:
+                    unique_vals = sorted(list(table_filtered_df[col].astype(str).unique()))
+                    selected_vals = st.multiselect(f"Filtrar {col.capitalize()}", unique_vals, default=unique_vals, key=f"f_sub_{col}")
+                    table_filtered_df = table_filtered_df[table_filtered_df[col].astype(str).isin(selected_vals)]
+
+    st.markdown("---")
     st.write("🔧 **Opciones de Agrupación**")
     group_cols = st.multiselect("Promediar métricas agrupando por:", ["architecture", "generator", "embedding", "chunk_strategy", "db_motor"], default=[], key="table_group_cols")
 
@@ -172,15 +193,13 @@ def render_tab_matrix():
         table_base.insert(2, "architecture")
     table_cols = table_base + available_top_metrics
 
-    # Vista agrupada o vista plana
+    # Vista agrupada o vista plana sobre el dataframe filtrado
     if group_cols:
-        # Calcular medias sobre las columnas numéricas (métricas y latencia)
         numeric_cols = available_top_metrics + ["total_latency_seg"]
-        # .groupby() con reset_index() para aplanar
-        df_grouped = filtered_df.groupby(group_cols)[numeric_cols].mean().reset_index()
+        df_grouped = table_filtered_df.groupby(group_cols)[numeric_cols].mean().reset_index()
         st.dataframe(df_grouped, use_container_width=True)
     else:
-        st.dataframe(filtered_df[table_cols], use_container_width=True)
+        st.dataframe(table_filtered_df[table_cols], use_container_width=True)
 
     csv = filtered_df.to_csv(index=False).encode('utf-8')
     st.download_button(
