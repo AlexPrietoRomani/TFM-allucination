@@ -247,18 +247,39 @@ docker exec -it tfm-app uv run scripts/setup_and_ingest.py --skip-ollama
 # 4. Abrir http://localhost:8501
 ```
 
-### Modelos Ollama Recomendados
+### 🔬 Matriz de Experimentos y Plan Experimental
 
-| Modelo | Tamaño | Uso | Recomendación |
-|--------|--------|-----|---------------|
-| `qwen2.5:3b` | 1.9 GB | LLM Chat/Métricas | ⭐ **Recomendado** |
-| `nomic-embed-text` | 274 MB | Embeddings (768d) | ⭐ Ligero/Rápido |
-| `mxbai-embed-large` | 670 MB | Embeddings SOTA | 🚀 **Recomendado (Alta Precisión)** |
-| `snowflake-arctic-embed:latest` | 335 MB | Multilingüe | Alternativa |
-| `qwen2.5:3b` | 1.8 GB | Mini LLM (Default) | ✅ Balanceado |
-| `qwen2.5:7b` | 4.7 GB | LLM más potente | Si tienes +8GB RAM |
-| `phi3:mini` | 2.3 GB | Razonamiento | Alternativa |
-| `llama3.2:latest` | 2.0 GB | LLM Chat texto | Alternativa |
+Para que las conclusiones del TFM tengan rigurosidad científica, se ejecuta una **Matriz de Permutaciones**. Este enfoque aísla variables para entender exactamente qué reduce la alucinación: ¿el razonamiento del LLM, la precisión del vector, o el tamaño del contexto?
+
+**El ciclo de vida del Benchmark consta de 3 fases:**
+1. **Fase 1: Preparación Vectorial:** Indexación del corpus cruzando Modelos de Embedding con Estrategias de Chunking (500, 1000 tokens y Semantic), almacenándolos en `faiss` y `qdrant`.
+2. **Fase 2: Evaluación Matemática:** Ejecución de consultas sobre el banco de preguntas, iterando sobre todas las bases vectoriales, los **Modelos Generadores** y las arquitecturas de respuesta (V0, V1, V2).
+3. **Fase 3: Visualización:** Dashboard interactivo con Boxplots de dispersión, diagramas de Pareto (latencia vs precisión) y tablas dinámicas.
+
+---
+
+### 🧠 Modelos Generadores Seleccionados
+
+Para las evaluaciones se integran LLMs de nube para establecer un límite superior (Upper Bound) y modelos abiertos en local para reproducibilidad offline.
+
+| Familia | Modelo | Justificación / Por qué se usa |
+| :--- | :--- | :--- |
+| **Nube** | `gemini-3.1-pro-preview` | **Pensador Pesado:** Alto razonamiento lógico, ideal para inferencias agronómicas complejas. |
+| **Nube** | `gemini-3-flash-preview` | **Equilibrio:** Modelo rápido y balanceado con gran tolerancia a ventanas gigantes de contexto. |
+| **Nube** | `gemini-3.1-flash-lite-preview`| **Métrica Límite:** Mide si un RAG perfecto puede compensar a un modelo generativo débil. |
+| **Local** | `deepseek-r1:8b` | **Razonamiento Profundo:** Destaca por su arquitectura orientada a la cadena de pensamiento profundo (CoT). |
+| **Local** | `qwen3:8b` | **SOTA Multilingüe:** Estado del arte en múltiples idiomas y lectura estructural. |
+| **Local** | `gpt-oss:20b` | **Escala Mayor Local:** Comportamiento idóneo para lógica pesada local (~12-16GB VRAM @ 4-bits). |
+
+---
+
+### 🔋 Modelos de Embedding (Recuperación)
+
+| Modelo | Tamaño | Rol en el TFM |
+| :--- | :--- | :--- |
+| `mxbai-embed-large` | ~335 M | **Baseline de Eficiencia:** Rápido y estandarizado para inferencia offline. |
+| `nomic-embed-text-v2-moe` | 475 M | **Gold Standard:** Soporte Mixture of Experts (MoE) con alta tolerancia a Edge cases. |
+| `qwen3-embedding` | >7 B | **Límite Superior:** Máxima comprensión semántica (Decoder-only completo). |
 
 ---
 
