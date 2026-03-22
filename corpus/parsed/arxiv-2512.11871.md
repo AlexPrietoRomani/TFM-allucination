@@ -76,17 +76,25 @@ CNNs have established themselves as the standard for agricultural image analysis
 
 Formally, a convolutional layer computes a feature map F from an input X using a learnable kernel W and bias b :
 
-<!-- formula-not-decoded -->
+$$F _ { i , j } = \sigma \left ( \sum _ { m } \sum _ { n } W _ { m , n } \cdot X _ { i + m , j + n } + b \right ) \quad ( 1 ) \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \stackrel { A c r } { \ s h i f t } , \quad \$$
 
 where σ is a non-linear activation function (e.g., ReLU). While CNNs excel at extracting local patterns, their limited receptive field can struggle to capture long-range dependencies, such as the spatial distribution of a pest infestation across a large cladode.
 
 Fig. 1: CNN Architecture
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un **C [ ] [ ] [ ] [
+
+
 
 Fig. 2: MobileVIT Architecture [7]
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un **trans
+
+
 
 ## C. Vision Transformers and Self-Attention
 
@@ -94,7 +102,7 @@ To address the limitations of local receptive fields, Vision Transformers (ViTs)
 
 The core mechanism is Multi-Head Self-Attention (MSA), which allows the model to weigh the importance of different image regions globally. For a given input sequence Z , the attention output is computed as:
 
-<!-- formula-not-decoded -->
+$$A t e n t i o n ( Q , K , V ) = \text {softmax} \left ( \frac { Q K ^ { T } } { \sqrt { d _ { k } } } \right ) V \quad ( 2 )$$
 
 where Q , K , V represent the Query, Key, and Value matrices projected from the input. This global context awareness makes ViTs particularly effective at distinguishing complex, scattered pathologies like cochineal clusters from background noise. MobileViT, the architecture used in this study, creates a hybrid by embedding this global processing block inside a lightweight CNN backbone to retain efficiency.
 
@@ -110,7 +118,7 @@ Deploying deep learning models in rural Tigray requires overcoming severe hardwa
 
 To enable offline execution, we employ Post-Training Quantization (PTQ). This process maps high-precision 32-bit floating-point weights ( W fp 32 ) to lower-precision 16-bit floats ( W fp 16 ) or 8-bit integers:
 
-<!-- formula-not-decoded -->
+$$W _ { q } = \text {round} \left ( \frac { W _ { f p 3 2 } } { S } \right ) + Z \quad \quad ( 3 ) \quad ^ { C . \ E q } \quad \begin{matrix} C . & E q \\ F o r \end{matrix}$$
 
 where S is a scaling factor and Z is the zero-point. This compression reduces model size and inference latency with minimal degradation in accuracy, making complex architectures like MobileViT deployable on edge devices.
 
@@ -155,17 +163,25 @@ PlantVillage), spanning tomato, potato, maize, and apple crops. This pre-trainin
 
 Fig. 3: Example of affected cactus-fig cladode showing cochineal clusters and fungal lesions.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Fig. 4: Example of healthy cactus-fig cladode with no disease or pest symptoms.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un conjunto de 9 sub-imagens de cactos en diferentes ás
+
+
 
 ## B. Preprocessing and Augmentation
 
 Input images are resized to 256 × 256 pixels and normalized to the unit interval [0 , 1] . To mitigate overfitting given the limited size of the indigenous dataset, we employ a Sanitized Validation Protocol : geometric augmentations are applied only to the training split, while validation is performed on clean, static images. The augmentation function A ( X ; θ ) is defined as:
 
-<!-- formula-not-decoded -->
+$$\tilde { X } = \mathcal { A } ( X ; \theta ) = T _ { \text {rot} } ^ { \theta _ { r } } \cdot T _ { \text {zoom} } ^ { \theta _ { z } } \cdot T _ { \text {flip} } ^ { \theta _ { f } } ( X )$$
 
 where θ represents random parameters for rotation ( ± 20 ◦ ), zoom ( ± 15% ), and horizontal flipping.
 
@@ -175,7 +191,7 @@ We investigate two distinct architectural paradigms to identify the optimal trad
 
 - 1) Custom Lightweight CNN (Efficiency-First): Designed for ultra-low latency on legacy devices, this model consists of three sequential convolutional blocks. Each block k performs feature extraction defined by:
 
-<!-- formula-not-decoded -->
+$$\i t e s t a r { \text { for } } \quad F _ { k } ( i , j ) = & \, \text {Pool} \left ( \sigma \left ( \sum _ { m , n } W _ { k } ( m , n ) \cdot X ( i + m , j + n ) + b _ { k } \right ) \right ) \\ \i t e s t a r { \text { has } } \quad \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \$$
 
 where σ is the ReLU activation function. The architecture prioritizes a small receptive field to capture local texture anomalies (e.g., rot spots) with minimal computational cost ( ∼ 1 . 2 M parameters).
 
@@ -195,11 +211,19 @@ Training was conducted on an NVIDIA Tesla P100 GPU (16 GB VRAM) using PyTorch an
 
 Fig. 5: Cactus-fig symptom detection screen from the deployed Flutter Android application demonstrating offline image capture for real-time local screening.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Fig. 6: Tigrigna and Amharic-localized recognition and disease-information interface providing offline condition classification, medicine recommendation, and usage guidance.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 ## B. Quantitative Benchmarks
 
@@ -230,17 +254,29 @@ Beyond aggregate metrics, we evaluated the models under challenging field condit
 
 The results establish a clear tiered deployment strategy. The Proposed CNN provided the most efficient deployment profile (42 ms, 4.8 MB), suitable for real-time video scanning on legacy hardware. The MobileViT-XS offered the best diagnostic reliability (97.3%), serving as a high-precision verification tool. This dual capability directly addresses the hardware diversity found in post-conflict agricultural zones. Comparative confusion matrices on the cactus-fig test set are shown below. Custom CNN errors stem mainly from scarvs-lesion texture ambiguity, EfficientNet-Lite1 reduces these errors but retains false positives, and MobileViT-XS achieves strong separation of cochineal clusters from lesions. Following that there is a learning curve and LIME explanation output samples.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que compara la evolución de la “C ”
+
+
 
 Fig. 7: Comparative confusion matrices on the cactus-fig held-out test set. (Left) Custom CNN shows confusion between Healthy and Affected due to re-scaled local texture ambiguity. (Center) EfficientNet-Lite1 reduces margin errors but retains false positives under scar-like textures. (Right) MobileViT-XS resolves ambiguity by leveraging global self-attention, achieving strong separation for cochineal clusters versus fungal lesions.
 
 Fig. 8: Training and validation learning curves for the proposed lightweight CNN.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de dos líneas que representan la curv
+
+
 
 Fig. 9: LIME-based explanation for an Affected prediction, highlighting cochineal clusters and lesion regions driving the MobileViT-XS decision.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un cactus de “ “ “ “ “
+
+
 
 ## VI. CONCLUSION AND FUTURE WORK
 

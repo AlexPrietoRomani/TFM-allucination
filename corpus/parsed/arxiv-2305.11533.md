@@ -86,7 +86,11 @@ Deep learning is first trained in a 'training dataset' and then tested in a 'tes
 
 Figure 1. Illustration of the intra-class image variation. The images in (a) and (b) are tomato leaves. Other images stem from a species, Aralia nudicaulis, in the PlantCLEF2022 dataset (Go¨ eau et al., 2022). Every group suggests that the pictures belonging to the same plant disease may have visual diversities.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 ## 3 CHALLENGE FORMULATION WITH LIMITED AND IMPERFECT DATASETS
 
@@ -94,7 +98,11 @@ As previously discussed, achieving satisfactory performance using deep learning 
 
 Figure 2. Illustration of inter-class image variation. It can be cast to a relative challenge where the visual deviations between (a) and (c) are larger than that between (b) and (d). A corresponding strategy is to collect more data for (b) and (d) in that models need more evidence to make decisions for hard scenarios.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un conjunto de cuatro sub-imagens con diferentes plantas de Tomato de “ ” ” ”
+
+
 
 To comprehend the challenges that arise when dealing with limited and imperfect training datasets, we propose a novel taxonomy. Specifically, the term 'limited dataset' refers to scenarios where the training dataset is not on a large scale, while 'imperfect dataset' describes situations where the annotations of the training dataset deviate from the expected and desired. The limited dataset can be further divided into two subcategories: class-level, which examines deviations among different classes within the training datasets, and dataset-level, which analyzes the heterogeneity between the training and test datasets. On the other hand, imperfect dataset can be classified into three distinct types based on the nature of conflict: incomplete annotation, where a portion of images lacks annotations; inexact annotation, where some classes are annotated in a coarse-grained manner; and inaccurate annotation, where certain images are annotated with inaccuracies or even incorrect labels. Table 1 offers a glimpse into this comprehensive taxonomy.
 
@@ -112,11 +120,15 @@ The few-shot challenge assumes that collecting and annotating images are expensi
 
 Figure 3. Annotation strategies in three primary tasks of plant disease recognition. From the first to the last rows are image classification, object detection, and segmentation, respectively. Dm ( m = 1 , 2 , 3 , 4) denote the types of plant disease and every column suggests different plant diseases. In the simplest way, image classification refers to assigning a class to one image whereas, in object detection, classes and their locations (bounding box) are entailed to predict. Segmentation requires class prediction at a pixel level. From the first to the last row, the annotation becomes more complicated and thus more time-consuming. The images in real-world applications tend to be more complex than these examples, such as multiple diseases existing in one leaf and one image including multiple leaves. Further, a desired annotation strategy embraces three primary points: exclusive, extensive, and precise. The exclusive suggests that every annotation just includes one specific visual plant disease pattern whereas the extensive denotes that every plant disease in the images should be annotated. The precise requires that the images should be annotated precisely. Violating the three points leads to the challenges of imperfect annotation.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de unión de “ ” “ ”
+
+
 
 that every plant disease has only 5 or 10 annotated images. Moreover, the few-shot challenge could be generalized as:
 
-<!-- formula-not-decoded -->
+$$n _ { X _ { i } } \approx M ,$$
 
 where every class contain approximately M annotated images. The essential issue is that a few annotated images could not provide sufficient evidence to train a deep learning-based model; thus, the trained model could not be generalized in the test dataset for every class. Based on this, we further extend the few-shot challenge from a small number of annotated images to a larger case, such as 100 and even 500, where most deep learning-based models could not obtain good test performance for every plant disease . This motivation is based on the observation that plant disease may have huge intra-class image variation and relatively low inter-class image variation.
 
@@ -136,7 +148,7 @@ outputs the final results such as the type of plant disease, and could be used t
 
 The few-shot challenge assumes that each type of plant disease occurs with a similar frequency, thus resulting in small image variations. However, some plant diseases occur at a higher frequency than others in the natural world. For instance, some plant diseases may appear more often than others, and even for one specific type, different stages can be observed with diverse frequencies. In this case, one class may have a much higher number of annotated images than another class in the training dataset, termed a 'class imbalance'. Mathematically, the class imbalance challenge is formalized as n X i /greatermuch n X j , where /greatermuch denotes much larger. A class with many more annotated images refers to the majority class; otherwise, it refers to the minority class (Xu et al., 2022a). The fundamental challenge is that the trained model tends to assign a high probability to the majority class during the test stage because it contributes more at the training stage (Xu et al., 2023). However, when the minority class also has many annotated images, the models may exhibit acceptable performance. Therefore, we propose a strict definition that is closer to the real applications:
 
-<!-- formula-not-decoded -->
+$$\begin{cases} \ n _ { X _ { i } } \gg n _ { X _ { j } } , \\ \ n _ { X _ { j } } \leq M . \end{cases}$$
 
 In the strict version, the number of annotated images of the minority class is not only much less than that of the majority class but should also be lower than a specific value. We argue that M should not be fixed for all tasks. By contrast, this value depends on multiple factors, such as intra- and inter-class variations. Essentially, deep learning-based models may not be able to learn robust features for the minority class in the class-imbalance datasets . To mitigate this challenge, the primary idea is to increase the performance of the minority class while maintaining that of the majority class.
 
@@ -166,7 +178,7 @@ Domain shift is a common problem in deep learning where the training and test da
 
 /negationslash
 
-<!-- formula-not-decoded -->
+$$P ( c | X ) \neq P ( c | Y ) ,$$
 
 where P ( c | X ) represents the probability distribution of one plant disease c given the input images in the training dataset X , and P ( c | Y ) represents the probability distribution of c given the input images in test dataset Y . The inequality sign indicates that the two distributions are not equal, implying that the domain shift can lead to a significant decrease in the performance of the test data, making the model ineffective. The unknown class in the test dataset is a special form of the domain shift challenge but in this section, we aim to highlight the domain shift where the set of classes in the test dataset is a proper subset of that in the training dataset.
 
@@ -188,7 +200,11 @@ The limited dataset challenge considers annotated images within either a class o
 
 Figure 4. Performance comparison of object detection in a plant disease dataset, using different annotations, this figure adapted from (Dong et al., 2022). The cases of missing labels and class noise suggest some patterns of plant disease have no labels and wrong labels. The inconsistencies of position and size suggest that the position and size are different from the desired. The mixed case is the combination of previous cases. Detection performance clearly degrades when the deviations from the desired ones are severe.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que muestra la relación entre el AP (AP @ 0.5%) y el rate (R @ 0.5%) en [0-100%]. El AP @ 0.5% es el [ ] [ ] [ ] [
+
+
 
 ## 5.1 Incomplete Annotation
 
@@ -218,7 +234,11 @@ Building upon the challenges posed by limited and imperfect datasets, we propose
 
 Figure 5. Flowchart to deploy deep learning in plant disease recognition. The evaluation of the project objectives and rethinking of the datasets are highlighted.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de un proceso de “E ” ” ” ” ”
+
+
 
 Box 1. Outstanding questions.
 

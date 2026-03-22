@@ -81,7 +81,11 @@ For a comprehensive literature search, two academic databases were selected, Sci
 
 Figure 1: An overview of the review performed in this study with a perspective to focus on the individual steps taken to address site-specific disease management.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de “C ”
+
+
 
 ## 2.2 Article screening criteria and framing questions derived from key points
 
@@ -89,7 +93,11 @@ The overall search and screening criteria was further subdivided into two catego
 
 Figure 2: This review presents a systematic literature analysis focused on foundation models and their extended applications in site-specific crop disease management. The box on the left illustrates the employed methodology, while the box on the right highlights key questions derived from the retrieved research articles.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de fluo de “Systematic Literature Search” con su “Results and Discussion” en “Systematic Literature Search and … … …
+
+
 
 Table 1: Selected relevant publications on leveraging large language models and vision language models for crop disease and pest management.
 
@@ -120,7 +128,11 @@ Table 1 summarizes the results of a literature search across two major databases
 
 Figure 3: Publication trends from 2019 to 2024 for large language models (LLM) and visual language models (VLM) across ScienceDirect and Scopus databases.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que representa la tendencia de publicación de “ ” ” ” ”
+
+
 
 ## 3.2 What does the year-wise distribution of large language models (LLMs) and vision language models (VLMs)-based studies suggest about evolving research priorities in agricultural disease management?
 
@@ -136,7 +148,11 @@ Current sensing platforms are the foundation for large-scale disease identificat
 
 Figure 4: Different categories of sensing systems and platforms used in disease image acquisition. The inverted triangle includes: RGB, multispectral (MS), and hyperspectral (HS) sensors where its application in sensing disease information increases from RGB to HS.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de fluo
+
+
 
 The integration of AI models, particularly those trained on numerous examples of large-scale disease datasets, has significantly advanced the ability to monitor crops in real-time for disease threats. Between 2010 and 2017, most studies relied on leveraging either traditional image processing or conventional machine learning (ML) model based on handcrafted features to perform disease classification tasks in crops such as tomato, grapes, and maize [41-44] (Fig. 1). Although these approaches were limited in scale and real-time capability, it provided foundational research breakthroughs in crop disease identification. Building on this foundation, deep learning (DL) techniques, particularly, convolutional neural networks (CNNs), began to dominate the field post 2017. These models significantly outperformed traditional methods by automatically extracting high-level features from raw image data, eliminating the need for manual feature engineering. Because of this attribute, these models come in different sizes where optimizing and integrating these on sUAS, edge computing devices, and robotic platforms have become possible.
 
@@ -154,7 +170,11 @@ LLMs are emerging as powerful 'smart advisors' for crop disease management by sy
 
 Figure 5: Overview of a foundational model-based framework for crop disease diagnostics and management. Multimodal data sources including images, textual descriptions, structured dataset, and agri-sensors data. On the right, diverse downstream applications such as disease classification, image generation, smart spraying, question answering, and robotic navigation are enabled by the model's reasoning and generalization capabilities.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de fluo de “Disease monitoring and management” con el “Multimodal data source” en la parte superior y el “Disease ...
+
+
 
 complex research findings into step-by-step disease management advice (Link). Researchers have shown that LLMs can summarize diseases and pests life cycles, generate treatment protocols, produce multilingual extension information, and generate scripted troubleshooting flows for field technicians, a task that directly reduce the time between observation and intervention [54,55].
 
@@ -235,7 +255,11 @@ Según Advancing site-specific disease and pest management in precision agricult
 Según Advancing site-specific disease and pest management in precision agriculture: From reasoning-driven foundation models to adaptive, feedback-based learning (2025), Models: ITK-Net (Image-text-Knowledge Network), Type: Multi-modal (Image-text-Knowledge), Open-access source: Not specified, Use cases: The primary model developed to identify common invasive diseases in tomato and cucumber by leveraging multimodal data and high-level domain knowledge, Journal: Computers and Electronics in Agriculture, References: [93].
 Figure 6: Example representing the role of foundation models (FMs) in the context of crop disease research, including vision-language integration, text-to-image generation, and multi-modal scoring frameworks.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 ## 4.4 Closing the loop in crop disease management by integrating reinforcement learning and digital twins in cyber-physical system
 
@@ -247,7 +271,11 @@ Recent advancements in RL have demonstrated significant potential for transformi
 
 Figure 7: The overall agent and reward components of reinforcement learning for leveraging site-specific disease management in precision agriculture.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un **Reinforcement Learning** de **P ** **
+
+
 
 Unlike conventional rule-based agricultural systems, RL-enabled technologies learn from continuous field data and operational outcomes, enabling more sophisticated and context-aware decision-making processes. For example, [103] developed an RL-based decision system for UAV crop sprayers that dynamically adjusts spray volume, droplet size, and flight height based on real-time crop characteristics. Their actor-critic neural network, trained on comprehensive field experiment data, achieved a 14% reduction in pesticide volume across wheat fields while maintaining equivalent pest control efficacy, demonstrating the potential for resource optimization across agricultural operations. Other studies have used deep RL for path planning so unmanned aerial vehicle (UAV) only treat infected zones, avoiding healthy crops to save chemicals. In a recent simulation, a hierarchical RL agent was trained to navigate a field and spray only diseased plants, significantly improving yield protection while reducing unnecessary spraying [23]. Beyond a single UAV, RL has been extended to complex, multi-robot spraying scenarios. In a simulation study, [104] explored how on-policy reinforcement-learning algorithms could coordinate multiple UAVs and ground vehicles for crop spraying. One RL agent planned efficient coverage paths for several drones, while a second agent continually adjusted each UA V's position to counter simulated wind drift. In narrow field sections, the framework reassigned spraying duties to ground robots, demonstrating how hybrid air and ground agents might improve overall efficiency.
 
@@ -261,7 +289,11 @@ entity (crop or farm) that is continuously updated with real-world data [105-109
 
 Figure 8: Schematic representation of a digital twin framework acting as a bridge between the physical and virtual spaces. Real-world data from sensors are continuously synchronized with virtual simulations, enabling predictive analytics, scenario testing, and decision-making. Insights from the digital (virtual) space are then transferred back to the physical system through actuator control, creating a closed-loop cycle of monitoring, simulation, and intervention.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de dos se
+
+
 
 While this project focused on monitoring (e.g. foliage density, light penetration) rather than automated spraying, it lays the groundwork for tree-specific disease management and AI-driven decision support platform, where one could test, for instance, how a new spraying regimen or pruning strategy might impact disease spread before applying it on the real orchard. Several recent studies highlight the effectiveness of DTs for crop monitoring and simulation. In a 2024 study, [107] built an agricultural digital twin for mandarin orange orchards. By aggregating big data from 185,000 hectares of mandarin farms into a virtual platform, they could analyze variations in fruit quality at regional, orchard, and even tree level. Their intra-orchard digital twin analysis explained fruit quality variation much better than broad inter-orchard data, demonstrating how digital twins enable 'micro-precision' agriculture where each plant could receive customized treatment based on its digital profile. Another example is the digital twin system for pepper pest management reported by [110]. This system created a virtual greenhouse of pepper plants infested with aphids, continuously fed by IoT sensors and camera data. The twin employed a predictive model (genetic algorithm-optimized random forest) to forecast pest population trends, and it evaluated control actions in simulation to recommend optimal intervention. In trials, the digital twin accurately predicted aphid population changes ( ≈ 85% accuracy) and helped optimize spraying decisions, improving economic outcomes by over 20% compared to the growers' standard practice.
 

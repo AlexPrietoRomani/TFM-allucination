@@ -83,7 +83,11 @@ Then, trained ConvNets are applied to densely sampled image patches to extract s
 
 Fig. 1: An example of the assembled prototype used during indoor testing.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es de un dispositivo de lectura de codes de barra. La tendencia principal es que es un “Movidus” “M “M “M
+
+
 
 only those with probabilities higher than their neighbors are preserved. Finally, the remaining ROIs are thresholded. ROIs that meet the threshold are considered as proposed detections.
 
@@ -104,7 +108,11 @@ Each smart trap is built on a custom hardware platform that includes: a small, l
 
 Fig. 2: Solar energy harvester and power management circuit schematic block.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un sistema de “ ” “ ”
+
+
 
 ## B. Detection pipeline
 
@@ -124,7 +132,11 @@ These ROIs are regularly and densely arranged over the image and thus largely ov
 
 Fig. 3: Detection Pipeline work flow. On the right, the RoIs extraction procedure is highlighted.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de fluo de un algoritico de “ ” ” ” ” ”
+
+
 
 Smoothing (or blurring) of the frame with a Gaussian filter and then Edge extraction through the Canny operator to select only the ROIs whose respective probability is locally maximal.
 
@@ -154,11 +166,19 @@ Deep Learning is a class of machine learning algorithms based on the so called A
 
 Fig. 4: LeNet-5 architecture.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un modelo de neu
+
+
 
 Fig. 5: VGG16 architecture.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un modelo de red neuronal con la estructura de un [**…**](#…)… **…**… … **…**…
+
+
 
 makes the network less computing demanding, which turns suitable for embedded platforms. By changing the original activation function (i.e., tanh ) to a rectified linear unit one, it is possible to extend this network for classification tasks where specific patterns have to be recognized (especially for our case of pest detection).
 
@@ -169,7 +189,11 @@ We tested these three learning model architectures to select the best trade-off 
 
 Fig. 6: MobileNetV2 architecture.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un modelo de convoluc
+
+
 
 consumption.
 
@@ -185,7 +209,11 @@ Figure 8 shows the accuracy and validation for LeNet, VGG16 and MobileNetV2 over
 
 (b) RoI with codling moth. (c) RoI with general insect.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es una foto de un insecto con su “ ” “ ” “ ” “
+
+
 
 Fig. 7: Image (a) presents a photo taken inside a pheromone based trap by the proposed smart camera while (b) and (c) present an example of extracted ROIs with a single insect during the pre-processing phase.
 
@@ -214,7 +242,11 @@ Pruning. Neural network pruning is a method of compression that involves removin
 
 Fig. 8: Training and test accuracy comparison for (a) LeNet, (b) VGG16 and (c) MobileNetV2 .
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de tres subgrá
+
+
 
 pruning is executed iteratively during the training phase, to achieve the desired accuracy during the validation phase.
 
@@ -235,7 +267,11 @@ These steps have been used to characterize the smart trap performance both in te
 
 Fig. 9: An example of an annotated photo after its evaluation. Red boxes highlights the detected codling moth (positive class) while the blue box general insects (negative class).
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es una foto de un “ “ “
+
+
 
 ## A. Power consumption
 
@@ -280,7 +316,12 @@ By considering the measured power output from the solar harvester, we measured t
 
 Fig. 10: Tasks Energy consumption breakdown comparison for a single cycle of the implemented application. Single-task energy is presented in table II for each implementation.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de barra que compara la energía de los [...]
+fu
+
+
 
 TABLE III: Battery recharge time for both a single application cycle and for fully charge the battery [20-100%] while harvesting solar energy at three different illuminance level.
 
@@ -304,11 +345,19 @@ This paper presents a computer vision solution for automating pest detection ins
 
 Fig. 11: Solar panel characterization respectively (a) at 2000 lx, (b) at 10 klx and (c) at 25 klx.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Fig. 12: Platform sustainability evaluation. The graphs presents the battery voltage trend while harvesting solar energy with a 7000 lx illuminance.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de dos líneas: una en azul y otra en rojo. La línea en azul se refiere a la **v [ ] [ ] [ ]
+
+
 
 - [6] S. Motaman, S. Ghosh, and J. Park, 'A perspective on test methodologies for supervised machine learning accelerators,' IEEE Journal on Emerging and Selected Topics in Circuits and Systems , vol. 9, no. 3, pp. 562-569, 2019.
 - [7] C. Gao, A. Rios-Navarro, X. Chen, S.-C. Liu, and T. Delbruck, 'Edgedrnn: Recurrent neural network accelerator for edge inference,' IEEE Journal on Emerging and Selected Topics in Circuits and Systems , vol. 10, no. 4, pp. 419-432, 2020.
@@ -363,14 +412,26 @@ Fig. 12: Platform sustainability evaluation. The graphs presents the battery vol
 - [54] A. Li, B. Zheng, G. Pekhimenko, and F. Long, 'Automatic horizontal fusion for gpu kernels,' arXiv preprint arXiv:2007.01277 , 2020.
 - [55] S. Ioffe and C. Szegedy, 'Batch normalization: Accelerating deep network training by reducing internal covariate shift,' in Proceedings of the 32nd International Conference on Machine Learning , ser. Proceedings of Machine Learning Research, F. Bach and D. Blei, Eds., vol. 37. Lille, France: PMLR, 07-09 Jul 2015, pp. 448-456.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es una foto de un hombre con su [ ] [ ] [ ] [
+
+
 
 Andrea Albanese received his B.S. in electrical and telecommunication engineering and his M.S. in mechatronics engineering with electronics and robotics specialization from University of Trento in 2017 and 2020 respectively. He is currently a fellow researcher at the same university with focus in machine learning optimization techniques for resource constrained environment (e.g., MCUs) applied on UAVs. He was involved for three years in the university Formula Student team with duties on power systems and embedded systems. His major areas of interest are tiny machine learning and optimization techniques, sensor fusion and autonomous navigation.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es una foto de un hombre con gafas y un tó
+
+
 
 Matteo Nardello is currently a Postdoc researcher at the Department of Industrial Engineering, University of Trento. He obtained his PhD in Systems Engineering in 2020 and M.S in the field of Electronics and Telecommunications Engineering in 2016. His research interests include the investigation of machine learning techniques applied to resource constrained embedded platforms, with a special focus on autonomous smart IoT devices and the study of new architecture for indoor localization services. His other research interests encompass modeling and hardware-software co-design of innovative solutions to reduce power requirements of distributed wireless sensors network for environmental sensing.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es una foto de un hombre con un background de ár
+
+
 
 Davide Brunelli (Senior Member, IEEE) received the M.S. (cum laude) and Ph.D. degrees in electrical engineering from the University of Bologna, Bologna, Italy, in 2002 and 2007, respectively. He is currently an associate professor at the University of Trento, Italy. His research interests include IoT and distributed lightweight unmanned aerial vehicles, the development of new techniques of energy scavenging for low-power embedded systems and energy-neutral wearable devices, Drones, UAVs and Machine Learning. He was leading industrial co- operation activities with TIM Italy, ENI, and STMicroelectronics. He has published more than 200 papers in international journals or proceedings of international conferences. He is an ACM member.

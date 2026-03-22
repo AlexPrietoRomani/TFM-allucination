@@ -17,15 +17,30 @@ tags:
   - ArXiv
 ---
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** 1. La imagen es un gráfico de líneas que representa la evolución de la “ ” “ ” “
+
+
 
 Doi:10.32604/cmc.2025.065250
 
 ## REVIEW
 
-<!-- image -->
 
-<!-- image -->
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es el logotipo de la revista "Tech Science Press" y su tendencia principal es la representación de un “C” de
+
+
+
+
+
+> **[💡 Descripción de Imagen VLM]:** 1. La imagen es un gráfico de líneas que representa un **ciclo de “Check for updates”**. La tendencia principal es que el **ciclo de “Check for updates”** es **per “….”**.
+2. No hay datos, números o nombres que no sean legibles.
+3. No se repit “….”.
+4. No es un **logotipo**, un **ad….”** o **….”**.
+
+
 
 ## Evaluation of State-of-the-Art Deep Learning Techniques for Plant Disease and Pest Detection
 
@@ -51,7 +66,11 @@ KEYWORDS: Image processing; machine learning; deep learning; vision transformer;
 
 In 2050, it's predicted that there will be 9.1 billion people on the planet [1] and, therefore, to supply the food needs of the rapidly expanding population, the agricultural output must increase by around 70%. Food security, rural livelihoods, and agricultural trade are all negatively impacted by plant pests and diseases, which cause up to 40% of worldwide crop production to be lost each year, according to the Food and Agriculture Organization (FAO) [2]. To meet the growing need for food, agricultural productivity must rise by almost 70%, as the world's population is expected to reach 9.1 billion by 2050 [1]. Early disease and pest identification and control are agronomic requirements and vital facilitators of food system resilience. Global food security goals are directly supported by emerging technologies like artificial intelligence and deep learning, which provide scalable and precise solutions that enable prompt intervention, less chemical use, and sustainable agriculture methods [2-6].
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que representa la tendencia de la **C **
+
+
 
 Fungal or fungal-like organisms primarily cause most plant diseases (around 85%). The bulk of plant diseases are generally linked to bacterial or viral pathogens, whereas only a small number are caused by certain worms [7]. According to recent research, pathogen-induced stress significantly alters chloroplast function and reduces photosynthetic efficiency, resulting in slower plant development and lower potential yield [8]. Among the most damaging fungal threats to the world's food security are wheat rust diseases, which include stem rust ('Puccinia graminis') , stripe rust ('P. striiformis') , and leaf rust ('P. triticina') . Stripe rust alone can result in total crop failure under vulnerable circumstances, and several diseases can cause catastrophic crop losses, with yearly economic costs estimated at US $5 billion worldwide [9]. Pests also cause considerable losses in agricultural production [4] as insects often feed on leaves, disrupting photosynthesis. Furthermore, pests serve as vectors for various diseases, contributing to significant crop losses worldwide [3]. For example, the bug 'L.hesperus' is a pest that severely damages cotton crops, and therefore, it is a common target of pesticide applications [10,11].
 
@@ -65,7 +84,11 @@ into a single section, this structured categorization allows researchers to effi
 
 Figure 1: Acomprehensive flow diagram illustrating the developmental stages of a typical deep learning model
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de un modelo de “ ” ” ”
+
+
 
 This survey work offers several contributions to plant pest and disease detection:
 
@@ -97,7 +120,11 @@ In Fig. 2, the organization of the paper is presented.
 
 Figure 2: The organisation of the paper
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de un [“ ”]
+
+
 
 ## 3 Detection of Plant Disease and Pests Employing Popular Deep Learning Models
 
@@ -167,43 +194,77 @@ By combining dilated convolution and global pooling, the Global Pooling Dilated 
 
 In situ experimental observations must consider real-world circumstances to assess how well deep learning architectures identify plant diseases and pests. Their application for practical disease detection and classification is limited because most of the approaches covered above rely on datasets gathered in controlled or typical environmental circumstances [50,65-67,77-80,94]. Real-time field circumstances have been addressed explicitly in only a small number of studies [66,69,70,84,87,89,102]. Several of these works' visualization techniques are depicted in Figs. 3-11.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Figure 3: Identification of maize disease (specified by orange rectangles) by heat map [45]
 
 Figure 4: Demonstration of activation in the first layers of an AlexNet model to show that it has learned to efficiently stimulate against the affected areas of the target leaf image of ' Apple Cedar Rust' (a deep blue circle indicates the diseased patches) [79]
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Figure 5: Olive leaf disease identification using segmentation and edge map [80]
 
-<!-- image -->
 
-<!-- image -->
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de unión de “ ” ” ” ”
+
+
 
 Figure 6: Bounding boxes mark the predicted outcomes of the object detection model to identify three specific pests [82]
 
-<!-- image -->
 
-(a)
+
+> **[💡 Descripción de Imagen VLM]:** La imagen parece ser un grá
+
+
 
 Figure 7: ( a ) Visualization algorithm results are compared; ( b ) Comparison of Grad-CAM [82]
 
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen parece ser un grá
+
+
+
 Figure 8: ( a ) A novel ' Teacher/student ' framework; ( b ) 'Binary threshold algorithm' for fragmentation [83]
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un “ ” ” ” ”
+
+
 
 Figure 9: Feature maps representation after the convolution layers applied to an image [102]
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de visualización de datos de un modelo de aprendo de “ ” ” ” ”
+
+
 
 Figure 10: Visualization of tomato leaf pictures using Score-CAM with accurate classification: sliced leaves with a scoreCAMheat map over the original leaves [103]
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Figure 11: Saliency maps for 'Bacterial spot, ' 'Late blight, ' 'Leaf mold, ' and 'Yellow leaf curl virus' are shown in the first, second, third, and fourth rows, respectively [104]
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de calor de una ho
+
+
 
 Fig. 3 identifies the infected maize plants using the heat map. Initially, each location of the selected image contains a lesion, which can be considered a measure of the probability that each lesion was caused by the disease. After that, a matrix form is generated using the probabilities, indicating the model's outcome for each target image region [45]. The feature maps in Fig. 4 were obtained to understand the importance of CNN topologies in discriminating between different plant diseases. The output demonstrates the decent efficiency of the ' AlexNet' architecture, which is capable of detecting plant diseases [79]. This figure also illustrates how characteristics are extracted using shallower Convolutional Neural Networks (CNNs). Compared to deeper models such as ResNet, the coarse and less selective activations of AlexNet may hamper performance in fine-grained disease classification. In Fig. 5, the plant diseases are detected using segmentation and edge maps. In the segmentation map, the yellow region appears as a white-coloured surface to highlight the lesion portion of the input leaf [80]. Segmentation, as opposed to bounding boxes, offers distinct boundaries, enhancing the quality of training data and the prediction of disease severity. Separating clustered leaf symptoms is further aided by edge-enhanced segmentation. The matrix reveals the probabilistic occurrence of lesions across spatial areas. By combining probabilities over time, these heatmaps may assist in improving
 
@@ -246,7 +307,11 @@ Correspondingly, various hybrid deep learning architectures, such as VGG-Incepti
 
 Figure 12: Plant infections and pests are frequently detected using deep learning designs
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de barra que muestra la cantidad de “Research Works” (o “Trá
+
+
 
 ## 3.1.4 State-of-the-Art Transformer Architectures for Plant Pests and Diseases Identification
 
@@ -349,11 +414,19 @@ was established between different deep learning methodologies of 1D and 2D-CNN (
 
 Figure 13: Both RGB and hyperspectral images' saliency maps. RGB images are shown by 2D CNN saliency maps, and hyperspectral images are shown by 3D CNN saliency maps [145]
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Figure 14: Results of specific tests conducted on plants using the new 'OR-AC-GAN' . 'Tomato spotted wilt virus (TSWV)' pixels are marked as red, whereas healthier pixels are marked as green [148]
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Despite the emergence of several HSI-based deep learning architectures for plant disease diagnosis, significant research gaps remain in addressing environmental variability. The goal of this research is to enhance the robustness of disease diagnosis under challenging conditions, such as changes in illumination, spectral reflectance, and field occlusion situations [150]. Table 9 outlines the advantages and limitations of hyperspectral imaging in disease and pest detection in crops and plants.
 
@@ -757,11 +830,19 @@ Leaf Dataset. Fig. 16 displays the accuracy and loss plots for the test dataset 
 
 Figure 15: The evaluation indicators of deep learning and machine learning models on the tomato leaf dataset
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de barra que compara las performances de tres modelos de int [ ] : , , . El de es de . El
+
+
 
 Figure 16: Test accuracy and loss curves for MobileNetV3 (98.1%) and SVM (90.5%) on the tomato leaf dataset
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de dos curvas: una de “Accu
+
+
 
 ## 7.3 Experimental Analysis of Vision Transformer Models on PlantVillage Dataset
 
@@ -771,7 +852,11 @@ The HvT (hvt/hierarchical-vision-transformer-large) and PMVT (pmvt/plant-model-v
 
 Figure 17: High-level overview of ViT's architecture
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un modelo de transformación de datos, específicamente un modelo de transformación de datos de [**Vision Transformer (ViT)**](https://ar [** **](https [** **
+
+
 
 Based on our prior knowledge and domain expertise, this experiment focused on classifying tomato diseases. It assessed the efficacy of five transformer-based models-HvT, PMVT, ViTAE, Tiny-LeViT, and Swin Transformer-using the PlantVillage dataset. With an initial learning rate of 0.0001, we used the Adam Optimizer for training, which dynamically lowered when it reached a plateau. All models were run with a batch size of 32 to maximise memory economy and convergence speed. Specifically, HvT and PMVT achieved test accuracies of 99.3% and 99.1%, respectively; ViTAE, Tiny-LeViT, and Swin Transformer reached 98.9%, 97.8%, and 98.2%. The training, test, and validation accuracies for the five Transformer models on the Tomato Leaf Dataset are demonstrated in Fig. 18. Fig. 19 shows the accuracy and loss plots against the test dataset for HvT and PMVT, with both achieving a testing accuracy of 99.3%. Table 13 tabulates the five models' training time and inference time for the above experiment.
 
@@ -779,11 +864,19 @@ Fig. 20 displays the confusion matrix for the Hierarchical Vision Transformer (H
 
 Figure 18: The evaluation indicators of transformer models on the tomato leaf dataset
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que compara la “ ” de ” ” ” ”
+
+
 
 Figure 19: Testing Accuracy and Loss against the Tomato Leaf dataset for the HvT (99.3%) and PMVT (99.1%)
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de dos curvas de líneas con dos ejes: el de la “X” (ab “X” “X”) y el de la “Y” (ab “Y” “Y”). La curva de la “X” (ab “X” “X”) es de color azul y la de la “Y” (ab “Y” “Y”) es de color verde. Ambas curvas se “X” “X”
+
+
 
 Table 13: Training and inference time of the five transformer models tested on the tomato leaf disease dataset [34]
 
@@ -794,13 +887,21 @@ Según Evaluation of State-of-the-Art Deep Learning Techniques for Plant Disease
 Según Evaluation of State-of-the-Art Deep Learning Techniques for Plant Disease and Pest Detection (2025), Model: Swin Transformer [36], Training time (seconds): 5600, Inference time (ms/step): 13.1.
 Figure 20: Confusion matrix for HvT on tomato disease dataset
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de confusión para un modelo de “HvT” (Hv “ ” ) “ ” ” ” ” ”
+
+
 
 A comparison of the ROC (Receiver Operating Characteristic) curves for the tomato leaf disease classification task between the MobileNetV3 and Hierarchical Vision Transformer (HvT) models is shown in Fig. 21. This graphic provides a deeper perspective than simple accuracy measurements by visualizing how effectively each model differentiates across disease classifications across different thresholds. With a remarkable AUC (Area Under the Curve) of 0.994, the HvT model demonstrated excellent discriminative power, yielding few false positives or negatives. With an AUC of 0.978, the lightweight and effective MobileNetV3 model likewise demonstrates exceptional performance, showcasing its reliability in real-world, resource-constrained settings. HvT's improved robustness and generalization are shown by its constantly higher curve, which makes it a good fit for high-stakes agricultural applications where precise and early disease identification is essential.
 
 Figure 21: ROC curve: transformer vs. CNN
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de curvas de regu
+
+
 
 Our observations suggest that vision transformers and their variants, such as HvT, are superior to popular deep learning models due to their innovative architecture, which fundamentally differs from traditional CNNs. These transformers leverage self-attention mechanisms to capture long-range dependencies and global context within images, which CNNs handle effectively due to their local receptive fields. ViT operates by partitioning an image into patches, which undergo linear embedding and subsequent processing through multiple transformer layers. This method facilitates the capture of intricate local and global dependencies within the image. Leveraging self-attention mechanisms, ViT learns hierarchical representations, achieving
 
@@ -853,7 +954,11 @@ In this experiment, we use layer-wise visualisation approaches, such as Grad-CAM
 
 Figure 22: The visualization of disease and pest affected parts using attention map (patches) &amp; heat map (red) on tomato dataset
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de “ ” ” ” ”
+
+
 
 Table 17: Layer-wise visualization of models on tomato disease dataset
 

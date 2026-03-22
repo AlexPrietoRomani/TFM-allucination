@@ -99,17 +99,17 @@ Finally, we analyze the effects on emergence when pupae were exposed to tested i
 
 The percentage of reduction in both parasitism (PR) and emergence (ER) were calculated using the descriptive analysis established by IOBC through the equation:
 
-<!-- formula-not-decoded -->
+$$\Pr o r E R = \left ( 1 - \frac { T } { C } \right ) \times 1 0 0 ,$$
 
 where R is the percentage of reduction in parasitism (PR) or emergence (ER), T is the mean  of  parasitism  or  emergence  for  treatment  and  C  is  the  mean  of  parasitism  or emergence for the negative control treatment.
 
 In addition, to provide a single result, including the lethal and sublethal (reduced parasitism, emergence, and sex ratio) effects, a reduction coefficient ( Ex ) was calculated following the equation described by Rakes et al. (2021):
 
-<!-- formula-not-decoded -->
+$$E _ { x } = 1 0 0 \left \{ 1 - \left [ \left ( 1 - \frac { E _ { \max } } { 1 0 0 } \right ) \left ( 1 - \frac { \Pr } { 1 0 0 } \right ) \left ( 1 - \frac { E R } { 1 0 0 } \right ) \left ( 1 - \frac { S R } { 1 0 0 } \right ) \right ] \right \}$$
 
 where: 𝐸𝑚𝑥 is  the  average  mortality of the treatment; PR is the reduction of treatment parasitism due to the control; ER is the emergence reduction of the treatment due to the control; SR is the differential relationship of the sex ratio between treatment and control. The parameter SR was determined as follows:
 
-<!-- formula-not-decoded -->
+$$S R = 1 0 0 - \frac { S R _ { x } . 1 0 0 } { S R c }$$
 
 where:  SRx  is  the  average  sex  ratio  of  treatment  X  and  SRc  is  the  average  sex  ratio recorded in the control treatment. After this procedure, the values of 𝐸𝑥 obtained were classified  according  to  the  4  categories  proposed  by  the  IOBC  (Hassan  et  al.,  2000), namely  (1)  harmless,  (2)  slightly  harmful,  (3)  moderately  harmful,  and  (4)  harmful, corresponding to reductions below 30%, between 31 and 79%, between 80 and 99%, and above 99%, respectively.
 
@@ -412,11 +412,19 @@ Según The temperature affects the impact levels of synthetic insecticides on a 
 Según The temperature affects the impact levels of synthetic insecticides on a parasitoid wasp used in the biological control of pentatomid pests in soybean crops (2024), Temperatures: Control, Temperatures: 73.00 ± 6.19 aA, Temperatures: 78.00 ± 2.78 aA, Temperatures: 70.00 ± 1.75 aA.
 Average percentage of emerged parasitoids followed by the same letter, do not differ statistically based on a binomial mixed generalized linear model with observational effect. Means with upper letter (on the line) means different among temperature and lower letters (in the column) differences among pesticides. The Likelihood ratio test (LR), degrees of freedom (DF) and P-value has been reported showing the differences among insecticides temperature level.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Fig. 1. Estimated slopes for the proportional mode fitted to the mortality data. Higher values indicate less mortality. Slopes estimated based on the cumulative logit models with proportional odds (LR = 1272.5, DF = 17, P-value = &lt; 0.0001).
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Fig. 2 Accumulated adult mortality of Telenomus podisi when exposed to insecticides registered for soybean crop pest management at different temperature levels. *The treatments  (Control  at  15º  C  and  chlorantraniliprole  at  15  and  30º  C)  did  not  present  mortality;
 

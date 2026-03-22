@@ -63,61 +63,79 @@ Our proposed architecture comprises multiple components as illustrated in Figure
 
 Fig. 1. Outline of the proposed MobilePlantViT. It consists of a ×1-×2-×4-×1 combination of GroupConv and Encoder blocks. The first DepthConv block acts as the stem layer, expanding the initial channel dimension from 3 to 32. The last DepthConv block serves as the patch embedding layer, while all intermediate DepthConv blocks function as spatial pooling layers with dimension reduction and channel expansion
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un modelo de [**Deep …**](https://es.wikipedia.org/wiki/Deep_…)
+**… …** [**… …**](https://en.wikipedia…)
+**… …** [**… …**](https://en…)
+**… …** [**… …**](https://…)
+**… …** [**… …**](https://…)
+**… …** [**… …**](https://…)
+**… …** [**… …**](https://…)
+**… …** [**… …**](https://…)
+**… …** [**… …**](https://…)
+**… …** [… …](https://…)
+**… …** [… …](https://…)
+**… …** [… …](https://…)
+**… …** [… …](https://…)
+**… …** [… …](https://…)
+**… …** [
+
+
 
 The CBAM stands for Convolutional Block Attention Module [37] which enhances feature representation by sequentially applying channel attention and spatial attention, allowing the network to focus on important information while suppressing less significant features. The channel attention module emphasizes identifying the important features by learning a channelwise attention map by utilizing global average pooling (GAP) &amp; global max pooling (GMP) of the feature maps followed by a multilayer perceptron (MLP) with sigmoid activation to generate attention weights. Mathematically, let F be the feature maps, then the channel attention M c ( F ) is:
 
-<!-- formula-not-decoded -->
+$$E ) ) ) ) ) ) ) )$$
 
-<!-- formula-not-decoded -->
+$$M _ { c } ( F ) = \sigma ( W _ { 1 } ( \delta ( W _ { 0 } ( G A P ( F ) ) ) + W _ { 1 } ( \delta ( W _ { 0 } ( G M P ( F ) ) ) ) ) ) \quad \text {stride ar} \\ F ^ { \prime } = M _ { c } ( F ) \odot F & & ( 1 ) & & \text {patch ex} & & \text {the patch}$$
 
 where σ is sigmoid function ( 1 1+ e -x ) , δ means ReLU activation which is max (0 , x ) , W 1 and W 0 are learnable MLP weights, ⊙ is element-wise multiplication, and F ′ is the refined feature maps with channel attention. Similarly, the spatial attention module focuses on important regions in the feature map using a 7 × 7 convolution after applying max and average pooling across channels to generate a spatial attention map. Mathematically, let F ′ be the refined feature maps after the channel attention module, then the spatial attention M s ( F ′ ) is:
 
-<!-- formula-not-decoded -->
+$$M _ { s } ( F ^ { \prime } ) = \sigma ( f ^ { 7 \times 7 } ( [ A v g P o o l ( F ^ { \prime } ) ; M a x P o o l ( F ^ { \prime } ) ] ) )$$
 
-<!-- formula-not-decoded -->
+$$F ^ { \prime \prime } = M _ { s } ( F ^ { \prime } ) \odot F ^ { \prime }$$
 
 where f 7 × 7 is a 7 × 7 convolution, and F ′′ is the refined feature maps output after CBAM. Then, we employed patch embedding with positional encoding over the extracted feature maps ( H 8 , W 8 , 8 C ) for the encoder block. The patch embedding splits the input feature maps into fixed-size patches and transforms each patch into a high-dimensional vector, forming a sequence of image patches. We used a DepthConv block with stride and kernel size equal to patch size to split the features into patches. In addition, we integrated a CBAM block into the patch extraction process. Positional encoding is also added to the patch embeddings to retain spatial information, as encoders do not naturally capture spatial relationships. Then, instead of the classic Transformer encoder, we integrated a lightweight encoder block comprising a linear self-attention block instead of the multi-head self-attention. We adapted the linear selfattention mechanism from the MobileViTv2 [10] as it enables efficient feature attention with linear complexity, suitable for resource-constraint devices. Given an input representation X , the encoder block computes the attention output:
 
-<!-- formula-not-decoded -->
+$$X ^ { \prime } = L N ( X + \text {LinearAttention} ( X ) )$$
 
 where LN represents layer normalization. In LinearAttention block, given an input sequence X ∈ R L × d , where L is the sequence length, and d is the embedding dimension, we compute the query ( Q ), key ( K ), and value ( V ) representations as:
 
-<!-- formula-not-decoded -->
+$$Q , K , V = W _ { q k v } X + b _ { q k v }$$
 
 where W qkv ∈ R (1+2 d ) × d is a learnable weight matrix, and b qkv is a bias term. The Q ∈ R L × 1 , and K,Q ∈ R L × d are obtained via linear projection. The attention or context scores are computed using a softmax function applied along the sequence length, and then go through a dropout regularization layer:
 
-<!-- formula-not-decoded -->
+$$\alpha = \text {Softmax} ( Q )$$
 
-<!-- formula-not-decoded -->
+$$\text {Softmax} ( x _ { i } ) = \frac { e ^ { x _ { i } } } { \sum _ { j = 1 } ^ { n } e ^ { x _ { j } } } \quad \text {($(8)$ from}$$
 
 where x i is the i -th input value and n is the total number of input values. Thus, α ∈ R L × 1 represents the normalized attention scores. Next, we compute the context vector as:
 
-<!-- formula-not-decoded -->
+$$C = \sum _ { i = 1 } ^ { L } \alpha _ { i } \cdot K _ { i } & & \text {and} \\ & & \text {heal} \\ & & \text {by }$$
 
 where C ∈ R 1 × d is the aggregated K representation weighted by the attention scores. The output of the attention mechanism is then obtained by applying the GELU activation on the V , followed by element-wise multiplication with the expanded context vector. Next, a linear transformation is applied:
 
-<!-- formula-not-decoded -->
+$$\hat { O } = W _ { \text {out} } ( G E L U ( V ) \odot C ) + b _ { \text {out} } \quad ( 1 0 ) \quad \text {into} \ \ t h s c r { O }$$
 
 Here, GELU activation is x Φ( x ) where the Φ( x ) is the standard gaussian cumulative distribution function [38]. W out ∈ R d × d and b out are trainable parameters. The X ′ is then processed by a feedforward network (FFN) of two linear layers with GELU and dropout regularization.
 
-<!-- formula-not-decoded -->
+$$\ F F N ( X ^ { \prime \prime } ) = ( W _ { 2 } \cdot G E L U ( W _ { 1 } X ^ { \prime } + b _ { 1 } ) + b _ { 2 } ) \quad \text { \quad \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \quad \text { \ \ } \$$
 
-<!-- formula-not-decoded -->
+$$X ^ { \prime \prime } = \ln ( X ^ { \prime } + F F N ( X ^ { \prime } ) ) \quad \ \ ( 1 2 ) \quad \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \$$
 
 where W 1 ∈ R d × dff and W 2 ∈ R d ff × d are the feedforward layer weights, and dff is the hidden dimension of the FFN. Residual connections are applied at both the attention and feedforward layers. The encoder gives us the output representation X ′′ ∈ R L × d . To obtain a global feature representation, we apply GAP along the L (sequence length):
 
-<!-- formula-not-decoded -->
+$$Z = \frac { 1 } { L } \sum _ { i = 1 } ^ { L } X _ { i } ^ { \prime \prime } & & \quad ( 1 3 ) & & \quad \text {stochastic} \\$$
 
 where Z ∈ R B × d represents the pooled feature vector and B is the batch size. Dropout is applied to prevent overfitting. Lastly, a linear layer is applied to obtain the predicted logits for classification:
 
-<!-- formula-not-decoded -->
+$$\hat { y } = W _ { c } Z ^ { \prime } + b _ { c }$$
 
 where W c ∈ R d × C and b c ∈ R C are the learnable parameters of the classifier and the output ˆ y ∈ R B × C represents the predicted logits which eventually go through a softmax to obtain class probabilities and we pick the class with the maximum value:
 
-<!-- formula-not-decoded -->
+$$p _ { i } = \text {Softmax} ( \hat { y } )$$
 
-<!-- formula-not-decoded -->
+$$\hat { c } = \arg \max _ { i } p _ { i }$$
 
 where p i represents the probability of class i ensuring ∑ C i =1 p i = 1 , and ˆ c is the predicted class.
 
@@ -135,7 +153,11 @@ Table II portrays the overall performance summary of our proposed model. The mod
 
 Fig. 2. Effects of random and pre-trained weight initialization on the train vs. validation accuracy over epochs
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 TABLE I EXPERIMENTAL SETUP AND DATA AUGMENTATION SUMMARY
 
@@ -221,7 +243,11 @@ Según MobilePlantViT: A Mobile-friendly Hybrid ViT for Generalized Plant Diseas
 Según MobilePlantViT: A Mobile-friendly Hybrid ViT for Generalized Plant Disease Image Classification (2025), Model: MobilePlantViT, Params (M): 0.69, Data: CCMT-Tomato, Accuracy: 80.05, Precision (%): 79.58, Precision (%): 79.86, Recall (%): 76.36, Recall (%): 80.05, F1-score: 0.7754, F1-score: 0.7973.
 Actual Values
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 (d) CCMT-Tomato Misclassified Samples
 

@@ -45,7 +45,11 @@ Corresponding author: marcel.salathe@epfl.ch
 
 Fig. 1. Example of leaf images from the PlantVillage dataset, representing every crop-disease pair used. 1) Apple Scab, Venturia inaequalis 2) Apple Black Rot, Botryosphaeria obtusa 3) Apple Cedar Rust, Gymnosporangium juniperi-virginianae 4) Apple healthy 5) Blueberry healthy 6) Cherry healthy 7) Cherry Powdery Mildew, Podosphaera spp. 8) Corn Gray Leaf Spot, Cercospora zeae-maydis 9) Corn Common Rust, Puccinia sorghi 10) Corn healthy 11) Corn Northern Leaf Blight, Exserohilum turcicum 12) Grape Black Rot, Guignardia bidwellii , 13) Grape Black Measles (Esca), Phaeomoniella aleophilum, Phaeomoniella chlamydospora 14) Grape Healthy 15) Grape Leaf Blight, Pseudocercospora vitis 16) Orange Huanglongbing (Citrus Greening), Candidatus Liberibacter spp. 17) Peach Bacterial Spot, Xanthomonas campestris 18) Peach healthy 19) Bell Pepper Bacterial Spot, Xanthomonas campestris 20) Bell Pepper healthy 21) Potato Early Blight, Alternaria solani 22) Potato healthy 23) Potato Late Blight, Phytophthora infestans 24) Raspberry healthy 25) Soybean healthy 26) Squash Powdery Mildew, Erysiphe cichoracearum, Sphaerotheca fuliginea 27) Strawberry Healthy 28) Strawberry Leaf Scorch, Diplocarpon earlianum 29) Tomato Bacterial Spot, Xanthomonas campestris pv. vesicatoria 30) Tomato Early Blight, Alternaria solani 31) Tomato Late Blight, Phytophthora infestans 32) Tomato Leaf Mold, Fulvia fulva 33) Tomato Septoria Leaf Spot, Septoria lycopersici 34) Tomato Two Spotted Spider Mite, Tetranychus urticae 35) Tomato Target Spot, Corynespora cassiicola 36) Tomato Mosaic Virus 37) Tomato Yellow Leaf Curl Virus 38) Tomato healthy
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 very quickly, which makes them also suitable for consumer applications on smartphones.
 
@@ -57,7 +61,11 @@ At the outset, we note that on a dataset with 38 class labels, random guessing w
 
 Fig. 2. Sample images from the three different versions of the PlantVillage dataset used in various experimental configurations.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de dos hoas de la “ ” “ ” “ ” “
+
+
 
 racy of 2.63% on average. Across all our experimental configurations, which include three visual representations of the image data (see Figure 2), the overall accuracy we obtained on the PlantVillage dataset varied from 85.53% (in case of AlexNet::TrainingFromScratch::GrayScale::80-20 ) to 99.34%(in case of GoogLeNet::TransferLearning::Color::80-20 ), hence showing strong promise of the deep learning approach for similar prediction problems. Table 1 shows the mean F 1 score, mean precision, mean recall, and overall accuracy across all our experimental configurations. All the experimental configurations run for a total of 30 epochs each, and they almost consistently converge after the first step down in the learning rate.
 
@@ -79,11 +87,19 @@ The performance of convolutional neural networks in object recognition and image
 
 (a) Example image of a leaf suffering from Apple Cedar Rust, selected from the top-20 images returned by Bing Image search for the keywords "Apple Cedar Rust Leaves" on April 4th, 2016. Image Reference : Clemson University - USDA Cooperative Extension Slide Series, Bugwood.org
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es una foto de una hoja de la “ “ “ “
+
+
 
 (b) Visualization of activations in the first convolution layer( conv1 ) of an AlexNet architecture trained using AlexNet:Color:TrainFromScratch:80-20 when doing a forward pass on the image in Figure 3(a)
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Fig. 3. Visualization of activations in the initial layers of an AlexNet architecture demonstrating that the model has learnt to efficiently activate against the diseased spots on the example leaf
 
@@ -125,23 +141,43 @@ Across all our experiments, we use three different versions of the whole PlantVi
 
 (a) Comparison of progression of mean F 1 score across all experiments, grouped by deep learning architecture
 
-<!-- image -->
 
-<!-- image -->
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que representa la evolución de la **C [ ] ** ** **
+
+
+
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de dos líneas que representan la evolución de dos variables en el tiempo. La línea azul representa la variable “Training” y la línea verde representa la variable “Testing”. La tendencia principal es que la variable “Training” es mayor que la variable “Testing” en la mayoría de los puntos de la curv . La conclusión principal es que la variable “Training” es más . La imagen es un gráfico de dos . La variable “Training” es
+
+
 
 (b) Comparison of progression of mean F 1 score across all experiments, grouped by training mechanism
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que muestra la curvatura de una curv
+
+
 
 (d) Comparison of progression of mean F 1 score across all experiments, grouped by train-test set splits
 
 (c) Comparison of progression of train-loss and test-loss across all experiments.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que muestra la evolución de dos variables en el tiempo. La tendencia principal es que ambas variables se acu
+
+
 
 (e) Comparison of progression of mean F 1 score across all experiments, grouped by dataset type
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que muestra la evolución de dos variables: el **Má
+
+
 
 Fig. 4. Progression of mean F1 score and loss through the training period of 30 epochs across all experiments, grouped by experimental configuration parameters. The intensity of a particular class at any point is proportional to the corresponding uncertainty across all experiments with the particular configurations. A similar plot of all the direct observations can be found in the Supplementary Material.
 

@@ -15,7 +15,11 @@ tags:
 
 ISSN: 2184-0261
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** 1. La imagen es un gráfico de líneas que representa la ev
+
+
 
 Received:
 
@@ -47,7 +51,11 @@ R
 
 eview Article
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 ## Leveraging deep learning for plant disease identification: a bibliometric analysis in SCOPUS from 2018 to 2024
 
@@ -153,85 +161,85 @@ DC-VAEs represent an advanced extension of the traditional Variational  Autoenco
 
 A Generative Adversarial Network (GAN) (Goodfellow et al., 2014) is not a single model. It is a combination of two models. The first model is a Generator model ( G ), while the second is a Discriminator model ( D ). D learns the conditional probability of the target variable given the input variable, expressed as:
 
-<!-- formula-not-decoded -->
+$$P \left ( Y | X = x \right )$$
 
 Most common examples are logistic regression, linear regression, etc. G learns  the  joint  probability  distribution  of  the  input variable and the output variable, expressed as:
 
-<!-- formula-not-decoded -->
+$$& P ( X , Y ) \\ & = P ( X | Y ) P ( Y ) \\ & = P ( Y | X ) P ( X )$$
 
 If  the  model wants to make a prediction, then it uses bayes theorem and computes the conditional probability of the target variable, given the input variable, expressed as:
 
-<!-- formula-not-decoded -->
+$$P ( Y | X ) = \frac { P ( X | Y ) } { P ( X ) }$$
 
 The most common example is the Naïve Bayes model. The biggest advantage of generative models ( G ) over discriminatory models ( D ) is that we can use generative models to make new instances of data, since in generative models, we are learning the distribution function of the data itself. This is not possible with a discriminator. We use the generator to produce 'fake' data points, then use the discriminator to determine if a given data point is an original data point, or it has been produced by a generator. The G and D models work in an adversarial setup, i.e., they compete with each other, then get better and better at their jobs.
 
 It is important to examine the high-level structure of a GAN. G and D are nothing but multi-layer neural networks (MLNNs). MLNNs are used here because they can approximate any function. This can be proven from the universal approximation theorem .  Let the weights of G and D be and θ d ,  respectively. Suppose that the distribution function of the original data is:
 
-<!-- formula-not-decoded -->
+$$\rho _ { d a t a } ( x )$$
 
 In reality, it is not really possible to draw or even mathematically compute the distribution function of the original data. This is due to the fact that we input data types like voice, images and videos, which are very high-dimensional. Let us consider the normal distribution as a noise distribution:
 
-<!-- formula-not-decoded -->
+$$\rho _ { z } \left ( z \right )$$
 
 Consider  that  we  randomly  sample  data  from  the  noise distribution and feed it to G . G will then output ( ) G z . The distribution of ( ) G z is described as the same distribution with the original data:
 
-<!-- formula-not-decoded -->
+$$\rho _ { _ { \beta } } ( x )$$
 
 This is described as such, since the domain of the original data is the same as the range of . ( ) G z This is important, since the goal
 
 is to try to replicate the original data. It is important to retain the following expressions as the distributions of the original data, the noise and the output of the generator function, respectively:
 
-<!-- formula-not-decoded -->
+$$\rho _ { d a t a } , \rho _ { z } , \rho _ { g }$$
 
 Consider that the labeled reconstructed data and the original data are passed to the discriminator, D . D would learn to return a single output, which would inform about the probability of the input belonging to the original data. Then, when next an unlabeled input is presented to D , it would try to determine if  it  is  from the generator or from the original data class. As D improves, G would also be trained to better learn how to deceive D . So, the objectives of D and G can be interpreted as: one player is attempting to maximize its probability of winning, while the other player is trying to minimize the probability of winning of the first player. This is a sort of Minmax Game. The aforementioned interpretation begs the question of what exactly should be maximized or minimized. In fact, it is the Value Function (VF), as expressed below:
 
-<!-- formula-not-decoded -->
+$$\min _ { G \ D } \max _ { \ D } V ( G , D ) = E _ { x - p _ { \omega \omega } } \left [ \ln \left ( D ( x ) \right ) \right ) + E _ { z - p _ { z } } \left [ \ln \left ( 1 - D ( G ( z ) ) \right ) \right ] \right ] _ { \ } T h e a b { 0 }$$
 
 From VF above, it can be observed that G seeks to minimize the expression, while D seeks to maximize it. Upon a closer look, one may easily realize that the expression above closely resembles the binary cross-entropy function, which is presented below (for one input):
 
-<!-- formula-not-decoded -->
+$$L = - \sum y \ln \hat { y } + ( 1 - y ) \ln \left ( 1 - \hat { y } \right )$$
 
 For the moment, let the negative sign and the summation be ignored. The remainder of the expression is just the binary cross-entropy function for a single input. y is the ground truth, i.e., the label, while ∧ y is the prediction of the label.
 
-<!-- formula-not-decoded -->
+$$W h e n \, y & = 1 , \, \hat { y } \, = \, D ( x ) \Rightarrow L = \ln [ D ( x ) ] \\ W h e n \, y & = 0 , \, \hat { y } \, = \, D ( C ( x ) ) \, \cup \, I \, \coprod \, L \, [ I ] \, \ D ( C ( x ) )$$
 
-<!-- formula-not-decoded -->
+$$W h e n \, y = 0 , \, \stackrel { \stackrel { \sim } { y } } { y } = D ( G ( z ) ) \Rightarrow L = \ln \left [ 1 - D ( G ( z ) ) \right ]$$
 
 Adding,
 
-<!-- formula-not-decoded -->
+$$L = \ln \left [ D ( x ) \right ] + \ln \left [ 1 - D \left ( G ( Z ) \right ) \right ]$$
 
 It is worth understanding that this expression is valid for only 1 data point. It is necessary to extend it to the entire training dataset.  To  represent  this  mathematically,  we  need  to  use expectations . An expectation is the average value of the result of an experiment, if the experiment is performed a large value of times. The formula is straight forward:
 
-<!-- formula-not-decoded -->
+$$E ( x ) = \sum x p ( x )$$
 
 It consists in adding the products of all possible outcomes and their respective probabilities. It is a sort of a weighted mean. So, applying the expectation on:
 
-<!-- formula-not-decoded -->
+$$L = \ln \left [ D ( x ) \right ] + \ln \left [ 1 - D \left ( G ( Z ) \right ) \right ]$$
 
 We get:
 
-<!-- formula-not-decoded -->
+$$E ( L ) = E \left ( \ln \left [ D ( x ) \right ] \right ) + E \left ( \ln \left [ 1 - D \left ( G ( Z ) \right ) \right ] \right )$$
 
 We are adding all the scores with their probabilities:
 
-<!-- formula-not-decoded -->
+$$\Sigma p _ { _ { d a t a } } ( x ) \ln \left [ D ( x ) \right ] + \sum \Sigma p _ { _ { z } } ( z ) \ln \left [ 1 - D ( G ( z ) ) \right ]$$
 
 But this is only true for discrete distributions. If we consider ρ ρ ρ , , data z g to be continuous distributions, we obtain:
 
-<!-- formula-not-decoded -->
+$$\i p _ { d a t a } ( x ) \ln \left [ D ( x ) \right ] d x + \int p _ { z } ( z ) \ln \left [ 1 - D ( G ( z ) ) \right ] d z$$
 
 The above integrals (sums) of probabilities are written in short form as , and so the VF for GANs is defined:
 
-<!-- formula-not-decoded -->
+$$\min _ { G \ D } & V ( G , D ) = E _ { x = p _ { D } a _ { s } } \left [ \ln ( D ( x ) ) \right ] \\ + E _ { z - p _ { s } } & \left [ \ln \left ( 1 - D ( G ( z ) ) \right ) \right ]$$
 
 In  practice,  it  is  necessary  to  explain  how  the  GAN  VF  is optimized. In this case, the stochastic gradient descent method is  considered.  First,  the  big  training  loop  (BTL)  is  entered. Within BTL, the learning of G is fixed. The inner loop for D (ILD) is then entered. ILD will continue for k steps. In IDL, m data points are sampled from the original data, and then m data points are sampled from the fake data. θ d defined above is then updated by gradient descent:
 
-<!-- formula-not-decoded -->
+$$\frac { \partial } { \partial \theta _ { d } } \frac { 1 } { m } \left [ \ln \left [ D ( x ) \right ] + \ln \left [ 1 - D \left ( G ( z ) \right ) \right ] \right ] \right ]$$
 
 This is because the discriminator is trying to maximize the value function. After maximizing k updates of D , we exit ILD and turn to fixing the learning of D . Now, G has to be trained. For this, m data samples are sampled, and the weights of the generator θ g are updated by gradient descent.
 
-<!-- formula-not-decoded -->
+$$\frac { \partial } { \partial \theta _ { g } } \frac { 1 } { m } \left [ \ln \left [ 1 - D ( G ( z ) ) \right ] \right ]$$
 
 This is because the generator is trying to minimize the value function. It  is  very  important  to  recognize  that  for  every k updates of the discriminator, the generator is updated once. A pertinent question remains - What is the guarantee that G
 
@@ -239,25 +247,25 @@ Albert et al.
 
 would surely replicate ( ) ρ data x ? - it is necessary to prove that ( ) ρ g x will converge to ( ) ρ data x if G is able to find the global minimum of VF . In other words, it is necessary to show that the global optimality p\_g = p\_data at the global minimum of VF . So, for a fixed G in:
 
-<!-- formula-not-decoded -->
+$$V ( G , D ) = \int _ { x } \ln \left [ D ( x ) \right ] + \rho _ { _ { s } } ( x ) \ln \left [ 1 - D ( x ) \right ] d x$$
 
 the aim is to find the value of D for which D(x) is maximum. It turns out that the answer is:
 
-<!-- formula-not-decoded -->
+$$\frac { \rho _ { _ { d a t a } } ( x ) } { \rho _ { _ { d a t a } } ( x ) + \rho _ { _ { g } } ( x ) }$$
 
 Fixing D(x) as D above, then replacing D(x) with the expression, the expression for VF (with a fixed D(x) ) becomes:
 
-<!-- formula-not-decoded -->
+$$\text {pxression for VF (with a fixed D(x))} \, \text {becomes:} \\ \min _ { C } V = E _ { x \sim p _ { s s } } \ln \left ( \frac { p _ { _ { d a t a } } ( x ) } { p _ { _ { d a t a } } ( x ) + p _ { _ { g } } ( x ) } \right ) \\ + E _ { x \sim p _ { s } } \ln \left ( 1 - \frac { p _ { _ { d a t a } } ( x ) } { p _ { _ { d a t a } } ( x ) + p _ { _ { s } } ( x ) } \right ) \\ \min _ { C } V = E _ { x \sim p _ { s s } } \ln \left ( \frac { p _ { _ { d a t a } } ( x ) } { p _ { _ { d a t a } } ( x ) + p _ { _ { g } } ( x ) } \right ) \\ + E _ { x \sim p _ { s } } \ln \left ( \frac { p _ { _ { d a t a } } ( x ) } { p _ { _ { d a t a } } ( x ) + p _ { _ { g } } ( x ) } \right ) \\ \intertext { \quad } \min _ { C } V = E _ { x \sim p _ { s s } } \ln \left ( \frac { p _ { _ { d a t a } } ( x ) } { p _ { _ { d a t a } } ( x ) + p _ { _ { g } } ( x ) } \right ) \\ + E _ { x \sim p _ { s } } \ln \left ( \frac { p _ { _ { d a t a } } ( x ) } { p _ { _ { d a t a } } ( x ) + p _ { _ { g } } ( x ) } \right ) \\ \intertext { \quad } \intertext { \quad }$$
 
 Recall that the burden of proof is defined as the probability distribution in the generated output is equal to the probability distribution in the original data . So, it is logical to examine some  of  the  methods  used  to  measure  the  difference between two generations. One of the most famous methods is JS  divergence .  The  formula  for  JS  divergence  looks surprisingly  close  to  the  above  expression.  JS  divergence is expressed as:
 
-<!-- formula-not-decoded -->
+$$J S ( \rho _ { _ { 1 } } | | \rho _ { _ { 2 } } ) = \frac { 1 } { 2 } E _ { x \sim p _ { _ { 1 } } } \ln \left ( \frac { \rho _ { _ { 1 } } } { \rho _ { _ { 1 } } + \rho _ { _ { 2 } } } \right ) + \frac { 1 } { 2 } E _ { x \sim p _ { _ { 2 } } } \ln \left ( \frac { \rho _ { _ { 2 } } } { \rho _ { _ { 1 } } + \rho _ { _ { 2 } } } \right ) \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \quad \text {Cov} \$$
 
 Subtracting two logarithms from the JS divergence equation and using the result to modify the latest VF expression, the result becomes:
 
 Therefore,
 
-<!-- formula-not-decoded -->
+$$\min _ { G } V = 2 J S \left ( \rho _ { _ { d a t a } } | | \rho _ { _ { g } } \right ) - 2 \ln 2$$
 
 So, the minimum of the above expression (- 2ln2) is attained only when ρ data equals ρ g . It has therefore been proven that at the global minimum of VF , ρ data equals ρ g .
 
@@ -272,7 +280,7 @@ Different types of GANs have been developed to enhance their  capabilities,  eig
 
 Conditional Generative Adversarial Networks (cGANs) are an extension of the traditional GANs, designed to generate data conditioned on specific input labels or features. The architecture of a classical cGAN consists of two primary components: the generator and the discriminator each tailored to incorporate conditional information. The generator in a cGAN is responsible
 
-<!-- formula-not-decoded -->
+$$\min _ { c } V = E _ { x \sim p _ { e s s } } \ln \left ( \frac { \rho _ { _ { d a t a } } ( x ) } { \frac { \rho _ { _ { d a t a } } ( x ) + \rho _ { _ { g } } ( x ) } { 2 } } \right ) \\ + E _ { x \sim p _ { e s s } } \ln \left ( \frac { \rho _ { _ { g } } ( x ) } { \frac { \rho _ { _ { g } } ( x ) + \rho _ { _ { e } } ( x ) } { 2 } } \right ) - 2 \ln 2$$
 
 for  producing  synthetic  data  that  resembles  real  data,  but with the added capability of conditioning its output based on input labels. This is achieved by feeding both random noise and a conditional label into the generator. The random noise, typically sampled from a Gaussian distribution, serves as the latent variable, while the conditional label informs the generator about the specific type of data to produce. For instance, if the task is to generate images of handwritten digits, the generator would receive a label indicating which digit (0-9) to create. The architecture often employs deconvolutional layers to transform this combined input into high-dimensional image outputs. On the other hand, the discriminator functions as a binary classifier that evaluates whether a given input is real (from the training dataset) or fake (produced by the generator). In a cGAN, the discriminator also receives the conditional label as part of its input. This allows it to not only assess the authenticity of the image but also check if it corresponds correctly to the provided label. The discriminator typically consists of convolutional layers that progressively downsample the input image while extracting relevant features to make its classification. The training process of cGANs involves a min-max optimization framework where the generator aims to minimize its loss (i.e., successfully fooling the discriminator), while the discriminator seeks to maximize its  accuracy  in  distinguishing  real  from  fake  images.  This adversarial training continues iteratively, with both networks improving through feedback from one another. One significant advantage of cGANs over traditional GANs is their ability to  control  output  generation  based  on  specific  conditions, leading to faster convergence during training and more relevant outputs during inference. For example, in applications such as image-to-image translation or text-to-image synthesis, cGANs can generate desired outputs by simply specifying conditions, making them versatile tools in various generative tasks (Mirza &amp; Osindero, 2014; Isola et al., 2018; DeVries et al., 2019; Kinakh et al., 2021; Boulahbal et al., 2022; He et al., 2022; Hou et al., 2022; Kang et al., 2024).
 
@@ -328,7 +336,11 @@ The keyword co-occurrence network visualization (Figure 2) provides  an  overvie
 
 Figure 1: Co-authorship  networks.  a)  Co-authorship  network  for authors having 3 or more publications and b) Co-authorship network for authors having 1 or more publications
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que representa la evolución de la “ ” ” ” ” ”
+
+
 
 are represented as nodes, with the size of each node indicating the frequency of the keyword's occurrence. The lines connecting the nodes represent the co-occurrence of keywords in the same documents, with the thickness of the lines indicating the strength of the co-occurrence. The most prominent keyword in the network is 'deep learning,' which is central and has the largest  node,  indicating  its  high  frequency  and  importance in  the  research  domain.  Other  significant  keywords  include 'convolutional  neural  networks,'  'learning  systems,'  and 'disease detection,' which are closely related to deep learning. The network also includes more specific terms such as 'tomato leaf,'  'leaf  disease  detection,' and 'plant leaf,' highlighting the  focus  on  plant  disease  identification.  The  color  of  the nodes and edges represents the average publication year of the documents in which the keywords appear, with a gradient from blue (earlier years) to yellow (more recent years). This color coding provides insight into the temporal evolution of the research topics. For example, keywords like 'deep learning' and 'convolutional neural networks' are more recent, as indicated by their yellowish color, while some other terms might appear in earlier years, shown in blue or green. This keyword co-occurrence network is interesting and relevant because it provides a visual representation of the research landscape, showing how different topics are interconnected and how the focus of research has evolved over time. It helps researchers identify key areas of interest, emerging trends, and potential gaps in the literature.
 
@@ -338,7 +350,11 @@ This  report  assesses  researchers'  impact  through  citation metrics,  highli
 
 Figure 2: Keyword co-occurrence network.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de [**inter … … … …
+
+
 
 C., Yingchun, L., and Yujian, L. stands out with a remarkable total of 764 citations. This substantial figure indicates a significant impact on their field, suggesting that their research addresses critical issues or introduces innovative concepts that resonate widely within the academic community. Following closely, Arnal Barbedo's document with 485 citations also reflects a significant impact. Additionally, the collaborative work of authors such as Ali, M. E., Apon, S. H., Arko, P . S., Iqbal Khan, M. A., Nowrin, F., Rahman, C. R., and Wasif, A. has garnered 356 citations, further emphasizing their contributions to critical issues in their respective fields. Zhang's contributions are noteworthy due to the accumulation of 283 citations across three separate documents. Similarly,  Chen's  six  documents  totaling  261 citations highlight a prolific output and sustained influence in his research area. The work co-authored by Coppola, G., Hu, Y., Liang, Q., Sun, W ., and Xiang, S. has received 200 citations, indicating  valuable  contributions  that  advance  knowledge within their disciplines. Authors Biswas, D. and Mukti, I. Z.'s co-authored document with 190 citations further illustrates the significance of their research contributions. The analysis reveals that citation counts serve as a valuable metric for assessing the impact of researchers' work within their fields. The significant citation numbers achieved by Njuki, Arnal Barbedo, and others illustrate how addressing critical issues or introducing innovative concepts can lead to widespread recognition and influence in academia. Moreover, the presence of multiple documents by authors like Zhang and Chen indicates not only prolific output but also an established reputation within their respective areas of study. Such patterns suggest that these researchers are not only contributing valuable knowledge but are also shaping ongoing discourse in their fields. The findings highlight the importance of collaboration among researchers to enhance impact through collective expertise and diverse perspectives. Future research can benefit from examining the specific themes or methodologies employed by these highly cited works to understand better what factors contribute to high citation counts. Additionally, it may be beneficial to explore how these citation metrics correlate with practical applications or advancements in technology and policy influenced by this research.
 
@@ -348,7 +364,11 @@ The country-based citation network (Figure 3) provides a fascinating  insight  i
 
 Figure 3: Country-based citation network
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que representa la inter
+
+
 
 ## Document-based Bibliographic Coupling
 
@@ -356,7 +376,11 @@ The document-based bibliographic coupling network (Figure 4) provides a comprehe
 
 Figure 4: Document-based bibliographic coupling network
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de [**inter [**_**_**
+
+
 
 ## Author-based Co-citation Analysis
 
@@ -368,11 +392,19 @@ The publication and citation trends (Figure 6) in this context of  deep  learnin
 
 Figure 5: Author-based co-citation network
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de [**inter … … … …
+
+
 
 Figure 6: Publication and citation trends
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de dos subgrá
+
+
 
 in  addressing  plant  health  challenges.  On  the  other  hand, the citation trend graph presents a more fluctuating pattern. Citations peaked dramatically in 2019, followed by a decline in the subsequent years, with another rise in 2022 before dropping again in 2023 and 2024. This fluctuation suggests that while the number of publications has generally increased, the impact or recognition of these publications, as measured by citations, has varied significantly year by year. The peak in citations in 2019, despite a lower number of publications, indicates that earlier research in deep learning applications for plant disease identification might have had a higher impact or was more widely  recognized.  Conversely,  the  decline  in  citations  in
 

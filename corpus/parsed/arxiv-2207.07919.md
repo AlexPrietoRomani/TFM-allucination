@@ -90,19 +90,23 @@ This section is devoted to the proposed model PlantXViT that uses ViT for plant 
 
 With the widespread success of transformer networks in natural language processing problems [21], Dosovitskiy et al. [22] developed the ViT model based on the architecture of the original transformer. The ViT is composed of self attention blocks and multilayer perceptron (MLP) networks with a linear projection and positional embedding mechanism for an input image. The organization of a typical ViT is presented in Fig. 1. As presented, the input image is divided into fixed size non-overlapping patches. Further, patches are flattened and positional embedding is performed with linear projection. The positional embedding is basically used to retain the positional information of patches with respect to the original image. The output vector is then passed to a stack of N number of transformer blocks. The main components of a typical transformer block are multi-head self-attention (MHA) and MLP. Each one is preceded by a normalisation layer and residual connection at the end. MHA includes self-attention, which is applied to each patch individually. In MHA, the input vector is transformed into three separate vectors: query (Q), key (K), and value (V). They are computed as Q = XW Q , K = XW K , and V = V W Q ; where W Q , W K , and W V are the weight matrices. A dot-product of Q and K is taken to generate a score matrix based on the saliency of the embedded patch. Then, the SoftMax activation function is applied to the score matrix. Further, the output is multiplied into V to generate the self-attention result as shown in Eq. 1 where d k represents the dimension of the vector K .
 
-<!-- formula-not-decoded -->
+$$S A ( Q , K , V ) = S o f t M a x ( \frac { Q K ^ { T } } { \sqrt { d _ { k } } } ) * V$$
 
 Figure 1: ViT block with multi-head self-attention block and self-attention
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un modelo de inteligencia [**_**_**_**
+
+
 
 Finally, self-attention matrices are combined and passed onto a linear layer followed by a regression head. Self-attention enables the selection of relevant semantic features at image locations for classification. There can be any number of self-attentions present in the transformer encoder, known as MHA. Output of the MHA block can be calculated using Eq. 2. MLP is stacked in the transformer block after the MHA layer. MLP includes ANN layers with a GeLU activation function. The GELU activation is calculated by multiplying the input by its Bernoulli distribution. It has skip connections from the output of MHA, as presented in Fig. 1. The output of the transformer block can be calculated using Eq. 3.
 
-<!-- formula-not-decoded -->
+$$M H A _ { o u t } = M H A ( N O R M ( x _ { i n } ) ) + x _ { i n }$$
 
 Where x in is the input to transformer block NORM is the normalization layer, MHA is multi-head self-attention, and MHA out is the output of multi-head self attention layer.
 
-<!-- formula-not-decoded -->
+$$T F _ { o u t } = M L P ( N O R M ( M H A _ { o u t } ) ) + M H A _ { o u t }$$
 
 Where MLP is the multi layer perceptron block, and TF out is the output of the transformer block.
 
@@ -114,7 +118,11 @@ The PlantXViT model takes an input of size 224 × 224 × 3 as shown in Fig. 2. T
 
 Figure 2: Block diagram of proposed PlantXViT
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un modelo de inteligencia artificial (IA) que se utiliza para la [**_**_**_
+
+
 
 The feature map is then converted into patches, each of size 5 × 5 . The flattened patches are then passed through linear projection and generate feature vector of size 121 × 16 . These vectors are fed to a stack of four transformer blocks for features extraction. Finally, the global average pooling layer is added to convert the output of the transformer block into a 1-dimensional vector. At the end, a fully connected layer with softmax activation is added, with the number of neurons equal to the number of classes in the dataset. The layer-wise parameter count is presented in Table 2. For a dataset with 4 class labels, the model contains 850 , 500 total trainable parameters. The model is trained, validated and tested on a variety of datasets. The experimental results on all the datasets are presented in Section 3.
 
@@ -147,7 +155,7 @@ The plant disease detection model PlantXViT was developed using five publicly av
 
 After resizing all of the images in each dataset to 224 × 224 × 3 , the PlantXViT model was trained using training subsets from the datasets. For training the model, categorical cross-entropy loss with the Adam optimizer was used. The cross-entropy loss is defined in Eq. 4. The learning rate was set to 0.0001 and the batch size to 16. The validation dataset was used for the evaluation of the model's performance after each epoch. Once the model performed with the desired level of classification accuracy on the training and validation subsets, it was evaluated on the test dataset.
 
-<!-- formula-not-decoded -->
+$$L o s s = - \frac { 1 } { n } \sum _ { i = 1 } ^ { n } y _ { i } \log \hat { y } _ { i }$$
 
 Here the loss for all the n samples in a batch was calculated using y i as the actual label and ˆ y i as the predicted value of the i-th sample.
 
@@ -170,35 +178,39 @@ Accuracy : Accuracy is a widely used performance metric for the image classifica
 
 Figure 3: Sample images from all the datasets: (a) rust (Apple), (b) citrus canker (Embrapa) (c) northern leaf blight (Maize) (d) potato late blight (PlantVillage) (e) leaf scald (Rice)
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es una serie de cinco fotos de hoas de plantas con manas de “ ” ” ” ”
+
+
 
 the better performance is attained. Accuracy is defined as follows in Eq. 5.
 
-<!-- formula-not-decoded -->
+$$A c c u r a c y = \frac { ( T P + T N ) } { ( T P + T N + F P + F N ) }$$
 
 A true positive (TP) is the count of the samples belonging to a particular class A and predicted correctly in class A. Class true negative (TN) is the count of the samples that belong to class B and are predicted as class B. False-positive (FP) is the count of the samples that belong to class B but are predicted as A, and false-negative (FN) is the count of the samples that belong to class A but are predicted as class B.
 
 Precision : It is the ratio of true positives to all predicted positives. It is in between the range of 0 and 1. The precision value should be as high as possible to define the preciseness of the algorithm. The formula of the precision is presented in Eq. 6.
 
-<!-- formula-not-decoded -->
+$$P r e c i s i o n = \frac { T P } { ( T P + F P ) }$$
 
 Recall : It defined the ratio between the true positive labels to all the actual positive labels. The value of recall lies in between 0 to 1. It is calculated as shown in Eq. 7.
 
-<!-- formula-not-decoded -->
+$$R e c a l l = \frac { T P } { ( T P + F N ) }$$
 
 F1-Score : It relates Precision and Recall by calculating the harmonic mean between them. The formula for F1-score is depicted in Eq. 8.
 
-<!-- formula-not-decoded -->
+$$F 1 - S c o r e = 2 * \frac { ( P r e c i s i o n * R e c a l l ) } { ( P r e c i s i o n + R e c a l l ) }$$
 
 Area Under the Curve (AUC) : AUC is the area covered by the receiver characteristic operator (ROC) curve. The ROC is calculated using the plot of true positive rate (TPR) (refer Eq. 9) and false positive rate (FPR) (refer Eq. 10).
 
-<!-- formula-not-decoded -->
+$$T P R = \frac { T P } { ( T P + F N ) }$$
 
-<!-- formula-not-decoded -->
+$$F P R = \frac { F P } { ( F P + T N ) }$$
 
 Cohen's Kappa Score : Cohen's kappa coefficient or score is a probability based measure where the outcome is the level of agreement parties for classification problem. The formula of kappa score calculation is shown below in Eq. 11.
 
-<!-- formula-not-decoded -->
+$$K a p p a = \frac { p _ { o } - p _ { e } } { ( 1 - p _ { e } ) }$$
 
 Where p o is the relative agreement probability and p e is the hypothetical agreement probability between the parties.
 
@@ -290,11 +302,19 @@ Thakur et al.
 
 Figure 4: Accuracy and loss graph for (a) Apple, (b) Embrapa, (c) Maize, (d) PlantVillage, and (e) Rice datasets.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Figure 5: Normalized confusion matrix for (a) Apple, (b) maize, and (c) Rice datasets.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de barra de dos subgrá
+
+
 
 PlantXViT is compared with five recently introduced CNN-based plant disease classification models [15, 16, 18-20]. The models chosen for comparison in this work are mainly recent models with attention mechanisms and lightweight structures. Each model represents a unique technique for disease detection, which makes the comparative results instructive. The parameters of the models are set to the same as the PlantXViT parameters for training. Table 6 shows the quantitative results of the different CNN models on all the five datasets. The PlantXViT model has an accuracy of 93.55%, 89.24%, 92.59%, 98.86%, and 98.33% on Apple, Embrapa, Maize, PlantVillage, and Rice datasets, respectively. Table 6 illustrates that the CNN models [15, 16, 18-20] designed on the basis of the attention mechanism are less effective than PlantXViT. It is able to achieve the best performance in all metrics for all five datasets.
 
@@ -304,7 +324,11 @@ In order to explain the effectiveness of PlantXViT in extracting right features 
 
 Figure 6: ROC for (a) Apple, (b) Maize, (c) Rice, (d) Embrapa, and (e) PlantVillage datasets.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 t-SNE features for all state-of-the-art methods have been compared to analyze distinctive feature extraction capabilities of different methods. Fig. 7 (a)(6) shows that the features are easily distinguishable and are the best among all other
 
@@ -355,15 +379,27 @@ LIME is another interpretability method that uses model-agnostic features for an
 
 Figure 7: t-SNE plots for (a) Apple and (b) Embrapa datasets. (1) Karthik et al. [15] (2) Chen et al. [16] (3) Chen et al. [19] (4) Chen et al. [18] (5) Zhao et al. [20] (6) PlantXViT
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Figure 8: t-SNE plots for (c) Maize and (d) PlantVillage datasets. (1) Karthik et al. [15] (2) Chen et al. [16] (3) Chen et al. [19] (4) Chen et al. [18] (5) Zhao et al. [20] (6) PlantXViT
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Figure 9: t-SNE plots for (e) Rice dataset. (1) Karthik et al. [15] (2) Chen et al. [16] (3) Chen et al. [19] (4) Chen et al. [18] (5) Zhao et al. [20] (6) PlantXViT
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de 6 subgrá
+
+
 
 It may be noted that the model by Karthik et al. [15] is not able to identify the disease area correctly for the sample from PlantVillage dataset. Similarly, the model by Chen et al. [19] is not able to identify the disease correctly. The model by Chen et al. [16] generates comparatively better results. Further, the model by Chen et al. [18] generates good results for apple and Rice datasets, but not for other samples. However, the LIME results for Zhao et al. [20] indicate that the results are not much explainable for all the five datasets. It is indeed remarkable that the proposed PlantXViT model is able to capture the disease portion with better precision in the case of all the five datasets. These samples are just representative of how the methods are interpreting different types of diseases. These results have been verified for a large number of samples from the test datasets.
 
@@ -377,13 +413,21 @@ In the present work, a ViT enabled CNN model is proposed for plant disease detec
 
 Figure 10: Grad-CAMs for (1) Apple, (2) Embrapa, (3) Maize, (4) PlantVillage, and (5) Rice datasets. (a) input image (b) Karthik et al. [15] (c) Chen et al. [16] (d) Chen et al. [19] (e) Chen et al. [18] (f) Zhao et al. [20] (g) PlantXViT
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 ## Thakur et al.
 
 Figure 11: LIME for (1) Apple, (2) Embrapa, (3) Maize, (4) PlantVillage, and (5) Rice datasets. (a) input image (b) Karthik et al. [15] (c) Chen et al. [16] (d) Chen et al. [19] (e) Chen et al. [18] (f) Zhao et al. [20] (g) PlantXViT
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de [**C **] ** **
+
+
 
 Thakur et al.
 

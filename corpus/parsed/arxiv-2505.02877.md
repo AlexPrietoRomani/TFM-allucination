@@ -45,7 +45,11 @@ The proposed framework utilizes partitioning to split the DNN model by using sma
 
 Fig. 1. Proposed Wireless Collaborated Inference Acceleration Framework
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un modelo de neu
+
+
 
 The  framework  accelerates  collaborative  inference  through  two  core  stages:  (1) DRL-based layer-wise sparsity optimization for model compression and (2) latencyaware greedy search for cloud-edge partition point selection. As depicted in Fig.1, a pre-trained model is first compressed via reinforcement learning to determine layerspecific  pruning  strategies,  then  partitioned  at  the  latency-optimal  split  point  using greedy evaluation. The resulting edge-side and cloud-side submodels are deployed accordingly, achieving minimal end-to-end latency while balancing computational and communication resources.
 
@@ -55,7 +59,7 @@ Model  compression  employs  deep  reinforcement  learning  to  make  decisions 
 
 The AMC method [5] will be utilized for automated pruning. Deep Deterministic Policy Gradient (DDPG) [13] is employed to determine the pruning ratio for each layer. The state space represents the space in which the problem is solved, and here the environment is the parameters of each network layer. For each network layer i , its state si can be described as follows
 
-<!-- formula-not-decoded -->
+$$( i , n , c , h , w , s t r i d e , k , F L O P s [ i ] , F _ { r i d c } , F _ { r e s t } , a _ { i - 1 } )$$
 
 where i denotes the layer index; n and c represent the number of output and input channels, respectively, h and w denote the height and width of the feature map, stride and k denote the step size and convolutional kernel size. FLOPs[i] denotes the floating-point computation in layer i , 𝐹௥ௗ௖ and 𝐹௥௘௦௧ represent the floating-point computation reduced and remaining of layer i , and ai-1 denotes the previous action taken by layer i .
 
@@ -65,17 +69,17 @@ The reward function is defined as r = Acc , where Acc represents the accuracy of
 
 During the strategy update training process, the transfer state is ( si , a i , r i , s i+1 ) in each round, where r is the reward after the network is pruned. Based on the Bellman equation, the loss function in training is defined as Eq. 2.
 
-<!-- formula-not-decoded -->
+$$L o s s = \frac { 1 } { N } \Sigma _ { i = 1 } ( y _ { i } - Q ( s _ { i } , a _ { i } | \theta ^ { Q } ) ) ^ { 2 }$$
 
 Where yi is defined as follows:
 
-<!-- formula-not-decoded -->
+$$y _ { i } = r _ { i } - b + \gamma Q ( s _ { i + 1 } , \mu ( s _ { i + 1 } ) | \theta ^ { Q } )$$
 
 Where the baseline reward b is subtracted to reduce the variance of the gradient estimate and the discount factor γ is set to 1 to avoid over-prioritizing short-term rewards.
 
 To better explore the action space, we use a truncated normal distribution to add some random noise in the strategy output, whose expression goes into Eq. 4.
 
-<!-- formula-not-decoded -->
+$$\mu ^ { \prime } ( s _ { i } ) \sim T N ( \mu ( s _ { i } | \theta _ { i } ^ { \mu } ) , \sigma ^ { 2 } , 0 . 1 )$$
 
 where the noise σ is initialized to 0.5 and decays exponentially after each round.
 
@@ -85,7 +89,11 @@ This section analyzes the data size and processing latency of each layer in Alex
 
 Fig. 2. Layer-wise Output Data Size and Delay
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de barra que compara la **t [ ] [ ] [ ]
+
+
 
 The model accepts a raw plant disease image sized 16.50KB with a resolution of 256×256 pixels. After data pre-processing, the image is converted to a 1×3×224×224 format, resulting in a file size of 73.50KB. The output data size and delay for each layer are shown in Fig. 2, where the green and blue bars represent the output data size and delay after processing by different layers, respectively. Output data size decreases as the number of layers increases. After passing through the first two convolutional layers, Conv1 and Conv2, the data size increases rapidly. After the maximum pooling layer, the data size decreases significantly, as the pooling layer effectively reduces the dimensionality of the data. Subsequently, after passing through the deeper fully connected layers, the output data size decreases continuously.
 
@@ -99,13 +107,13 @@ This section will analyze the collaborative inference process in detail and then
 
 Collaborative inference latency includes device computation latency, server computation latency and intermediate transmission latency. In the collaborative inference process, the computing time and the corresponding latency for the layer-by-layer computation at the device and server, is device computation latency and server computation latency respectively. The transmission latency is the time required to transmit the intermediate features to the server side, so the collaborative inference latency can be calculated as Eq. 5.
 
-<!-- formula-not-decoded -->
+$$T = T _ { D } + T _ { T X } + T _ { S }$$
 
 Where TD , TS and TTX represent the device computation delay, server computation delay, and intermediate feature variable transmission delay respectively.
 
 The optimization problem is formalized as: given a neural network model G with model parameters 𝜃 , find the corresponding co-inference split point c and the optimal pruning strategy S for the minimum inference latency, which can be described as Eq. 6.
 
-<!-- formula-not-decoded -->
+$$\ a r g { \min } { T \left ( G ( \theta ) , c \right ) } = \ a r g { \min } { ( T _ { D } + T _ { T X } + T _ { S } ) } \\$$
 
 where 𝑆 = {𝑆(𝑙)|𝑙 ≤ 𝑁 ெ , 𝑙 ∈ 𝑁 ା} , 1 ≤ 𝑐 ≤ 𝑁, 𝑐 ∈ 𝑁 ା , 0 ≤ 𝑆(𝑙) ≤ 1, 𝑙 ≤ 𝑁 ெ, 𝑙 ∈ 𝑁 ା . N is the maximum number of layers of the selected model and S(l) represents the lth sparsity ratio for layers.
 
@@ -141,13 +149,21 @@ Since the accuracy of the model often decreases after pruning, fine-tuning is es
 
 0.6% and 0.26%, respectively, compared to the pruned model. The proposed model compression method effectively  enhances  the  inference  speed  under  the  premise  of good performance.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de barra que compara la cantidad de “C … … …”
+
+
 
 Layers
 
 Fig.3. Channel Numbers of Layers
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que compara el rendo de dos modelos de “Original Model” y “Prone Model” en “Output” y “Latency” en “C … … …”. La tendencia principal de la imagen es que el “Original Model” es más “… …” en “… …” que el “Prone Model”. La “… …” de “… …” es “…” en “…” de “…” en
+
+
 
 Layers
 
@@ -173,7 +189,11 @@ Co-inference Acceleration. To demonstrate efficiency, the proposed framework is 
 
 Fig. 5. Comparison of Different Approaches
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que muestra la evolución de la **Lí
+
+
 
 ## 4.3 Implementation
 
@@ -185,7 +205,11 @@ The main functional modules in the system include parameter setting, recognition
 
 Fig. 6. System GUI of Wireless Collaborated Inference for Plant Disease Recognition
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 As demonstrated in Fig.6, the system provides recognition results for plant diseases from user-provided images, videos, or real-time video streams. It utilizes the Model3D module in Gradio to enable interaction with the deep learning model stored in GLB format, and it displays both the model structure and the split point. The latency comparison curves of real-time collaborative inference and the baseline method are illustrated under user parameter settings for data visualization. Additionally, the database matching queries provide suggestions for corresponding disease prevention.
 

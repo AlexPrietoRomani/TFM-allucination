@@ -27,7 +27,7 @@ Christos Athanassiou 3
 
 Charalampos Kontoes 1
 
-Georgios Giannarakis Gustau Camps-Valls 4
+Georgios Giannarakis 1 Gustau Camps-Valls 4
 
 Ioannis Athanasiadis 2
 
@@ -57,8 +57,6 @@ Thus, a vicious cycle has been established between pesticides and climate change
 
 ∗ Equal contribution.
 
-1
-
 into prevention and suppression, monitoring, decision-making, non-chemical methods, pesticide selection, reduced pesticide use, anti-resistance strategies, and evaluation.
 
 Data-driven methods have played a crucial role in optimizing pest management decisions. Some employ supervised machine learning (e.g., Random Forests, Neural Networks) with satellite Earth observations (EO) and in-situ data for pest presence prediction [49, 4], some incorporating weather data [40]. Recurrent Neural Networks (RNNs) are used to capture temporal features from weather data, effectively handling unobservable counterfactual outcomes [47]. Filho et al. extract fine-scale IPM information from meteorological data, insect scouting, remote sensing and machine learning [21]. Nanushi et al. propose an interpretable machine learning solution for Helicoverpa armigera presence in cotton fields [30], enhancing IPM decision-making beyond traditional thresholds.
@@ -71,7 +69,11 @@ This way, we will upgrade the monitoring and decision-making IPM principles lead
 
 Figure 1: Causal and explainable data analysis framework for enhanced IPM
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de la **Principi
+
+
 
 Data : Our strategy hinges on utilizing a variety of data to gain a holistic understanding of historical, current, and future agro-environmental conditions, thereby enhancing our ability to model and comprehend pest dynamics. We use EO data on factors like vegetation, soil moisture. Terrain and soil characteristics data are incorporated for long-term area-specific traits. We also utilize weather forecasts and ground measurements, including pest abundance (details in A.1 of Appendix).
 
@@ -83,7 +85,11 @@ serves as an amalgamation of domain knowledge and a foundational schema that can
 
 Figure 2: Causal graph of pest-farm ecosystem.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un modelo de “ “ “ “ “
+
+
 
 Table 1: Pest-farm ecosystem variables.
 
@@ -184,7 +190,11 @@ In the current case about the pest-farm ecosystem of H. armigera, various biotic
 
 Figure 3: Traps distribution in the Greek mainland for the period 2019-2022. Colors indicate the different agroclimatic zones in which traps from the dataset belong. These zones have been identified based on the study conducted by Ceglar et al. [11].
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un mapa de la “ “ “
+
+
 
 their effectiveness in reducing the population of H. armigera [3]. Nevertheless, parasitism rates are influenced by temperature and relative humidity [22, 3]. Moreover, the efficacy of spray application Sp also impacts population dynamics [46].
 

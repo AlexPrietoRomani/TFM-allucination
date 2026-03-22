@@ -70,17 +70,27 @@ Small  Classes :  Classes  below  the  minimum  viability  threshold  (n&lt;50) 
 
 After  performing  the  class  balancing  activity,  we  found  our  datasets  balanced.  [Fig.  2]  represents  the balanced  dataset.  The  final  balanced  datasets  were  used  for  training,  which  comprised  101  classes  and  76,730 images.
 
-<!-- image -->
 
-Classes
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Fig. 1 | The figure shows the merged datasets, which had a serious class imbalance problem.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Fig. 2 | The figure shows the balanced dataset after downsampling and data augmentation.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un **Flu
+
+
 
 - Fig. 3 |  The figure shows the data engineering steps for creating a unified dataset. Firstly, images from all datasets were merged and create a unified dataset. The unified dataset has a problem of class imbalance, where some of the classes have thousands of images, but some of the classes have fewer than 50 images. To solve class imbalance, we have dropped images from the majority classes, capping the maximum images, and further augmentation techniques were used to increase the minority classes.
 
@@ -145,11 +155,13 @@ Table 2 |  Training accuracy comparison of mobile neural network architectures. 
 
 ## Overall Model Performance
 
-<!-- image -->
-
-Accuracy (%)
-
 Fig. 6 | Shows the overall performance of  EfficientNet-B1
+
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Top : The confusion matrix heatmap demonstrates strong diagonal patterns indicating accurate classification across most disease classes. Off-diagonal elements  reveal systematic misclassifications primarily between  morphologically  similar  diseases, particularly  bacterial  and  fungal  spots  affecting  different  plant  species.  The  predominantly  green  diagonal  with  sparse  red off-diagonal elements confirms robust model performance with minimal inter-class confusion.
 

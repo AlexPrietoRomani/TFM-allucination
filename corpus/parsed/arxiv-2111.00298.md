@@ -61,7 +61,11 @@ In the present work, an improved YOLOV4 algorithm [21] is implemented for the pu
 
 Fig. 1 Schematic of the YOLOv4 network architecture consisting of CSPDarknet53 as the backbone, PANet as the neck with a regular YOLOv3 head.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de datos con una serie de bloques y lías de “ ” “ ”
+
+
 
 YOLOv3 [20] in terms of detection speed and accuracy. As shown in Fig. 1, the complete network structure consists of three parts : a backbone for feature extraction, the neck for semantic representation of extracted features, and the head for prediction.
 
@@ -69,7 +73,11 @@ In the network architecture, the residual module is integrated into ResNet netwo
 
 Fig. 2 Schematic of YOLOv4 object detection algorithm for disease detection.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un **Flu [ ] [ ] [ ] [
+
+
 
 the CSPDarknet53 are concatenated after convolution, then up-sampled followed by downsampling which is stacked with the remaining feature layers for enhancing the feature fusion process, as shown in Fig. 1. Thus, the neck is leveraged in backbones for the extraction of rich semantic features that are used for accurate predictions. Finally, for the specific inputted image size, the YOLOv4 model can predict bounding boxes at the detection head at three different scales. In the first step, the inputted image is discretized into N × N equally spaced grids. The model generates B predictive bounding boxes and a corresponding confidence score if the target belongs within a grid-cell. The best bounding box prediction from each of these scales is filtered by non-maximum suppression (NMS) [15] algorithm before the final bounding box can be obtained. The prediction process is shown in Fig. 2. In order to help the model learn various types of distribution of a given image in challenging circumstances, in particular, noise, complex backgrounds etc., YOLOv4 introduces CutMix [36], mosaic augmentations [21], and self-adversarial training (SAT) [21] methods to expand the dataset. Additionally, drop block regularization [37] for learning spatially discriminating features and class label smoothing [21] for better generalization of a dataset can be employed.
 
@@ -85,13 +93,17 @@ The residual model in the CSPDarknet53 helps the network to learn more expressiv
 
 Fig. 3 Schematic of (a) the proposed network architecture for plant disease detection consisting of DenseCSPDarknet53 integrating SPP as the backbone, modified PANet as a neck with a regular YOLOv3 head; (b) CSPn ; (c) CSP1n ; (d) CSP2n blocks.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de datos con una serie de bloques y lías de “ ” “ ”
+
+
 
 ## 3.2 Implementation of the Hard-swish activation for better accuracy
 
 One of the important aspects of developing an object detection model is to select appropriate activation function for better accuracy and performance [38]. Activation functions can be characterized by properties such as, derivative, monotonic behavior, etc [39]. In this regard, Leaky Rectified Linear Unit (Leaky-ReLU) [40], Mish [41] are widely used activations in dense object detection models. However, using the Swish function [38] as a drop-in replacement for ReLU demonstrates significant improvement of the neural network performance [38,42,43]. The Swish function is expressed as, swish ( x ) = x . s ( x ) . Due to presence of sigmoid function s ( x ) , it increases computational cost. Therefore, the Hard-swish activation function [32], where s ( x ) in the Swish function is replaced with its piece-wise linear hard analog, ReLU 6 ( x + 3 ) , is used instead. The function is,
 
-<!-- formula-not-decoded -->
+$$H - s w i s h ( x ) = x . \frac { R e L U ( x + 3 ) } { 6 }$$
 
 Due to H-swish's unique property of non-monotonicity, it can improve the performance of the detection model for different datasets. Additionally, due to H-swish is bounded below and its property of unboundedness, it helps remove the saturation problem of the output neurons and improve network regularization. Moreover, it is computationally faster than Swish and beneficial for training as it helps to learn more expressive features that are more robust to noise [32]. Hard-swish activation is used in different object detection algorithms which substantially reduces the number of memory accesses by the model [44,45]. HardSwish function is used herein as the primary activation in both the backbone and the neck with significant accuracy gain on the dataset under consideration. Moreover, the detection speed is increased and computational cost is substantially reduced (see Section 5.1.1).
 
@@ -99,13 +111,17 @@ Due to H-swish's unique property of non-monotonicity, it can improve the perform
 
 During object detection, the YOLOv4 algorithm reduces the feature maps during training. Due to several steps of convolution and down-sampling procedures, important feature information of the training sample can get lost during transmission. To preserve important feature maps and to reuse critical feature information more efficiently, the DenseNet framework [29] is proposed where each layer is connected to other layers feeding forward. The main advantage of this framework is that the n -th layer is able to receive required feature information Xn from all previous layers as inputs.
 
-<!-- formula-not-decoded -->
+$$X _ { n } = H _ { n } [ X _ { 0 } , X _ { 1 } , \dots , X _ { n - 1 } ]$$
 
 Here, Hn is the spliced feature map function for layer n ; [ X 0 , X 1 , ..., Xn -1 ] is the feature map of layers X 0 , X 1 , ..., Xn -1. Such formulation allows the DenseNet to reduce the number of parameters, enhance feature propagation and facilitate feature reuse. Due to the complexity of the image dataset, in particular, densely populated distribution and coexistence of multiscale disease classes, it is critical to use the dense block to facilitate better feature transfer and gradient propagation throughout the network. Additionally, it may mitigate over-fitting to some degree. In the proposed model, the last two residual blocks, CSP8 and CSP4 in the original CSPDarknet53 are modified to Dense-CSP1-4 and Dense-CSP1-2 by adding dense connection blocks to enhance feature propagation. Additionally, the redundant feature operations is reduced and the calculation speed is increased by removing the CSPn blocks. The schematic of the proposed dense blocks and corresponding network parameters are shown in Fig. 4(a, b). It is evident that the network structure is improved by replacing 26 × 26 and 13 × 13 down-sampling layers by the DenseNet structure. In the dense block-1, transfer feature map function H 1 nonlinearly transforms the X 0 , X 1 , ..., Xn -1 layers, where each layer Xi is comprised of 64 feature layers each with resolution 26 × 26 pixels as shown in Fig. 4(a). The first dense block before the CSP1-4 performs feature propagation and layer splicing on the layers with 26 × 26 resolution which results in the final forward propagating feature layer of size 26 × 26 × 512. Similarly, feature propagation and layer splicing are performed on the layers with 13 × 13 resolution which result in the final forward propagating feature layer of resolution 13 × 13 × 1024 by the second dense block before the CSP1-2 as shown in Fig. 4-(b). The Dense-CSPDarknet53 configuration ensures that later feature layers obtain features from the previous layers during training when inputted images are transferred to the lower resolution layers of the network reducing the feature loss. Moreover, different low-resolution convolution layers can reuse the feature between them which increases the feature usage rate.
 
 Fig. 4 Schematic of (a) dense block-1; (b) dense block-2 in Dense-CSPDarknet53; (c) SPP block and corresponding network parameters of the proposed disease detection model.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de “ ” ” ” ”
+
+
 
 ## 3.4 Enhancement of the receptive field
 
@@ -117,7 +133,11 @@ In the object detection neural network model developed herein, earlier layers ex
 
 Fig. 5 Different image augmentation methods: (a) original image, (b) 90 o ACW rotation, (c) 180 o ACW rotation, (d) 270 o ACWrotation, (e) horizontal mirror projection, (f) colour balancing, (g-i) brightness transformation, and (j) blur processing.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 is connected to all previous layers. This requires fine-tuning of the localized information. In order to address this issue, the PANet [30] is used in the neck part of the proposed model which shortens the path of high and low fusion for the multi-scale feature pyramid map. The PANet fuses information from all layers using element-wise max operation and has more flexible ROI pooling compared to the FPN [35]. To disseminate information at lower levels, a bottom-up path augmentation is used in the PANet as shown in Fig. 3. The CSP2n module [25] is added to the PANet which divides the basic feature layer into two parts and reduces the use of repeated gradient information through cross-stage operation as shown in Fig. 3-(d). This further improves multi-scale local feature fusion with global feature information. The introduction of the CSP2n improves the feature extraction flow which leads to a notable increase in detection accuracy and speed (see Section 5.1.2).
 
@@ -131,21 +151,21 @@ In this section, some relevant detail associated with the object detection probl
 
 In dense object detection models, bounding box regression is a widely applied approach to predict the localization boxes on input images. In this regard, a scale-invariant evaluation metric called intersection over union (IoU) was proposed to evaluate the accuracy of target object detection,
 
-<!-- formula-not-decoded -->
+$$I o U = \frac { \mathbb { B } \cap \mathbb { B } _ { g t } } { \mathbb { B } \cup \mathbb { B } _ { g t } }$$
 
 where, B ∩ B gt and B ∪ B gt are defined as the intersection and union between areas of the predicted box B and the ground truth bounding box B gt of the object, respectively. However, IoU loss only considers the overlapping bounding boxes. The non-overlapping cases are not taken into account. Additionally, traditional IoU loss has the limitation on gradient disappearance in case of an absence of intersection between target and prediction boxes. To circumvent these issues, generalized IoU ( GIoU ) [51] was proposed which considers the shape, area, and orientation of the overlapping bounding boxes. The GIoU loss is expressed as,
 
-<!-- formula-not-decoded -->
+$$L _ { G I o U } = 1 - I o U + \frac { | C - \mathbf B \cup \mathbf B _ { g t } | } { C }$$
 
 Where C is the smallest convex hull between B and B gt . However, GIoU is not computationally cost effective. For better performance, distanceIoU ( DIoU ) [47] loss was introduced which measures the proximity of the target and prediction boxes by introducing a metric parameter in predicting boundary box regression. The expression for the DIoU loss is,
 
-<!-- formula-not-decoded -->
+$$L _ { D I o U } = 1 - I o U + \frac { \rho ^ { 2 } ( \mathbf b , \mathbf b _ { \mathbf g } ) } { c ^ { 2 } } .$$
 
 Here, b and bgt are the centroids of B and B gt , respectively; d : = r ( b , bgt ) is the distance between central points of B and B gt , and c is the length of the diagonal of the smallest enclosing box covering the two boxes as shown in Fig. 6-(b). The penalty term r 2 ( b , bgt ) c 2 in Eq. 5 minimizes the normalized distance between central points of the two bounding boxes, leading to faster convergence than the GIoU loss. Subsequently, complete IoU ( CIoU ) [47], an extension of the DIoU loss, was introduced in YOLOv4 to better the accuracy and convergence speed for the target bounding box prediction process. CIoU loss simultaneously considers three geometric metrics that are typically ignored: overlapping area, the distance between centers, and the aspect ratio in the bounding box regression in object detection [47]. CIoU loss was formulated incorporating consistency of the aspect ratio parameter, v , and a positive trade off parameter, a based on DIoU loss which is expressed as,
 
-<!-- formula-not-decoded -->
+$$L _ { C l o U } = 1 - I o U + \frac { \rho ^ { 2 } ( \mathbf b , \mathbf b _ { \mathbf g } ) } { c ^ { 2 } } + \alpha v .$$
 
-<!-- formula-not-decoded -->
+$$v = \frac { 4 } { \pi ^ { 2 } } \left ( t a n ^ { - 1 } \, \frac { w _ { g t } } { h _ { g t } } - t a n ^ { - 1 } \, \frac { w } { h } \right ) ^ { 2 } ; \quad \alpha = \frac { v } { ( 1 - I o U ) + v ^ { \prime } }$$
 
 Here, wgt , w and hgt , h are the widths and heights of the ground truth and prediction bounding boxes, respectively as shown in Fig. 6 -(b). In Eq. 7, v → 0 with increase in w / h . For consistent predictions, w / h is a chosen parameter for a specific YOLOv4 object detection model.
 
@@ -153,21 +173,25 @@ h
 
 Fig. 6 (a) Schematic of offset regression for target bounding box prediction process; (b) schematic of CIoU loss for bounding box regression in YOLOv4 object detection algorithm.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un [ ] [ ] [
+
+
 
 ## 4.2 Confidence score
 
 During object detection, when the center of the target-class ground truth falls within a specified grid-cell, it detects the target as an object of a particular class. Each grid predicts B bounding boxes with confidence scores and corresponding C class conditional probabilities for each target class. The confidence scores can be expressed as,
 
-<!-- formula-not-decoded -->
+$$c o n f i d e n c e = p _ { r } ( o b j e c t ) \times I o U _ { p r e d } ^ { t r u t h } \wedge \vee _ { r } ( o b j e c t ) \in [ 0 , 1 ]$$
 
 During the object detection process, pr ( object ) = 1 is prescribed in the framework when the target class falls within the YOLO grid-cell, or otherwise, pr ( object ) = 0. Coalescing between the reference and the predicted bounding box is quantified by IoU truth pred . The value of pr ( object ) indicates the accuracy of the bounding-box prediction when the target class is detected within the cell.
 
 The prediction process for the target bounding box is shown in Fig. 6. The dashed box in Fig. 6-(a) is the initial bounding box. The relationship between the initial bounding box to the predicted bounding box can be expressed as,
 
-<!-- formula-not-decoded -->
+$$b _ { x } = \sigma ( t _ { x } ) + c _ { x } ; \quad b _ { y } = \sigma ( t _ { y } ) + c _ { y } .$$
 
-<!-- formula-not-decoded -->
+$$b _ { w } = p _ { w } e ^ { t _ { w } s _ { w } } ; \quad b _ { h } = p _ { h } e ^ { t _ { h } } .$$
 
 where, ( bx , by ) and ( bw , bh ) are the centroid and size of the predicted bounding box; ( cx , cy ) and ( pw , ph ) are the centroid and size of the bounding box on the feature map; ( tx , ty ) and ( tw , th ) represent the center offset of the bounding box from the network prediction and corresponding scaling size.
 
@@ -175,19 +199,19 @@ where, ( bx , by ) and ( bw , bh ) are the centroid and size of the predicted bo
 
 The loss or cost function ( x ) is important as it dictates the performance of the trained model. The loss function D l for an object detection task such as in YOLO can be defined as,
 
-<!-- formula-not-decoded -->
+$$\Delta _ { l } = \Theta _ { c o r } + \Theta _ { l o U } + \Theta _ { c l } .$$
 
 D l consists of mainly three types of error components. The coordinate prediction error, Q cor is defined as:
 
-<!-- formula-not-decoded -->
+$$\Theta _ { c o r } = \kappa _ { c o r } \sum _ { i = 1 } ^ { N ^ { 2 } } \sum _ { j = 1 } ^ { B } \delta _ { i j } ^ { o b j } [ ( x _ { i } - \bar { x } _ { i } ) ^ { 2 } + ( y _ { i } - \bar { y } _ { i } ) ^ { 2 } ] + \kappa _ { c o r } \sum _ { i = 1 } ^ { N ^ { 2 } } \sum _ { j = 1 } ^ { B } \delta _ { i j } ^ { o b j } [ ( w _ { i } - \bar { w } _ { i } ) ^ { 2 } + ( h _ { i } - \bar { h } _ { i } ) ^ { 2 } ] \ ]$$
 
 Here, N 2 is the total number of grid points in the inputted image, k cor corresponds to the weight associated with Q cor , B is the total number of bounding boxes associated with each grid, ( xi , yi ) are the true center coordinates of the object, ( ¯ xi , ¯ yi ) are the center coordinates of the predicted bounding box; ( wi , hi ) and ( ¯ wi , ¯ hi ) are the width and height of the truth and the predicted bounding boxes, respectively. The function d obj i j = 1 if the target class lies in the bounding box j generated by grid i , else d obj i j = 0. The IoU error term, Q IoU is given as follows.
 
-<!-- formula-not-decoded -->
+$$\Theta _ { I o U } = \sum _ { i = 1 } ^ { N ^ { 2 } } \sum _ { j = 1 } ^ { B } \delta _ { i j } ^ { o b j } ( C _ { i } - \bar { C } _ { i } ) ^ { 2 } + \kappa _ { n b } \sum _ { i = 1 , j = 1 } ^ { N ^ { 2 } } \delta _ { i j } ^ { o b j } ( C _ { i } - \bar { C } _ { i } ) ^ { 2 }$$
 
 Here, k nb is a parameter corresponding to weight associated with Q IoU , Ci is the true confidence in object detection, and ¯ Ci is the confidence score of the prediction. Lastly, the classification error term Q cl is given by,
 
-<!-- formula-not-decoded -->
+$$\Theta _ { c l } = \sum _ { i = 1 } ^ { N ^ { 2 } } \sum _ { j = 1 } ^ { B } \delta _ { i j } ^ { o b j } \sum _ { c \in c l a s s e s } ( p _ { i } ( c ) - \bar { p } _ { i } ( c ) ) ^ { 2 }$$
 
 In Eq. 14, c is the class associated with target detection; pi ( c ) is the true probability of detecting the object of class c in grid i ; ¯ pi ( c ) is the probability score from the prediction. Q cl for a particular grid i is obtained from the sum of classification errors due to all classified objects residing in that grid-cell.
 
@@ -197,19 +221,19 @@ Some traditional evaluation parameters, such as, precision-recall ( PR ) curve, 
 
 For binary classification, sample data can be classified into four different categories: true positive (TP), false positive (FP), true negative (TN), and false negative (FN), based on the true class and the model predicted class of the target object. From the quantities defined above, Precision ( P ) and Recall ( R ) can be defined as
 
-<!-- formula-not-decoded -->
+$$P = \frac { T P } { ( T P + F P ) } ; \quad R = \frac { T P } { ( T P + F N ) }$$
 
 From Eq. 8, one can infer that P represents prediction results of relevant instances. R refers to correctly classified results out of the total relevant instances. Both higher P and R indicate lower FN value. For a particular set of training sample, the precision-recall curve ( P -R curve) can be constructed from the precision (in the ordinate) and recall data (in the abscissa) for a particular classifier. From the relation between P and R , F1-score is defined which indicates the degree of precision of the object detection model. From Eq. 8, the F1score can be obtained as,
 
-<!-- formula-not-decoded -->
+$$F _ { 1 } = \frac { 2 P R } { ( P + R ) } .$$
 
 AP is equal to the area under the P -R curve.
 
-<!-- formula-not-decoded -->
+$$A P = \int _ { 0 } ^ { 1 } P ( R ) \, d R .$$
 
 High AP corresponding to a large area under the PR curve indicates accurate prediction of an object class by a detection model. Additionally, AP 50:95 is the average precision over the range of IoU=0 . 50 : 0 . 05 : 0 . 95; AP 50 and AP 75 are AP s at IoU thresholds 50% and 75%, respectively; APS , APM , and APL correspond to the detection accuracy of small, medium, and large objects, respectively, for the presently studied detection problem. The mAP is the average of all APs for a particular class which can be expressed as,
 
-<!-- formula-not-decoded -->
+$$m A P = \frac { 1 } { N } \sum ^ { N } A P$$
 
 ## 5 Results &amp; Discussion
 
@@ -219,7 +243,11 @@ Configuration parameters, such as, number of channels, momentum value, decay reg
 
 Fig. 7 Flowchart of the overall workflow methodology for the proposed detection model.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de datos, que representa el proceso de **E I
+
+
 
 Table 1 Local computing resources and DNN environments
 
@@ -267,7 +295,11 @@ Según A fast accurate fine-grain object detection model based on YOLOv4 deep ne
 Según A fast accurate fine-grain object detection model based on YOLOv4 deep neural network (2021), Backbone + add-in: D-CSPDarknet53+CSP1- n, Neck +add-in: PANet+CSP2- n, AP: 79.6, AP 50: 96.3, AP 75: 91.6, AP S: 73.6, AP M: 82.9, AP L: 89.5, FPS: 70.2.
 Fig. 8 Comparison barchart of different precision parameters and detection speed (in FPS) for (a) different activation functions; (b) different combinations of CSP1n in backbone and CSP2n in neck of the detection model.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de barra que compara la **P [ ] [ ] [ ]
+
+
 
 from 66.6% to 89.5% as shown in Table 3. Improvement of different AP values also indicates a stronger nonlinear feature learning capability with the H-swish function compared to Leaky-ReLU and Mish functions. Moreover, with the introduction of dense blocks, integration of the SPP module, and modification of the PANet in the proposed model, the fine-grain feature transfer and reuse improve. This leads to improved detection accuracy for small and medium object detection (i.e., AP S and AP M ) on the feature data set. Regarding detection speed, using the Mish activation for both backbone and neck adversely affects the detection speed compared to the Leaky-ReLU. However, H-swish activation provides the fastest detection as the detection speed increases by 14.7% compared to the Leaky-ReLU activation. Evidently, the H-swish activation function provides superior performance (both detection accuracy and speed) on the disease dataset.
 
@@ -293,7 +325,11 @@ Detection performance of the proposed model is evaluated by comparing different 
 
 Fig. 9 Comparison bar chart of precision, recall, F1-score, mAP, and detection speed (in FPS) between proposed model (improved YOLOv4) and other state-of-the-art models: Faster R-CNN, RetinaNet, SSD, Mask R-CNN, Cascade R-CNN, YOLOv3, and YOLOv4.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de barra que compara el rendo de diferentes modelos de “ ” ” ” ”
+
+
 
 Table 6 Comparison of IoU, F1 Score, final loss, detection speed and average detection time between YOLOv3, YOLOv4, and proposed model.
 
@@ -304,7 +340,11 @@ and Cascade R-CNN are relatively low indicating limitation of these models for r
 
 Fig. 10 Comparison of (a) P-R curves during testing ; (b) training loss curves between YOLOv3, YOLOv4, and proposed detection model.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de dos líneas con dos curvas de tendencia: una de color azul y otra de color verde. La curv
+
+
 
 ## 5.3 Overall performance of the proposed detection model
 
@@ -314,7 +354,11 @@ Figure 10-(b) compares the training loss plotted for the YOLOv3, YOLOv4, and mod
 
 Fig. 11 (a) Comparison of validation loss curves between YOLOv3, YOLOv4, and improved YOLOv4 detection models; (b) P-R curves for different disease class from the proposed model.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que compara el rendo de dos modelos de “ ” ” ” ”
+
+
 
 Usually, a lower training loss yields a more accurate model. Similarly characteristics are obtained for the validation loss curve plotted in Fig. 11-(a); validation loss for the proposed model decreases rapidly up to 3,000 training steps. The loss curve saturates as the model gradually converges after about 65,000 steps. After 85,000 training steps, both training and validation losses are observed to saturate. The obtained model is therefore assumed to be optimal. The final validation loss value for the proposed model is 2.29 compared to 13.31 and 8.92 for the YOLOv3 and YOLOv4, respectively as shown in Table 6. The proposed model is evidently easier to train, converging faster to a more accurate model.
 
@@ -391,7 +435,11 @@ Septoria leaf spots have visual similarities to the early blight (Fig. 14). Howe
 
 Fig. 12 Detection result for early blight on three distinct tomato leaves from three models: (a-c) YOLOv3; (d-f) YOLOv4; (g-i) proposed model. The white arrow indicates undetected or false detection from the corresponding model prediction.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un [ ] [ ] [
+
+
 
 detections for relatively densely distributed spots are obtained for YOLOv3 and YOLOv4 in Fig. 14 -(c,f). On the other hand, the proposed model reduces missed detections significantly as shown in Fig. 14 -(i). In more challenging scenarios such as densely populated distribution of infected areas, as in Fig. 14 -(h), the proposed model illustrates its superiority, correctly predicting higher confidence scores for bounding boxes along with significant reduction in missed detections as listed in Table 11.
 
@@ -425,7 +473,11 @@ Based on the detection results for the four classes, overall, the proposed model
 
 Fig. 13 Detection result for late blight on three distinct tomato leaves from three models: (a-c) YOLOv3; (d-f) YOLOv4; (g-i) proposed model. The white arrow indicates undetected or false detection from the corresponding model prediction.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un conjunto de 9 sub-imagines de hoas de plantas con manas de “ ” “ ”
+
+
 
 ## 6.2 Detection under greyscale and low-resolution images
 
@@ -435,7 +487,11 @@ The proposed model is highly accurate in predicting greyscale images, for early 
 
 Fig. 14 Detection result for Septoria leaf spot on three distinct tomato leaves from three models: (a-c) YOLOv3; (d-f) YOLOv4; (g-i) proposed model. The white arrow indicates undetected or false detection from the corresponding model prediction.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un “ ” ” ” ”
+
+
 
 and Table 13). It can be concluded from the test results that the proposed model is more adaptive in more challenging environments compared to the original models.
 
@@ -471,7 +527,11 @@ Despite its efficacy for the tomato plant disease detection task, there is scope
 
 Fig. 15 Detection result for leaf mold on three distinct tomato leaves from three models: (a-c) YOLOv3; (d-f) YOLOv4; (g-i) proposed model. The white arrow indicates undetected or false detection from the corresponding model prediction.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un [ ] [ ] [
+
+
 
 Table 13 Comparison of detection results on the original RGB, corresponding greyscale, and pixelated low resolution images from the proposed model as shown in Fig. 16.
 
@@ -490,7 +550,11 @@ Según A fast accurate fine-grain object detection model based on YOLOv4 deep ne
 
 Fig. 16 Detection results on original RGB, corresponding greyscale, and pixelated low-resolution images for [(a)-i, ii, iii] early blight; [(b)-i, ii, iii] late blight; [(c)-i, ii, iii] Septoria; and [(d)-i, ii, iii] leaf mold from the proposed model. White arrow indicates undetected or false detection from the model prediction.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de unión de “ ” “ ”
+
+
 
 timization of detection speed and accuracy of the model for use in a mobile computing platform for portable on-field detection.
 
@@ -500,7 +564,11 @@ In this work, a real-time object detection model is developed based on the YOLOv
 
 Fig. 17 Detection results obtained from the original RGB and different illumination conditions including 90%, 80%, and 60% brightness intensity for [(a)-i, ii, iii, iv] early blight; [(b)-i, ii, iii, iv] late blight; [(c)-i, ii, iii, iv] Septoria; and [(d)-i, ii, iii, iv] leaf mold from the proposed model. White arrow indicates undetected or false detection from the model prediction.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que representa la evolución de la “ ” ” ” ” ”
+
+
 
 Table 14 Comparison of detection results obtained from the original RGB and different illumination conditions including 90%, 80%, and 60% brightness intensities as shown in Fig. 17.
 

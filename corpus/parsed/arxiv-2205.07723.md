@@ -52,7 +52,11 @@ Our work focuses on the prediction of cotton bollworm presence based on meteorol
 
 Fig. 1: Workflow of the method for bollworm presence prediction.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de un modelo de “ ” ” ”
+
+
 
 ## A. Problem formulation
 
@@ -62,11 +66,11 @@ Explainable classifier approach: There exist many sophisticated models that coul
 
 The model we used is the Explainable Boosting Machine (EBM), as implemented in the InterpretML framework. In machine learning, there is often a trade-off between accuracy and intelligibility. This is not true for EBM that achieves a performance comparable to powerful black-box models, while offering global and local explanations on the predictions [21]. EBM is an augmented version of the Generalized Additive Models (GAMs), which are expressed by (1).
 
-<!-- formula-not-decoded -->
+$$g ( E ( y ) ) = \beta _ { 0 } + \sum f _ { j } ( x _ { j } )$$
 
 In practice, EBM is a GAM model with interactions based on the GA2M method, expressed by (2) [22].
 
-<!-- formula-not-decoded -->
+$$g ( E ( y ) ) = \beta _ { 0 } + \sum f _ { j } ( x _ { j } ) + \sum f _ { i j } ( x _ { i } , x _ { j } )$$
 
 Every feature function f j is learnt using many shallow decision trees. The learning is achieved using one predictive feature at a time in round-robin pass over the train data, while performing gradient updates. In more detail, we train a tree on the first feature, then in boosting fashion we update the residual and move to the second feature, then we train another tree and so on. The learning rate is low, and thus the feature order does not matter. Interaction functions, f ij , are learnt via the FAST method [22].
 
@@ -86,7 +90,7 @@ We provide pest presence predictions for each trap and for each date that we hav
 
 The meteorological and vegetation index variables were engineered into accumulated features to capture the near-past (7 days) information that drives pest occurrence. Specifically, the accumulated vegetation indices were calculated using the cumulative integral of the time-series curve, whereas the accumulated weather features were calculated by summing the daily values over the last 7 days. Growing degree days, which capture the effective growth time of the plant, were also calculated according to (3) [27]. T base refers to the temperature under which the cotton does not develop and is equal to 15.6 ◦ C, and T max , T min are the maximum &amp; minimum air temperatures (2 m), respectively.
 
-<!-- formula-not-decoded -->
+$$G D D = \max \left ( \frac { T _ { \max } + T _ { \min } } { 2 } - T _ { b a s e } , 0 \right ) \quad ( 3 ) \quad \exp l a p a l { ( 3 ) } \quad \exp l a p a l { ( 3 ) }$$
 
 The data was standardized using a standard scaler. The EBM was run using 100 inner bags, 100 outer bags, and a learning rate of 0.01 that according to [21] is an appropriate tuning to achieve both high accuracy and interpretability.
 
@@ -104,7 +108,11 @@ As expected, Case A considerably outperforms Case B. It should be noted, however
 
 The pest presence threshold, set at 10 catches, amounts to approximately 3 insects a day, as traps are visited every 3-5 days. According to local agronomists that we consulted, a couple of catches a day are not considered harmful. Nevertheless, the threshold is only an approximation. Fig. 4 illustrates the seriousness of the errors of our model (Case A) by visualizing how close to the action threshold they occurred. The left histogram depicts the distribution of catches for the model errors. As expected, most errors are situated near the action threshold.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 ∐√̂[˜√
 
@@ -129,13 +137,21 @@ The aforementioned experiments, used train and test data randomly selected from 
 
 Fig. 3: An indicative time-series of insect catches from a single trap in Macedonia, Greece. The green dots are the pest presence predictions and the red dots are the pest absence predictions. The dashed line represents the action threshold set at t = 10 .
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que muestra la evolución de dos variables: la **c ** **
+
+
 
 To further investigate this test trap, we used the local explanations of the InterpretML framework. We indicatively examine the prediction for DoY=180. This one, despite being a peak, was not detected as such. Looking at the local explainability graph in Fig. 4, we can gain insight on this decision. The coloured bars indicate which features drove the decision towards pest presence (green) and which features towards pest absence (red). The predicted class is assigned with a probability of only 0.509, indicating uncertainty. The feature which had the strongest impact towards the true label was the interaction of GI with Catches t-3. This is very logical since the catches at the instance t-3 indicated pest presence. On the other hand, the catches at the instance t-1 strongly suggest pest absence. By examining Fig. 3, we can see that the pest catches in the previous visit were zero and hence unlikely to have strong pest presence only four days later.
 
 Fig. 4: Local explainability plot for an uncertain prediction.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de barra de cód
+
+
 
 ## IV. CONCLUSIONS AND FUTURE WORK
 

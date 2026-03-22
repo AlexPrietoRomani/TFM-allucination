@@ -41,7 +41,11 @@ The challenge of developing an advanced deep learning-based plant disease segmen
 
 Figure 1. Examples of images of PlantVillage 19 and our dataset. As collected in laboratory environments, each image in PlantVillage only contains one leaf and has a uniform background, while images of our dataset feature much more complex backgrounds, various viewpoints, and different lighting conditions.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Table 1. Summary of plant disease image datasets. Existing datasets
 
@@ -63,7 +67,11 @@ segmentation 24,25 , which still require detailed and precise mask annotations. 
 
 Figure 2. Locations of the source image acquired. The sizes of the plots represent the number of acquired images. The size of each circle demonstrates the number of images acquired from the address, and the color depth indicates the density of addresses within a nearby region.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un mapa del mundo con un mapa de la “ ” “ ” “ ” “
+
+
 
 To address these problems in plant disease segmentation research, we present PlantSeg, the largest dataset for plant disease segmentation in the wild. It has the most number of categories among all existing plant disease datasets. PlantSeg contains 11,458 images of 115 disease categories with corresponding segmentation annotations. The segmentation annotation is carried out by trained annotators and checked by expert pathologists to ensure accuracy. This paper showcases the characteristics of PlantSeg and benchmarks state-of-the-art segmentation models on plant disease segmentation. We believe our dataset can serve as a comprehensive benchmark for developing plant disease segmentation methods.
 
@@ -101,7 +109,11 @@ In total, 10 annotators were engaged in this detailed segmentation annotation wo
 
 Figure 4. The curation process of the PlantSeg dataset involves three main steps: image acquisition, data cleaning, and annotation. In the image acquisition stage, images were collected from various internet sources using identified keywords and then stored according to their categories. During the data cleaning phase, incorrect images were identified and removed. For the segmentation annotation process, annotators utilized LabelMe 26 to annotate the cleaned images. These annotations were subsequently reviewed by experts and saved in JSON files.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de la **_**_**_
+
+
 
 ## PlantSeg metadata
 
@@ -117,11 +129,13 @@ Image resolutions and Mask ratios. The image resolution indicates the image size
 
 Training/Test sets of PlantSeg. PlantSeg is built to evaluate segmentation methods on plant disease images. We randomly selected 20% of the images from each disease as the test set, while the remaining images were used as the training set.
 
-Eggplant
-
 Figure 5. Disease distribution in PlantSeg according to plants and Socioeconomic classification. The height of the bars represents the number of diseases associated with each plant.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de pie de “ ” ” ” ”
+
+
 
 ## Data Records
 
@@ -139,11 +153,19 @@ Image resolution distribution. We analyze image resolution distribution in Plant
 
 Figure 6. The resolution distributions of different datasets, including PlantVillage, PlantDoc and PlantSeg. Each green dot represents a single image in the PlantSeg database; Red, for each image in the PlantDoc database and inverted yellow triangles for the PlantVillage database.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Figure 7. The horizontal axis represents the percentage of mask area relative to the entire image, while the vertical axis represents the number of corresponding images.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 with PlantSeg. PlantVillage images were curated from uniform laboratory settings with a single resolution. All data points overlap in a single point on the plot. Figure 6 reveals the diversity and range of image resolutions in in-the-wild datasets compared to laboratory-collected data. It indicates the challenge when working on real-world data collection and the inherent variance in images. In addition, it also emphasizes the advantage of a dataset, such as ours, which focuses on field-based images with variable scale and diversity.
 
@@ -157,7 +179,11 @@ Baseline models. We employed four commonly used and state-of-the-art semantic se
 
 Figure 8. The boxplot shows the percentage distribution of mask area per image, which varies significantly among different plants.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de boxplot que compara las propor
+
+
 
 Table 3. Performance comparison of different methods on PlantSeg.
 
@@ -172,7 +198,7 @@ Según PlantSeg: A Large-Scale In-the-wild Dataset for Plant Disease Segmentatio
 
 Evaluation metrics. We introduced the Mean Intersection over Union (MIoU) and Mean Accuracy (mAcc) as our evaluation metrics. MIoU calculates the average Intersection over Union across all classes, offering insight into the model's overall segmentation performance. Mean Accuracy measures the proportion of correctly classified pixels within each class and then averages the accuracies across all classes. These evaluation metrics are computed as:
 
-<!-- formula-not-decoded -->
+$$M i O _ { i } = \frac { 1 } { N } \sum _ { i = 1 } ^ { N } \frac { T P _ { i } } { T P _ { i } + F P _ { i } + F N _ { i } } , \quad \ \ \ m A c { = } \, \frac { 1 } { N } \sum _ { i = 1 } ^ { N } \frac { T P _ { i } ^ { p } } { T P _ { i } + F N _ { i } } ,$$
 
 where N represents the number of classes. TPi , FPi , TNi , FNi are the number of true positive, false positive, false negative, and true negative pixels of the i -th class respectively.
 
@@ -182,7 +208,11 @@ Figure 9 presents a series of visualizations comparing the ground truth masks wi
 
 Figure 9. Visualization of some experimental results on the test set of PlantSeg. From left to right: image examples of PlantSeg, results of DeepLabv3 4 , results of SegNext 7 , and the ground truth annotations.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 and locate the diseased areas accurately. The state-of-the-art SegNext delivers more accurate results than DeepLabv3, as it can effectively segment lesions and deformation on leaves and fruit according to the results shown in the 1st to 4th rows of Figure 9. However, in the cases of the 5th row, SegNeXt focuses on the wilted leaves but overlooks the collapsed stems. This suggests that segmentation becomes more challenging when the disease involves curling and deformation of stems.
 

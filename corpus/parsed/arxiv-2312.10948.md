@@ -58,13 +58,13 @@ In this section, we discuss several important metrics, loss functions, regulariz
 
 1. F1 Score : The F1 Score is a widely used metric for evaluating classification models. In our case, we used F1 scores in CNN-Resnet scores by balancing the precision and recall to provides a more comprehensive performance assessment. The F1 score combines precision and recall and is defined as:
 
-<!-- formula-not-decoded -->
+$$F 1 = 2 \cdot \frac { \text {Precision} \cdot \text {Recall} } { \text {Precision} + \text {Recall} } \quad ( 1 )$$
 
 2. Accuracy : Accuracy measures the ratio of correct predictions to the total number of predictions. This has been
 
 used as Metrics for both CNN-Resnet model and Finetuned Tiny-BERT and is defined as:
 
-<!-- formula-not-decoded -->
+$$A c u r a c y = \frac { \text {Number of Correct Predictions} } { \text {Total Number of Predictions} } \quad ( 2 )$$
 
 3. AUC (Area Under the ROC Curve) : The Area Under the Curve (AUC) metric measures a model's ranking ability, making it particularly suitable for rankingoriented tasks. AUC is insensitive to the balance of positive and negative samples, allowing for reasonable evaluation even in imbalanced scenarios. In contrast, other metrics like precision, recall, and F1 score can vary based on the threshold set for distinguishing between positive and negative samples. Since AUC doesn't require a manual threshold setting, it offers a holistic measurement approach. In our dataset, where the number of pest samples is approximately 1/2 higher than that of non-pest samples, AUC proves to be a more appropriate metric.
 
@@ -72,7 +72,7 @@ used as Metrics for both CNN-Resnet model and Finetuned Tiny-BERT and is defined
 
 - Cross-entropy Loss : Cross-entropy loss is frequently employed in classification tasks(Zhang and Sabuncu 2018). For our case, we used Cross entropy loss in the process of both CNN-resnet and Fine-tuning Tiny-Bert for a binary classification purpose. It measures the dissimilarity between the predicted probabilities ( q ( x ) ) and the true probabilities ( p ( x ) ) and is defined as:
 
-<!-- formula-not-decoded -->
+$$H ( p , q ) = - \sum _ { x } p ( x ) \log q ( x )$$
 
 ## Regularization Techniques
 
@@ -110,7 +110,11 @@ When LLAVA analyzes each image, it goes beyond mere species recognition. It delv
 
 Figure 1: LLAVA prompt
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es una foto de un insecto en su ento
+
+
 
 This enriched data, once preprocessed and tokenized using TinyBERT's tokenizer, offers a detailed and contextual basis for training our model. By incorporating both the identification of the insect species and the contextual understanding of its role in the environment, our model is better equipped to differentiate pests from non-pests, leading to more effective and practical applications in agricultural and ecological settings.
 
@@ -118,7 +122,11 @@ Training Procedure The fine-tuning of TinyBERT is carried out over a small numbe
 
 Figure 2: Loss/Accurate-Epoch
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de dos subgrá
+
+
 
 Performance Metrics Model performance is evaluated using accuracy, a crucial metric given our task's classification nature. The accuracy is calculated on a separate test set, providing an objective measure of the model's ability to generalize to new data. This metric, along with qualitative analysis of model predictions, guides our assessment of the fine-tuning process's effectiveness.
 
@@ -130,7 +138,11 @@ Our ensemble learning framework is designed to leverage the distinct predictive 
 
 Weighted Average We calculate ensemble weights based on the accuracy metrics of the NLP and CV models to form a weighted average. The weights, w NLP for the NLP model and w CV for the CV model, are computed as follows:
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Linear Regression Model A linear regression model is employed to process the outputs of the CNN+ResNet and Tiny Bert models. It is trained on the scores generated from these models and aims to predict the probability of the positive class:
 
@@ -157,7 +169,11 @@ As for the AUC. by measuring the area under the ROC curve, it gives a single, ag
 
 Figure 3: ROC and AUC for different models
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de curvas de “Receiver Operating […] […] […]
+
+
 
 Linear Regression (LR) Score Analysis The linear regression model produced a ROC curve with an AUC of 0.977 when trained using the combined feature set acquired from the NLP and CV scores. This displays a high level of discriminative ability, showing that the model can distinguish between the two classes reliably. The coefficients in the regression equation linked with the NLP and CV features highlighted the relative importance of each modality in predicting the outcome.
 

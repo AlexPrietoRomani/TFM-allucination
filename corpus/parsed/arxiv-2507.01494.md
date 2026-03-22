@@ -48,7 +48,11 @@ research in AI-based pest classification. The figure 1 illustrates the process u
 
 Fig 1. PRISMA flow diagram for literature selection.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de la “ ” ” ” ”
+
+
 
 ## 3 Taxonomy of AI Based Pest Classification
 
@@ -56,7 +60,11 @@ This section presents a comprehensive taxonomy developed from the reviewed liter
 
 Fig 2. Taxonomy of pest classification approaches.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de fluo de “ ” ” ” ”
+
+
 
 ## 4 Crops Addressed
 
@@ -202,11 +210,13 @@ Según Crop Pest Classification Using Deep Learning Techniques: A Review (2025),
 Según Crop Pest Classification Using Deep Learning Techniques: A Review (2025), Reference: [43], Year: 2022, Description: Integrated pest CNN models with an Augmented Reality app for farmers; enabled real-time pest identification through smartphone camera with overlaid guidance (enhancing practical usability)..
 compression or architectural streamlining to enable on-device deployment, an important consideration for field applications where compute resources may be limited. Ultimately, the diversity of approaches provides researchers and practitioners with a robust toolkit. The choice of model architecture and training strategy will depend heavily on the specific use-case requirements, such as the need for speed, interpretability, dataset size, or deployment environment. This rich ecosystem of AI techniques underscores an exciting frontier in pest management, where technology is increasingly capable of providing timely, accurate, and scalable solutions. Figure 3 demonstrates the usage frequency of AI techniques in pest classification.
 
-<!-- image -->
-
-AI Technique
-
 Fig 3. Usage Frequency of AI Techniques in Pest Classification
+
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de barra que representa la "Usage Frequency of AI Techniques in Pest Classification Research (2018-2025)". La tendencia principal de la imagen es que la "CNN Based" es la técnica de AI con la más alta frecuencia de uso en la investigación de la “Peste” de “2018-2025” con 15 “E ” “ “ “ “
+
+
 
 ## 7 Benchmark Datasets
 

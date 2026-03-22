@@ -17,11 +17,11 @@ tags:
 
 Mingle Xu a , Ji Eun Park a , Jaehwan Lee a , Jucheng Yang b, ∗ , Sook Yoon c, ∗
 
-Department of Electronic Engineering, Core Research Institute of Intelligent Robots, Jeonbuk National University, Jeonju, South Korea
+a Department of Electronic Engineering, Core Research Institute of Intelligent Robots, Jeonbuk National University, Jeonju, South Korea
 
-College of Artificial Intelligence, Tianjin University of Science and Technology, Tianjin, China a b
+b
 
-c Department of Computer Engineering, Mokpo National University, Muan, South Korea
+College of Artificial Intelligence, Tianjin University of Science and Technology, Tianjin, China c Department of Computer Engineering, Mokpo National University, Muan, South Korea
 
 ## Abstract
 
@@ -75,7 +75,11 @@ To recognize plant diseases, human experts use multiple senses such as vision an
 
 Figure 1: Optical sensors and platform to take images for plant disease, adapted from [6] and inspired by [29, 30]. Extra types of sensor and platform are possible and encouraged. Please refer the advantages and disadvantages of the sensors and platform to [29, 30].
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de la _**C **_ **_**_**
+
+
 
 Although heterogeneous modalities of input exist to recognize plant diseases as mentioned above, optical images are the most widely one. This subsection aims to probe the ways to get them since there are multiple types for optical image beneficial for diverse cases [30, 29]. As shown in Figure 1, optical image acquirement is grouped into two factors, sensors to take images and platform to hold the sensors.
 
@@ -97,7 +101,11 @@ with the uncontrolled background, images are taken without considering the backg
 
 Figure 2: Examples of some image variations from the first to last row: disease stage, illumination, scale, and background. The images are taken from the corresponding datasets. In this paper, image background is grouped into three cases: simple (the first two images), medium (the third and fourth images), and complex (the last image).
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 ## 2.5. Dataset splitting
 
@@ -135,7 +143,11 @@ Considering the advantages of localization task using object detection with weak
 
 Figure 3: Bounding box annotation strategies in object detection, useful for the localization task. Up first row: three strategies to give bounding box, global (light yellow) that covers one instance such as an instance of fruit or leaf; local (light blue) that covers local areas with dense and intensive symptoms; semi-global (dotted red) that is a trade off of previous two, covering local areas yet allowing a sparse symptoms such as the case in the first image. Up second row: recommended strategy, disease-adaptive, that different diseases may use either local or semi-global strategy. The global one is not recommended because an instance may include more than one type of diseases and may include healthy part. Down: inconsistent annotation when the bounding boxes for the same disease are given in different strategies in a dataset, which may confuse the deep learning model and result in optimizing issues. The picture is adapted from [45].
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de [**E **] [** **]
+
+
 
 and the symptom is assumed to be dense without non-trivial gap, termed local level. In this case, many bounding boxes may exist in an instance, such as the third and fourth images in the first row of Figure 3, which makes annotation harder and more time-consuming. Besides, different annotators may have diverse definitions about the 'dense'. Third, semi-level is trade off of previous two, allowing a gap between symptoms, especially for those tiny ones but many. Based on our understanding and experimental results, an adaptive strategy [45] is recommended that different disease has different levels of annotation. Another elusive issue is the inconsistency mentioned by Andrew Ng in a video. The underlying is that different annotators or even same annotator in different time would use different level of bounding boxes, as compared of annotations 1 and 2 for same image in Figure 3. This inconsistency in training datasets gives different information to models resulting in unstable learning. In addition, inconsistency in test process may give us an inaccurate evaluation.
 

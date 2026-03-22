@@ -46,7 +46,7 @@ This module realizes dynamic feature interaction through deformable convolution 
 
 The fused features complete classification tasks through multiple stages of processing: first, the three-dimensional  feature  tensor  of  64× 7× 7  is  flattened  into  a  3136-dimensional  feature  vector (calculation:  64× 7× 7=3136).  Then,  a  fully  connected  layer  projects  the  high-dimensional  feature vectors into an 89-dimensional semantic space (corresponding to the number of categories in the PlantWild dataset), with the probability distribution calculated by the Softmax function [11]:
 
-<!-- formula-not-decoded -->
+$$P ( y _ { i } | x ) = S o f t m a x ( W \cdot F l a t t e n ( F _ { J f u s i o n } ) + b )$$
 
 where 𝐹 𝑓𝑢𝑠𝑖𝑜𝑛 represents  the  output  from  the  deformable  dynamic  fusion  module, 𝑊 ∈ ℝ 89×3136 and 𝑏 ∈ ℝ 89 are  the  weight  matrix  and  bias  vector  of  the  fully  connected  layer, respectively.
 
@@ -62,33 +62,33 @@ Volume 146 (2025)
 
 KL Divergence Loss:
 
-<!-- formula-not-decoded -->
+$$\varLambda _ { K L } = \frac { \alpha } { N T ^ { 2 } } \sum _ { i = 1 } ^ { N } D _ { K L } \left ( P _ { t e a c h e r } ^ { ( T ) } ( y _ { i } ) \left \| P _ { s t t a d e n t } ^ { ( T ) } ( y _ { i } ) \right ) \times T ^ { 2 } \right ) \\ \text {the definition of KL divergence is} .$$
 
 where the definition of KL divergence is:
 
-<!-- formula-not-decoded -->
+$$\int \lim i t s _ { K L } \, d \bar { \ } r e g n e \, i s . \int \lim i t s _ { k = 1 } ^ { c } \, D _ { K L } ( P \left ( k \right ) \log \frac { P ( k ) } { Q ( k ) } ) = \sum _ { k = 1 } ^ { c } P ( k ) \log \frac { P ( k ) } { Q ( k ) } .$$
 
 Teacher model probability distribution:
 
-<!-- formula-not-decoded -->
+$$\text {center} \, \text {model} \, \text {probability distribution} \colon & & P _ { t e a c h e r } ^ { ( T ) } ( y _ { i } ) = S o f t m a x \left ( \frac { \bar { y } _ { \iota } } { T } \right ) \\ & \left \{ \bar { y } _ { \iota } = \alpha \times E f i c i e n t N e t ( x _ { i } ) + ( 1 - \alpha ) \times C o n v N e x T ( x _ { i } ) \\ \text {center} \, \text {model} \, \text {probability distribution} \colon &$$
 
 Student model probability distribution:
 
 where 𝑦𝑖 is the output of the student model, 𝑦𝑖 ̅ is the weighted output of the teacher model, 𝑇 is the temperature parameter [12], and 𝛼 is the distillation loss weight.
 
-<!-- formula-not-decoded -->
+$$\P P _ { s t u d e n t } ^ { ( T ) } ( y _ { i } ) = S o f t m a x \left ( \frac { y _ { i } } { T } \right ) \\ \intertext { a n t h y d s u f t b u l $ h $ t e d } \P P _ { s t u d e n t } ^ { ( T ) } ( y _ { i } ) = S o f t m a x \left ( \frac { y _ { i } } { T } \right ) \\ \intertext { u n t h e f a t h d e n t m o d } \overline { \bar { y } } \, \underset { i } { \, } \, \underset { j } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \underset { p } { \, } \, \underset { k } { \, } \, \underset { l } { \, } \, \underset { m } { \, } \, \underset { n } { \, } \, \$$
 
 Cross-Entropy Loss:
 
-<!-- formula-not-decoded -->
+$$\sum _ { \substack { \mathcal { L } _ { C E } = C r o s S E n t r o p y ( y , l a b e l s ) \times ( 1 - \alpha ) \\ \infty } } \mathcal { L } _ { C E } = C r o s S E n t r o p y ( y , l a b e l s ) \times ( 1 - \alpha )$$
 
 Definition of Cross-Entropy:
 
-<!-- formula-not-decoded -->
+$$\text {Definition of Cross-Entropy} \colon & \quad \\ & \quad \text {Cross-Entropy} y ( y , l a b e l { s } ) = - \sum _ { k = 1 } ^ { c } \mathbb { I } ( k = l a b e l { i } ) \cdot \log P _ { s t u d e n t } ( y _ { i } , k ) \\ \text {Total Loss} & \colon$$
 
 Total Loss:
 
-<!-- formula-not-decoded -->
+$$\mathcal { L } _ { t o t a l } = \mathcal { L } _ { K L } + \mathcal { L } _ { C E } \quad \\ \cdot \begin{matrix} \mathcal { L } _ { t o t a l } = \mathcal { L } _ { K L } + \mathcal { L } _ { C E } \\ \cdot \begin{matrix} \mathcal { L } _ { t o t a l } = \mathcal { L } _ { K L } \end{matrix} \end{matrix} \cdot \begin{matrix} 1 & 1 & 1 & 1 & 1 & 1 & 1 \\ 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 & 0 & 0 & 0 \end{matrix}$$
 
 For hardware environments constrained by GPU memory, a training approach is adopted where parameters are updated every four mini-batches[13]. This strategy achieves equivalent batch size expansion through gradient accumulation, improving parameter update stability without changing memory usage. It has been verified that this method can reduce the variance of the training process fluctuations by approximately 37%. Additionally, a Cosine Annealing learning rate strategy is used, with an initial learning rate of 1 × 10 -4 and a cycle of 50 epochs.
 
@@ -113,7 +113,11 @@ As  shown  in  Figure  1,  PlantDisease  exhibits  high  intra-class  consistenc
 
 Figure 1. Data quality comparison between PlantWild and PlantDisease datasets
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que compara la “E
+
+
 
 ## 3.2. Model Configuration and Cross-Domain Adaptation
 
@@ -184,13 +188,21 @@ In comparative experiments with full datasets over 10 training epochs (Table. 5)
 
 Table 5. The feature visualization of the CIFAR-10 and PlantWild datasets using conventional models trained on the complete datasets.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 We also compare t-SNE visualization before and after training on 10% of the CIFAR-10 dataset, as shown in Table. 6. Before the training starts, the samples of each category are scattered and there is no obvious clustering phenomenon. This reflects the randomness and diversity of the original data. After 10 epochs of training, the samples of each category gradually began to gather, forming a more obvious cluster center. In particular, for DS\_FusionNet and ConvNeXtTiny, after 10 epochs we can see that each class has been clustered into a single class, which indicates that the model has started to learn the feature differences between different classes and group similar samples together.
 
 Table 6. t-SNE Visualization for 10% CIFAR-10 Data
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de visualización de datos de la [“E-
+
+
 
 Through the above analysis, it is easy to see that the excellent performance of ConvNeXtTiny on small sample data sets proves its strong adaptability and effectiveness, which provides strong support for our proposed method. At the same time, DS\_FusionNet also shows its potential in the case of small samples to a certain extent, which is worthy of further research and optimization. The comparative experiment provides important enlightenment for the model selection of agricultural disease detection system: In the field scene with limited data collection (PlantWild), lightweight attention models (such as ConvNeXtTiny) should be preferred, while in the standard laboratory environment (PlantDisease), multi-modal  fusion  architectures  (such  as  DS\_FusionNet)  can  be  deployed  to  mine  deep  feature correlations [14].
 
@@ -202,7 +214,11 @@ Because there are too many categories of pests and diseases in PlantWild dataset
 
 Table 7. Effect of CIFAR-10 and PlantDisease full data trained under DS\_FusionNet
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Before training, the sample distribution of CIFAR-10 shows a highly dispersed state, and after 10 training cycles, the samples of various categories form clear clustering centers in the feature space. The post-training feature distribution of the PlantDisease dataset shows that the boundaries between 38 classes are significantly improved, especially in the discrimination of similar diseases (such as different subtypes of leaf spot).
 

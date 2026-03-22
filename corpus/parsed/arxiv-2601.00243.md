@@ -24,7 +24,11 @@ Anirudha Ghosh 1 , Ritam Sarkar 2 , and Debaditya Barman 1 ,⋆
 
 2 Faculty of Technology, Uttar Banga Krishi Viswavidyalaya, Cooch Behar, India
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un sistema de “Deep Neural Network” (DNN) para “Pest Detection” y “Pesticide Re ….”. La “Pest ….” es “P ….” “...”. La “P ….” “… …” es “P ….” “… …”. La “P ….” “… …” “…
+
+
 
 Fig. 1: Overview of our proposed framework integrating a lightweight prototypical network for few-shot pest detection with the rule-based Decision Support System (integrates pest detection results with environmental factors) to recommend context-aware pesticides.
 
@@ -87,7 +91,11 @@ The pest detection module employs a lightweight CNN architecture optimized for e
 
 Fig. 2: Architecture of propose Lightweight Prototype Network Backbone.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un modelo de “ ” ” ” ”
+
+
 
 The Lightweight Prototype Network Backbone (LPN-Backbone) architecture, illustrated in Figure 2, is developed with significantly fewer learnable parameters compared to ResNet18 and DenseNet169. While ResNet18 and DenseNet169 have approximately 12 million and 14 million parameters, the LPN consists of roughly 10 million. The LPN is structured into three stages for hierarchical feature extraction. It comprises four Feature Extraction Building Blocks (FEBBs) and four Reduction Blocks (RBs). The first stage includes two FEBBs, each followed by an RB, while the second and third stages feature one FEBB and one RB each. At the end of each stage, a Fully Connected module (FC) with three densely connected layers combines extracted features into the final feature embedding.
 
@@ -95,7 +103,11 @@ Each FEBB, shown in Figure 3, is made up of three Targeted Learning Blocks (TLBs
 
 Fig. 3: Architecture of FEBB
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un flujo de datos, que representa el proceso de **Tub > > > >
+
+
 
 ing training. Following each FEBB, the RB reduces feature dimensions using a (3Œ3) convolutional layer combined with batch normalization (BN) and ReLU activation.
 
@@ -137,23 +149,41 @@ training, the k-way, n-shot protocol was used, where k (number of classes) and n
 
 Fig. 4: Training loss of ResNet18.
 
-<!-- image -->
 
-TrainingLoss over Mini-EpochsforEpisodes 0 to49
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que muestra la curvatura de las “Training Loss” de un modelo de “Deep […] … … … … …
+
+
+
+TrainingLossoverMini-EpochsforEpisodesOto49
 
 Fig. 5: Training loss of DensNet169.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Figure 4 illustrates the training loss for ResNet18, while Figure 5 presents the training loss for DenseNet169. Similarly, Figure 6 depicts the training loss for the proposed LPN model, highlighting its convergence behavior during the meta-training phase.
 
-Fig. 6: Training loss of our proposed LPN.
 
-<!-- image -->
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que muestra la evolución de la “Training Loss” (Pé
+
+
+
+150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195 196 197 198 199
+
+Fig. 6: Training loss of our proposed LPN.
 
 Testing Procedure The testing procedure utilize a few-shot strategy for both the sugarcane and wheat testing datasets, each comprising five classes. Testing was conducted under 5-way 1-shot, 3-shot, and 5-shot scenarios. For the 1-shot setting, one support image per class was randomly selected. The 3-shot scenario expanded this by including the 1-shot support image along with two additional random images per class. Similarly, the 5-shot setting built upon the 3-shot scenario by adding two more random support images per class.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de dos líneas con dos series de datos: una en azul y otra en verde. La línea en azul representa el “Rac : Com :
+
+
 
 - (a) Recall Plot for Pest Detection Across 1-Shot, 3-Shot, and 5-Shot Configurations in Sugarcane
 - (b) Recall Plot for Pest Detection Across 1-Shot, 3-Shot, and 5-Shot Configurations in Wheat

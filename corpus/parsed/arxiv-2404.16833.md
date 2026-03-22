@@ -59,7 +59,11 @@ Plant diseases primarily affect leaves and roots, stems, and fruits. Leaf diseas
 
 Fig. 1: Diseases in various plant leaves.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un conjunto de 6 sub-imagens de plantas confe
+
+
 
 ## B. Available Datasets
 
@@ -170,9 +174,17 @@ Now let us understand the above workflow from a hypothetical example. Assume a s
 
 Fig. 2: Learning Performance vs. Explainability
 
-<!-- image -->
 
-<!-- image -->
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de un **CICLO DE [ ] [ ] [ ]
+
+
+
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de datos que describe el proceso de **E
+
+
 
 Model
 
@@ -186,17 +198,23 @@ So what we have observed from the above example is that even the results of a hi
 
 Researchers use the terms explainability and interpretability to explain the concept of Explainable AI. Explainability is an active property of a model that refers to the measures taken by a model to explain the internal functioning of the AI system in a human-understandable form. At the same time, Interpretability (also expressed as transparency) is the passive property of a model that enables one to comprehend how a model arrives at a predicted decision in human terms.
 
-<!-- image -->
-
-Prediction
-
 Fig. 4: Explainable AI incorporated into the workflow.
+
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de datos que describe el proceso de **Inte [ ] [ ]
+
+
 
 Interpretability can be further classified into 'Intrinsic' and 'Post-hoc' interpretability, as shown in Fig. 5.
 
 Fig. 5: Taxonomy of Interpretability.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un modelo de interpretación de modelos de inter
+
+
 
 - Intrinsic Interpretability: Machine learning models with intrinsic interpretability, such as short decision trees and sparse linear models, are considered interpretable due to their simple and less complex structure. In general, we can achieve intrinsic interpretability by limiting the complexity of the machine learning model.
 - Post-hoc Interpretability: Models like neural networks and gradient boosting are not self-interpretable due to their complex structure. As a result, an external method or technique must be used to explain the facts and feature relationships that drive the model's decision. 'Post-hoc interpretability' refers to human-comprehensible explanations obtained after a model's decision-making by an external method. In general, methods that analyze the model after training and decision-making can be used to achieve post-hoc interpretability.
@@ -240,7 +258,11 @@ We have mentioned some points below that may assist in improving and enhancing t
 
 Fig. 6: Depicting XAI solution for leaf-based plant disease detection.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de fluo
+
+
 
 ## VI. CONCLUSION
 

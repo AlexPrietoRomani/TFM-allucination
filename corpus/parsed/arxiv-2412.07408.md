@@ -123,11 +123,19 @@ In the second step of ACE, similar segments are gathered to form examples of the
 
 Fig. 1. Example of leaf images from the PlantVillage dataset, (C1) Apple Scab, (C2) Apple Black Rot, (C3) Apple Cedar Rust, (C4) Apple Healthy, (C5) Blueberry Healthy, (C6) Cherry Healthy, (C7) Cherry Powdery Mildew, (C8) Corn Gray Leaf Spot, (C9) Corn Common Rust, (C10) Corn Healthy, (C11) Corn Northern Leaf Blight, (C12) Grape Black Rot, (C13) Grape Black Measles(Esca), (C14) Grape Healthy, (C15) Grape Leaf Blight, (C16) Orange Huanglongbing (CitrusGreening), (C17) Peach Bacterial Spot, (C18) Peach Healthy, (C19) Bell Pepper Bacterial Spot, (C20) Bell Pepper Healthy (C21) Potato Early Blight, (C22) Potato Healthy, (C23) Potato Late Blight, (C24) Raspberry Healthy (C25) Soybean Healthy, (C26) Squash Powdery Mildew, (C27) Strawberry Healthy, (C28) Strawberry Leaf Scorch, (C29) Tomato Bacterial Spot, (C30) Tomato Early Blight, (C31) Tomato Late Blight, (C32) Tomato Leaf Mold, (C33) Tomato Septoria Leaf Spot, (C34) Tomato Two Spotted SpiderMite, (C35) Tomato TargetSpot, (C36) Tomato MosaicVirus, (C37) Tomato Yellow LeafCurlVirus, (C38) Tomato Healthy.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Fig. 2. Illustration of the ACE method [12] steps for extracting and evaluating plant disease concepts. The first step involves gathering a collection of images belonging to the same plant disease class and applying multi resolution segmentation (SLIC) to each of them. A pool of extracted segments is produced and rescaled to the model's input size. In the second step, these segments are then passed through the InceptionV3 model, where activations from a bottleneck layer (latent embeddings) serves as a similarity space. Using these embeddings, k-means clustering groups similar segments into clusters (representing distinct concepts) while removing deviations. In the third step, a TCAV score is computed for each concept to quantify its significance in the model's classification decisions.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de fluo
+
+
 
 by the model and then passing each segment through CNN and measuring the Euclidean distance between their activations in the chosen layer.
 
@@ -145,7 +153,7 @@ This sensitivity score quantifies how much the classifier's prediction for an in
 
 The equation representing this sensitivity is provided below.
 
-<!-- formula-not-decoded -->
+$$S _ { c , k , l } ( x ) = \lim _ { \epsilon \rightarrow 0 } \frac { h _ { l , k } ( f _ { l } ( x ) + \epsilon v _ { c } ^ { l } ) - h _ { l , k } ( f _ { l } ( x ) ) } { \epsilon } = \nabla h _ { l , k } ( f _ { l } ( x ) ) v _ { c } ^ { l } \quad ( 1 )$$
 
 Then, to measure the influence of a CAV on a class of input images, a metric called TCAV score is computed. It employs the directional derivatives S c,k,l ( x ) to compute the contextual sensitivity of a concept towards the whole inputs X k for class k .
 
@@ -153,7 +161,7 @@ Then, to evaluate the impact of a CAV on a specific class of input images, the T
 
 The TCAV score is given by:
 
-<!-- formula-not-decoded -->
+$$T C A V _ { Q _ { c , k , l } } = \frac { | x \in X _ { k } ; S _ { c , k , l } ( x ) > 0 | } { | X _ { k } | }$$
 
 Furthermore, to ensure that only meaningful CAVs are considered, the authors perform a statistical significance test on the TCAV scores.
 
@@ -179,7 +187,11 @@ Figure 3 presents the precision, recall, F1-score for each class, providing a de
 
 Fig. 3. Performance Metrics by Class: Precision, Recall and F1-Score. See Figure 1 for the full name of each class.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que muestra la evolución de la precisión y el recu
+
+
 
 Some classes exhibit perfect performance with precision, recall, and F1-scores close to or at 1.00 (such as Apple Black Rot (C2), Apple Healthy (C4), and Cherry Powdery mildew (C7)).
 
@@ -201,7 +213,11 @@ To present a comprehensive understanding of these concepts, we have included thr
 
 Fig. 4. Examples of discovered concepts. For each class, three discovered concepts with High TCAV scores and the one with the lowest score are shown. We randomly chose three segments in each concept.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que representa la comparación de la “ ” ” ” ” ”
+
+
 
 ACE has effectively identified key concepts essential to the plant diseases classification, particularly focusing on disease-affected areas of the leaves.
 
@@ -217,7 +233,11 @@ This indicates the model's capability to distinguish and differentiate healthy l
 
 Fig. 5. Discovered concepts for the late blight disease in tomato and potato.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de comparación de dos plantas: Late Blight de Tomatoes y Late Blight de Potatoes. La tendencia principal es que ambas plantas tienen el mismo nivel de Blight.
+
+
 
 Another interesting thing is to investigate the concepts the model used when identifying the same type of disease but in different types of plants. This will help us to understand if the model captured the disease pattern regardless of the leaf type.
 
@@ -233,11 +253,13 @@ Another interesting notice is that the model also focused on the venation patter
 
 Examining the identified concepts that received high TCAV scores provides valuable insights into what the model is focusing on when identifying plant diseases and reveals interesting correlations. Some of these correlations are desirable and in accordance with the expert intuition but others are not and may help in discovering the biases that could be found in the dataset or learned by the model itself. In the following sections, these findings will be studied in detail.
 
-TCAV score = 0.1
-
 Fig. 6. Desirable correlations: distinguishing between Healthy and Diseases leaves
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 A. Desirable correlations: distinguishing between Healthy and Diseases leaves Figure 6 reveals some of the desirable correlations found. In the Black rot disease class, regions of the leaf with disease spots had significantly higher TCAV score than the unaffected parts of the leaf. This means that the disease spots had a big impact on the model decision making process while the unaffected parts had less of an impact. This shows the model's ability to effectively differentiate between healthy and disease patterns and make informed classification.
 
@@ -247,7 +269,11 @@ This could be used as a demonstration for the network's ability in learning the 
 
 Fig. 7. Desirable correlations: healthy classes and venation patterns.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas que representa la comparación de la TC de “ ” ” ”
+
+
 
 B. Desirable correlations: healthy classes and venation patterns Another interesting insight was found when checking most significant extracted concepts (TCAV score: 1.0) for healthy classes of different plants within the dataset (see Figure 7).
 
@@ -261,7 +287,11 @@ C. Undesirable correlations: Bias detection ACE helped to discover some of the u
 
 Fig. 8. Background bias.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 This is a phenomenon where the model mistakenly associates certain background colors or patterns with specific classes.
 
@@ -277,7 +307,11 @@ For example, for the Scab Disease (Apple) the background apears to be light purp
 
 Fig. 9. Shadow Bias.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 Another bias that was identified through the discovered concepts is the shadow of the leaves on the background, which occurred when the leaves were photographed under certain lighting conditions. This could lead the model to incorrectly associating the dark shadows with disease symptoms, particularly those that are marked by black or dark-coloured spots. For example, diseases like black rot (see Figure 9) or other infections that cause dark patches on leaves could become confused with the black shadows in the background. Also this bias seems to not just affect the diseased classes but also the healthy classes (see Figure 9 Tomato and Blueberry healthy examples). The model may have learned to associate the dark shadows in
 
@@ -295,7 +329,11 @@ This finding indicates that the classifier may struggle with these specific clas
 
 Fig. 10. Examples of discovered concepts in classes with the lowest recall and F1scores, showing high TCAV scores.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 ## 5 Conclusion
 

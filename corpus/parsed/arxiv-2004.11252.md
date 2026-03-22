@@ -93,17 +93,30 @@ The sizes of the mite species are very small in proportion to the entire image s
 
 Figure 1: (a-b) Devices used to collect the citrus pest images; (c-d) insect image before and after magnification.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un microscopio con dos lentes: una magnificante y una de…
+… “… “… “
+
+
 
 hard glass surface present in the device, a significant part of the images is blurred, as can be seen in Figure 3.
 
 Figure 2: Mites captured through optical magnification of 60 × . The mites are highlighted on the upper-left side of the images.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un conjunto de seis sub-imagens de microscopía de un [ ] [ ] [
+
+
 
 Figure 3: Samples of False Spider mites from our Citrus Pest Benchmark.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 To generate our citrus pest database, the mite images were captured at S˜ ao Jos´ e Farm, located in the city of Rio Claro, S˜ ao Paulo State, in Brazil. The data acquisition period was from March 2018 to January 2019. Guided by MIP inspectors, we carried out scheduled inspections in the production unit areas, which contain up to 1000 citrus trees divided into groups arranged in lines. The inspectors chose samples from the crop lines, not near the border, to analyze the fruits, new germinations and stem. Then, they moved on to the next thirtieth plant individuals. We used the samples examined by the inspectors to obtain the mite images. After completing a crop sector line, every three planting lines were examined.
 
@@ -152,7 +165,11 @@ Según Weakly Supervised Learning Guided by Activation Mapping Applied to a Nove
 Según Weakly Supervised Learning Guided by Activation Mapping Applied to a Novel Citrus Pest Benchmark (2020), Author: Our work, Database Name: CPB, Size: 10,816, Type: pests, Year: 2020.
 Figure 4: Our method consists of four steps. In Step 1, we train a CNN (initially trained on the ImageNet) on the Citrus Pest Benchmark. In Step 2, we automatically generate multiple patches regarding saliency maps. In Step 3, we fine-tune our CNN model (trained on the target task) according to a multiple instance learning approach. In Step 4, we apply a weighted evaluation scheme to predict the image class.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de fluo de datos con cuatro etas: **Step 1**, **Step 2**, **Step 3** y **Step 4**. La eta **Step 1** es un **Cahs. Bag Model**. La eta **Step 2** es un **Patch Algorithm**. La eta **Step 3** es un **Cahs. Instance Model**. La eta **Step 4** es un **Weighted Evaluation Method**. La imagen es un diagrama de fluo de datos con cuatro etas. La eta **Step 1** es un **Cahs. Bag Model**. La eta **Cahs. Bag Model** es un **Cahs. Bag
+
+
 
 ## 4.2. Multi-patch Selection Strategy Based on Saliency Maps
 
@@ -172,7 +189,7 @@ Algorithm 1 Patch-SaliMap Input: x i , S ( x i ) , k, l Output: instances 1: fun
 
 To predict the class of bag images, we propose the Weighted Evaluation method. It uses static weights to calculate a weighted average and reports the final probabilities. Thus, given x i ∈ X,i = 1 , ..., n , its x ij ∈ X,j = { 1 , ..., k } , and the probabilities p ( . ) from the Instance Model, the final probability P ( . ) for each bag is expressed in Equation 1.
 
-<!-- formula-not-decoded -->
+$$P ( x _ { i } ) = \frac { \sum _ { j = 1 } ^ { k } ( k - j + 1 ) p ( x _ { i j } ) } { \sum _ { j = 1 } ^ { k } ( k - j + 1 ) } . \quad \text { (1) } \quad \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \text { \ \ } \$$
 
 The Weighted Evaluation Method assigns a higher weight k to the first instance x i 1 , that intuitively comes from the first saliency obtained from the Patch-SaliMap algorithm. Since the Patch-SaliMap in the first iteration achieves the highest value for the regions of the saliency map, this region has the major probability. The next saliency values are smaller than the first, so the algorithm assigns decreasing costs until the last saliency receives the weight equal to 1.
 
@@ -254,7 +271,11 @@ For illustration, we show in Figure 5 the automaticallygenerated patches guided 
 
 Figure 5: Automatically-generated patches guided by the saliency map.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 ## 6. Conclusions and Future Work
 

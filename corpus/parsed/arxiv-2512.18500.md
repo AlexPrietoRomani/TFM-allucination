@@ -112,7 +112,11 @@ A strategic partial fine-tuning approach was implemented to  balance  the  prese
 
 Fig. 1. Working methodology to derive PlantDiseaseNet-RT50
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de flujo de un modelo de “ ” ” ”
+
+
 
 ## 2) Classification head architecture
 
@@ -154,25 +158,25 @@ Según PlantDiseaseNet-RT50: A Fine-tuned ResNet50 Architecture for High-Accurac
 Según PlantDiseaseNet-RT50: A Fine-tuned ResNet50 Architecture for High-Accuracy Plant Disease Detection Beyond Standard CNNs (2025), Model: AlexNet, Accuracy: 0.79, Precision: 0.83, Recall: 0.76, F1-Score: 0.79.
 Accuracy represents the proportion of correctly classified instances across the entire dataset, formulated as:
 
-<!-- formula-not-decoded -->
+$$A c c u r a c y = \frac { \text {True Positive} + \text {True Negative} } { \text {Total number of cases} } \quad ( 1 )$$
 
 This metric provides a global assessment of classification performance across all disease categories.
 
 Precision  quantifies  the  model's  ability  to  avoid  false positive classifications, calculated as:
 
-<!-- formula-not-decoded -->
+$$\text {Precision} = \frac { \text {True Positive} } { \text {True Positive} + \text {False Positive} }$$
 
 High  precision  indicates  minimal  misclassification  of healthy  plants  or  incorrect  disease  categorisation,  a  critical consideration in agricultural applications where unnecessary interventions may result in economic losses.
 
 Recall  (also  termed  sensitivity)  measures  the  model's capacity to identify all instances of a particular disease class, formulated as:
 
-<!-- formula-not-decoded -->
+$$R e c a l l = \frac { T r e \, \text {Positive} } { T r e \, \text {Positive} + \text {False Negative} }$$
 
 This metric is particularly significant in plant pathology applications,  as  failure  to  detect  disease  instances  (false negatives) could result in uncontrolled pathogen spread and substantial crop losses.
 
 F1-Score  provides  a  harmonic  mean  of  precision  and recall, offering a balanced assessment when class distributions are uneven.
 
-<!-- formula-not-decoded -->
+$$F 1 \text {-Score} = \frac { 2 \times \text {Precision} \times \text {Recall} } { \text {Precision} + \text {Recall} }$$
 
 This metric is especially valuable in multi-class classification  scenarios  with  potential  class  imbalance,  as commonly  encountered in comprehensive plant disease datasets.
 
@@ -190,11 +194,13 @@ ResNet50 unexpectedly underperformed compared to the other models, achieving onl
 
 Our  study  into  deep  learning  models  for  plant  disease detection revealed a significant breakthrough with our finetuned  ResNet50  architecture.  While  the  baseline  ResNet50 model  initially  underperformed  with  a  mere  38%  average accuracy across disease categories, our optimised implementation achieved exceptional results following comprehensive hyperparameter tuning and architectural modifications. The PlantDiseaseNet-RT50 model demonstrated  remarkable  performance  metrics,  achieving 98% in accuracy, precision, and recall across the diverse plant disease dataset. This dramatic improvement represents a 60percentage point increase over the baseline  model  and surpasses even the previously best-performing DenseNet121 architecture (93%). These results highlight the critical importance of model optimisation in computer vision applications for agriculture.
 
-ModelAccuracyConvergence
-
 Fig. 2. PlantDiseaseNet-RT50 convergence graphs
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de dos subgrá
+
+
 
 ## 1) Training Dynamics
 

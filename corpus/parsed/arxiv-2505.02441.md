@@ -64,13 +64,13 @@ In this paper, we design a multi-scale feature extraction block using a convolut
 
 ITF, based on the Transformer encoding architecture proposed by Vaswani et al. [19], is demonstrated in Figure 2 to illustrate the specific internal process of ITF. Conv Transformer A extracts visual features and transforms them into the Transformer architecture encoding through convolution. This structure includes multi-head self-attention sublayers and fully connected feed-forward sub-layers. Residual connections and layer normalization are applied between the two sub-layers. The Transformer encoder employs scaled dotproduct attention, defined as follows:
 
-<!-- formula-not-decoded -->
+$$A t t e n t i c { n } ( Q , K , V ) = s o f t \max ( \frac { Q K ^ { T } } { \sqrt { d _ { k } } } ) V$$
 
 Q , K , and V consist of queries, keys, and values, respectively, and d k represents the dimensionality of keys. In our model, we concatenate text and image features into a new sequence G :
 
-<!-- formula-not-decoded -->
+$$G _ { L R } , G _ { S R } = \underbrace { t _ { 1 } , t _ { 2 } , \cdots , t _ { n } } _ { n } , \underbrace { V _ { B 1 } ^ { 1 , 1 } , \cdots , V _ { B 1 } ^ { 5 , 5 } } _ { 2 5 } , \underbrace { V _ { B 2 } ^ { 1 , 1 } , \cdots , V _ { B 2 } ^ { 5 , 5 } } _ { 2 5 } , \underbrace { V _ { B 3 } ^ { 1 , 1 } , \cdots , V _ { B 3 } ^ { 5 , 5 } } _ { 2 5 } } \quad ( 2 )$$
 
-<!-- formula-not-decoded -->
+$$G = C o n c a t ( G _ { L R } , G _ { S R } )$$
 
 G LR , G SR represent high-resolution image features and low-resolution image features respectively. The reconstructed image features before and after concatenation into G are input into ITF; hence, Q = K = V = G T . Ultimately, ITF outputs multi-scale image features V C 1 , V C 2 and V C 3 , which are encoded through Conv Transformer B for subsequent ITC. Conv Transformer B is the reverse process of Conv Transformer A.
 
@@ -80,11 +80,19 @@ The ITC is the inverse process of the TIC. The ITC outputs features of the same 
 
 Fig. 1: MSFNet-CPD Model Architecture (A. LSRGAN for super-resolution of low-quality images, B. Picture to ITF Transformer (TIC), C. Multi-scale Cross-modal Fusion ITF Module, D. ITF to Neck Network Converter (ITC), and E. Pest Target Identification (PTI). Numbers represent categories in Original Image and Pre Image, numbers represent class confidence and category).
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de fluo
+
+
 
 Fig. 2: ITF Specific Process. ( B i , C i , V i stand for different scale image features and T stands for text features).
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de unión de dos molé
+
+
 
 TABLE I: TIC and ITC Structure.
 
@@ -96,13 +104,17 @@ B 1 , B 2 , B 3 , C 1 , C 2 and C 3 stand for the corresponding module name of F
 
 This paper primarily compares the advantages and disadvantages of unimodal and multi-modal approaches. Due to its simpler structure and fewer model parameters than YOLOv8 and YOLOv9, we utilize the Neck and Head Networks of YOLOv4 [21] for pest target detection. The multi-scale cross-modal features V N 1 , V N 2 and V N 3 from the image feature extraction network are connected to the neck network, which includes Spatial Pyramid Pooling (SPP) [22] and Path Aggregation Network (PANet) [23]. The SPP consists of three maximum pooling layers, while the PANet comprises convolutional and downsampling components. PANet enhances the receptive field and retains spatial information. The processed information at different scales is then fed into the head network, which predicts three types of bounding boxes at different scales. Detailed calculations for bounding offsets can be found in Redmon and Farhadi [24]. In our model, num class is set to 102 to account for the 102 different pest classes. The PTI objective function includes the bounding box regression loss L B and the target class loss L O :
 
-<!-- formula-not-decoded -->
+$$\mathcal { L } _ { P T I } = \mathcal { L } _ { B } + \mathcal { L } _ { O }$$
 
 As with YOLOv4, the bounding box regression loss of L B includes the Mean Squared Error (MSE) of the width and height of the predicted box versus the width and height of the target box. Additionally, L O is the target category loss, which calculates the binary cross-entropy (BCE) of the predictor box
 
 Fig. 3: Partial Presentation of Multi-modal Dataset.
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un diagrama de un [ ] [ ]
+
+
 
 category probability with the category information of the target box.
 
@@ -131,7 +143,11 @@ Output: num images containing R target images
 
 Fig. 4: Visualization of the semantic correlation analysis of simple and complex text descriptions. (Horizontal and vertical coordinates in the figure indicate the coordinates after mapping the feature vectors into a low-dimensional space).
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de 4 subgrá
+
+
 
 ## III. EXPERIMENTATION
 
@@ -195,7 +211,11 @@ In this section, we evaluate the performance of our proposed MSFNet-CPD model us
 
 AP75
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un gráfico de líneas con múltiples curvas y “m” “P” “P
+
+
 
 ACC
 
@@ -230,7 +250,11 @@ Although image-based methods have been widely used for disease or pest detection
 
 Fig. 6: Grad-cam Visualization Results. (Single modal images are generated using w/o text, while multi-modal images are generated using MSFNet-CPD).
 
-<!-- image -->
+
+
+> **[💡 Descripción de Imagen VLM]:** La imagen es un grá
+
+
 
 species and characteristics [7], [34], [35]. The ITF structure proposed in this study solves this problem by processing text description information in images for feature extraction and fusion. The MSFNet-CPD model has an advantage when image and text data are available, enabling more accurate and comprehensive pest classification and detection. Experiments have demonstrated that complex text descriptions can improve the detection rate, and future research should focus on the preprocessing of natural language descriptions and validate the model's performance in practical applications. In addition, this study proposes the ACIE data enhancement method, which can be applied to single-target detection with fewer data and extend the dataset, thus reducing the time for data labeling and collection.
 

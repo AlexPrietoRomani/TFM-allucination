@@ -16,6 +16,8 @@ tags:
 
 CIONAL
 
+ECHNICAM
+
 <!-- image -->
 
 ## Agroindustrial Science
@@ -76,6 +78,8 @@ Aceptado 29 octubre 2023
 
 CIONAL
 
+ECNICAM
+
 ## 1. Introducción
 
 El  cultivo  de  arándano  ( Vaccinium corymbosum L.)  durante  las  últimas  décadas  ha  ganado  un crecimiento significativo a nivel mundial por su alto valor nutricional, por los grandes beneficios para la salud, la creciente demanda  global  y  su potencial económico (Carlier et al., 2021; Liu et al., 2020; Orga, 2021; Silva et al., 2020; Stefănescu et al., 2020; Wang et al., 2023), factores que han llevado a un aumento en la demanda y producción de  esta  fruta.    En  el  Perú  la  principal  región productora de arándano es la Libertad que lidera el  90%  de  la  producción  nacional,  siendo:  Virú, Chepén y Ascope, las principales zonas productoras de la región. En el 2019, el Perú se convirtió  en  el  primer  exportador  mundial  de arándano con 134,000 toneladas de fruta fresca, con un valor de US$ 890 millones (Ghezzi et al., 2021; Proarándanos, 2023). En la campaña 20212022, Perú exportó 220,000 toneladas ubicándolo nuevamente como el primer exportador mundial (Amézquita, 2022; Proarándanos, 2023). El incremento en área y producción de este cultivo ha generado a la vez el aumento de fitopatógenos que reducen su producción y causan la mortandad de plantas en campo (Amézquita, 2022). Son más de 50 los agentes patógenos que afectan a este cultivo,  reduciendo  drásticamente  la  cantidad  y calidad  de  la  producción  (Caruso  &amp;  Ramsdell, 1995). Así, en el distrito de Chao, ubicado en la provincia de Virú, región La Libertad, el arándano ha  sido  afectado  seriamente  por  hongos  fitopatógenos  que  terminan  disminuyendo  considerablemente  la  producción.  Estos  patógenos  se presentan  en  cualquier  etapa  del  desarrollo  del cultivo,  lo  que  se  asocia  a  factores  de  edad, temperatura, estrés y un mal manejo agronómico (Fang et al., 2020). En áreas nuevas el cultivo de arándano  se comporta  como  susceptibles al ataque de plagas y enfermedades, por lo tanto, es necesario realizar estudios de prospección, caracterización e identificación de patógenos asociados al cultivo de arándano para su manejo eficaz.    El  objetivo  del  estudio  fue  caracterizar, describir los síntomas e identificar a los patógenos causantes de enfermedades fungosas en el cultivo de arándano y proponer algunas medidas de manejo de las enfermedades.
@@ -102,6 +106,8 @@ Hongos  que  causan  pudrición  de  flores  y frutos. Las  muestras  se  coloca
 
 CIONAL
 
+ECNNICAM
+
 Hongos que causan roya. Se colectaron muestras  de  hojas  con  pústulas,  mediante  la ayuda de un pincel se recogieron las uredosporas, siendo posteriormente conservados en papel aluminio a 4 °C.
 
 ## 2.3 Caracterización cultural y microscópica
@@ -122,11 +128,7 @@ Se realizó una revisión y análisis de proyectos de investigación, artículos
 
 ## Roya
 
-Sintomatología ,  se  observaron  pequeñas  manchas cloróticas circulares en el haz de las hojas, menor a 1 mm de diámetro, que más tarde en el mismo  lugar  desarrollaron  centros  necróticos. Pero, en el envés desarrollaron pústulas de color canela de forma circular (Figura 2) que  se disponen de forma individual o en grupos (Figura 3A).  Las  pústulas  son  rodeadas  de  un  halo clorótico,  que  contrastó  con  la  coloración  verde normal de las hojas. En los últimos estados del
-
-AGROINDU
-
-desarrollo de las plantas, las pústulas se tornaron de  color  negro,  tanto  sobre  hojas  y  tallos  (a menudo  de  mayor  tamaño,  formadas  por  el conjunto de uredosporas.) distribuidas en círculos o irregularmente, que llegaron a confluir unas con otras, las pústulas se encuentran en el centro de un halo clorótico presentes en el haz y envés de las hojas (Rebollar et al., 2011).
+Sintomatología ,  se  observaron  pequeñas  manchas cloróticas circulares en el haz de las hojas, menor a 1 mm de diámetro, que más tarde en el mismo  lugar  desarrollaron  centros  necróticos. Pero, en el envés desarrollaron pústulas de color canela de forma circular (Figura 2) que  se disponen de forma individual o en grupos (Figura 3A).  Las  pústulas  son  rodeadas  de  un  halo clorótico,  que  contrastó  con  la  coloración  verde normal de las hojas. En los últimos estados del desarrollo de las plantas, las pústulas se tornaron de  color  negro,  tanto  sobre  hojas  y  tallos  (a menudo  de  mayor  tamaño,  formadas  por  el conjunto de uredosporas.) distribuidas en círculos o irregularmente, que llegaron a confluir unas con otras, las pústulas se encuentran en el centro de un halo clorótico presentes en el haz y envés de las hojas (Rebollar et al., 2011).
 
 Figura 2. Pústulas redondeadas de color canela en el envés de las hojas del cultivo de arándano.
 
@@ -156,11 +158,11 @@ Sintomatología . En flores se observó un atizonamiento,  presentando  inicialm
 
 En frutos provocó pérdida de la turgencia y peso, que pueden ser causadas por la degradación del tejido de la epidermis del fruto durante el proceso de infección del patógeno (Jiang et al., 2022). Una de las características observadas en campo fue la presencia de ramilletes florales atizonados
 
-AGROINDI
+AGROIND
 
 prendidos a la rama (Figura 5A), esta descripción es clave, porque coincide con lo descrito para esta enfermedad. La presencia de los órganos afectados constituye una fuente de inóculo (Figura 5B y C) para la siguiente temporada, por lo que se recomienda su eliminación durante la poda como medida de control para esta enfermedad (García, 2010).
 
-dSci
+LSci
 
 Figura  5 . A) Atizonamiento  de  ramilletes  florales adheridos a la rama, característica común encontrada en campo. B) Frutos de arándano con síntomas y signo del  moho  gris C) Flor  con  presencia  del  signo  de  la enfermedad del moho gris.
 
@@ -200,6 +202,8 @@ Los conidios en sus extremos presentaron apéndices o pelos apicales, por un lad
 
 CIONAL
 
+CNNFCAM
+
 ## Muerte regresiva
 
 Sintomatología. Los síntomas observados  en arándano fueron marchitez general y muerte. A la altura del cuello de la planta se observó heridas necróticas, con bordes de color marrón oscuro y pudrición de tejidos. En los tejidos necróticos se observó la presencia de picnidios oscuros, simples o en grupos (Sathya et al., 2017). Estos daños  se  presentaron  tanto  en  plantas  jóvenes como adultas, produciendo infección en las áreas que  se  encuentren  en  contacto  con  el  suelo (Figura 9).
@@ -224,9 +228,11 @@ Figura 11. A) Plántula de arándano sana. B) Plántula a los 3 ddi. C) Plántul
 
 <!-- image -->
 
-Sci
+SC
 
 CIONAL
+
+ECNNICAM
 
 Con  respecto  al  cultivo  de Pestalotia sp.,  ocho días después de la inoculación ocasionó necrosis en  el  tejido  inoculado  con  trozos  de  medio  de cultivo y micelio (0,8 mm diámetro), a los 14 días se incrementó la necrosis y a los 42 días cubrió el 10% de toda la planta. La infección comenzó por la rama que se inoculo y este continúo avanzando lentamente.
 
@@ -245,6 +251,8 @@ Se debe realizar un manejo integrado que minimice  las  condiciones  que  predis
 L.  theobromae es  favorecido por el estrés de la planta,  se  ha  determinado  que  el  éxito  de  su control en un 85 a 90%, dependen de las medidas que eviten  el  estrés  y  favorezcan  al  vigor  de  la planta. Por lo tanto, es importante que los volúmenes de riego sean adecuados, el recalce de plantas con la raíz torcida, porque no generan buena masa radicular y se estresan fácilmente por falta de agua (Apaza, 2021). Otro aspecto crítico durante la poda, es el contenido de sales alrededor de las raíces, porque el corte del follaje interrumpe el proceso de transpiración, haciendo que estos se acumulen en el sistema radicular, lo que causa estrés; por lo que antes de la poda se debe  suspender  la  fertilización,  se  debe  incluir programa de lavado de sales (Apaza, 2021). Si el cultivo no ha desarrollado buena masa radicular, se recomienda dejar brotes jóvenes, vigorosos y sanos como alimentadores, los cuales, luego del brotamiento de las ramas podadas deben eliminarse  (Apaza,  2021).  Durante  los  primeros síntomas  en  tallos  o  ramas  afectadas,  realizar poda fitosanitaria con tijeras de podar previamente  desinfectadas  con hipoclorito de calcio,  retirar  los  restos  de  la  poda  leñosos  y proteger las heridas pulverizando fungicidas biológicos o sintéticos, inmediatamente después de  efectuado  los  cortes  (Stephanescu  et  al., 2020).  Se  debe  eliminar  del  campo  restos  de ramas y plantas enfermas  permanentemente durante la campaña, si estos quedan expuestos a humedad constituyen fuentes de inoculo para la siguiente campaña.  También,  se recomienda realizar aplicaciones de Trichoderma sp. o Bacillus  subtilis en  el  sistema  radicular,  para favorecer el  crecimiento y  buen  desarrollo  de  la planta, así reducir vulnerabilidad al ataque de esta enfermedad. Se puede aplicar antagonistas en las heridas después de la poda (Apaza, 2021; Bello et al., 2022; Li et al., 2022; Yao et al., 2023).
 
 CIONAL
+
+ECNNICAM
 
 ## Pestalotiopsis ( Pestalotia sp.)
 
@@ -278,9 +286,7 @@ AGROIND
 
 Barnett, H. L. &amp; Hunter, B. B. (1998). Illustrated genera of imperfect fungi. McMillan Publising Company. 4, th Ed. New York. 218 p.
 
-Bautista,  M.  J.  I.  (2020).  Descripción  del  manejo  agronómico  del cultivo  de  arándanos  ( Vaccinium corymbosum L.)  variedades biloxy,  legacy  en  el  municipio  de  Mutiscua  Departamento  de Norte de Santander. http://repositoriodspace.unipamplona.edu.co/jspui/handle/20.50
-
-- 0.12744/2107
+Bautista,  M.  J.  I.  (2020).  Descripción  del  manejo  agronómico  del cultivo  de  arándanos  ( Vaccinium corymbosum L.)  variedades biloxy,  legacy  en  el  municipio  de  Mutiscua  Departamento  de Norte de Santander. http://repositoriodspace.unipamplona.edu.co/jspui/handle/20.50 0.12744/2107
 
 Bello, F., Montironi, I. D., Medina, M. B., Munitz, M. S., Ferreira, F. V., Williman, C., Vázquez, D., Cariddi, L. N., &amp; Musumeci, M. A. (2022). Mycofumigation of postharvest blueberries with volatile compounds from Trichoderma atroviride IC-11  is  a  promising tool to control rots caused by Botrytis cinerea. Food Microbiology, 106, 104040.
 

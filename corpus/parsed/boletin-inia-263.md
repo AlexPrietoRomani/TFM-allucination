@@ -16,15 +16,11 @@ tags:
 
 <!-- image -->
 
-<!-- image -->
-
-INIA
-
-<!-- image -->
-
 MANUAL DE ARÁNDANO
 
-BIOBIO
+<!-- image -->
+
+<!-- image -->
 
 <!-- image -->
 
@@ -36,7 +32,7 @@ BIOBIO
 
 <!-- image -->
 
-Editores PABLO UNDURRAGA D.
+Editores PABLOUNDURRAGAD.
 
 <!-- image -->
 
@@ -46,7 +42,7 @@ Editores PABLO UNDURRAGA D.
 
 <!-- image -->
 
-SIGRID VARGAS S.
+SIGRIDVARGASS.
 
 Centro Regional de Investigacion Quilamapu Chillan, Chile, 2013.
 
@@ -744,64 +740,6 @@ En la Figura 5.1 se puede apreciar que existe un nivel óptimo de riego en el cu
 
 MANUAL DE ARÁNDANO
 
-El arándano es un arbusto de la familia de las Ericáceas que da pequeñas bayas comestibles.  Se  caracteriza  por  un  sistema  de  raíces  fibrosas,  de  desarrollo superficial que alcanza los 60 ó 70 cm de profundidad, con pocos pelos radicales y cuya densidad de raíces se concentra en los primeros 30 cm (Figura 5.2). La zona de mayor absorción de agua (profundidad de raíces efectiva) se encuentra generalmente en los primeros 25 a 30 cm del perfil del suelo.
-
-Figura 5.1. Función de producción que muestra el efecto del riego sobre el rendimiento de arándano.
-
-<!-- image -->
-
-Figura 5.2. Distribución de las raíces de distintas variedades de arándano.
-
-<!-- image -->
-
-## MÉTODOS DE RIEGO
-
-La pregunta que se debe hacer el productor al momento de establecer un huerto es ¿qué método de riego es el más conveniente? La respuesta debe considerar varios factores que se analizan más adelante. Los arándanos pueden ser regados por goteo, micro aspersión y aspersión. Existen estudios en 'Elliot' que han comparado el rendimiento y calidad del fruto bajo estos tres métodos de riego y los resultados indican  que  el  riego  por  goteo  fue  mejor  que  micro  aspersión  y  aspersión  en términos de producción y peso de fruto. Por otra parte evaluaciones realizadas en Chile han mostrado que con micro aspersión se han logrado mejores rendimientos que con goteo. Esto indica la importancia de contar con emisores que permitan una buena distribución del agua en el suelo, además de entregar la cantidad de agua adecuada.
-
-En Chile los agricultores han optado por riego por goteo dado que el beneficio de  aplicar  agua  en  la  cantidad  y  momento  adecuado  justifica  plenamente  la inversión. Se debe subrayar que la distribución de la humedad en el suelo es un factor fundamental, por ello en suelos de textura media o liviana se recomienda doble  línea  de  emisores.  Esto  es  relevante,  por  ejemplo  cuando  se  modifica  la estructura del suelo al mezclarlo con aserrín, produciendo un comportamiento de la distribución del agua similar a un suelo liviano.
-
-Si  existe  riesgo  de  heladas  es  recomendable  contar  con  un  sistema  de  riego adicional por aspersión para su control.
-
-## Factores para determinar el método de riego
-
-Otros factores a tener en cuenta para determinar el método de riego más adecuado son:
-
-Disponibilidad  de  agua. El  agua  debe  estar  disponible  en  forma  suficiente  y oportuna. Dado que la distribución del agua de canales se realiza por turnos, por ejemplo una vez por semana, existe una limitante para la oportunidad de riego localizado  debiendo  complementar  el  sistema  con  acumuladores.  Si  se  cuenta con pozos o norias con baja disponibilidad se debe privilegiar un método que sea
-
-45
-
-eficiente, como el riego por goteo. Para evaluar la disponibilidad de agua se debe comparar la demanda de agua del cultivo (ver sección más adelante) con respecto al agua disponible.
-
-Tipo  de  suelo. La  textura  del  suelo  es  trascendental  puesto  que  determina  la distribución del agua en la zona de raíces, factor considerado clave para lograr buen  rendimiento  y  calidad  de  frutos.  En  suelos  livianos  se  debe  asegurar  un porcentaje de humedecimiento del suelo adecuado.
-
-Topografía  del  terreno. Suelos  planos  con  pendiente  uniforme  no  presentan problemas, sin embargo si la pendiente es irregular o existen pendientes fuertes es más recomendable usar emisores autocompensados.
-
-Disponibilidad  de  energía. En  general  en  huertos  menores  a  3  ha  el  riego localizado  requiere  electrificación  monofásica,  normalmente  presente  en  las casas  de  los  agricultores.  Sin  embargo  para  superficies  mayores  se  necesita electrificación  trifásica.  En  cualquiera  de  los  dos  casos  es  necesario  verificar  la distancia del tendido eléctrico puesto que se trata de costos que podrían afectar la factibilidad económica del proyecto. Si los costos de electrificación son muy altos se deberá optar por riego por surcos.
-
-Si no existe posibilidad de una conexión eléctrica a una distancia económicamente factible es posible evaluar el uso de energías alternativas como solar o eólica.
-
-Disponibilidad de mano de obra. Si la disponibilidad de mano de obra es baja es recomendable el riego tecnificado puesto que libera personal para otras actividades productivas.
-
-## PROGRAMACIÓN DEL RIEGO
-
-Cuánto  regar  se  determina  conociendo  la  demanda  de  agua  del  cultivo  del arándano,  la  cual  depende  de  las  condiciones  meteorológicas  y  del  estado  de desarrollo del cultivo.
-
-## Estimación de evapotranspiración de cultivo de referencia
-
-La evapotranspiración de cultivo de referencia (ET0) corresponde al consumo de agua de una pradera de 10 cm de altura, bien regada (Figura 5.3), y depende de factores climáticos.
-
-Figura 5.3. Esquema de los factores que influyen en la evapotranspiración de un cultivo de referencia (ET 0 ).
-
-<!-- image -->
-
-La ET0 puede ser estimada mediante bandejas de evaporación clase A (Figura 5.4)  o  por  ecuaciones  basadas  en  parámetros  atmosféricos  como  temperatura, radiación solar, humedad relativa y velocidad del viento.
-
-Figura 5.4. Fotografía de bandeja de evaporación y sus dimensiones estándares.
-
-<!-- image -->
-
-La ET0 también puede ser obtenida desde el 'Sistema de la Red Agroclima FDFINIA-DMC' en www.agroclima.cl (Figura 5.5).
-
 Figura  5.5. Página  de  entrada  del  Sistema  de  la  Red  Agroclima  (www.agroclima.cl) Fundación  para  el  Desarrollo  Frutícola  (FDF),  Instituto  de  Investigaciones  Agropecuarias (INIA) y Dirección Meteorológica de Chile (DMC).
 
 <!-- image -->
@@ -829,7 +767,7 @@ Según Manual de Arándano (Boletín INIA N° 263) (2013), Mes: Marzo, Kc: 0,9.
 Según Manual de Arándano (Boletín INIA N° 263) (2013), Mes: Abril, Kc: 0,8.
 El  factor  de  cobertura  (Fc)  se  puede  calcular  a  partir  del  área  sombreada  o porcentaje de cobertura (Pc) (Figura 5.6) mediante las ecuaciones:
 
-<!-- formula-not-decoded -->
+$$E _ { 1 } = S _ { 1 } W _ { 1 }$$
 
 Fc = 0,92 × Pc + 0,187
 
@@ -1069,9 +1007,7 @@ Manejo : La mejor forma de cortar el ciclo de la enfermedad es la poda sanitaria
 
 ## ATIZONAMIENTO DE LA MADERA
 
-Nombre científico: Botryotinia fuckeliana (fase asexuada: Botrytis cinerea
-
-)
+Nombre científico: Botryotinia fuckeliana (fase asexuada: Botrytis cinerea )
 
 Figura 6.7. Atizonamiento en arándano, esclerocios en rama (izquierda) y yema completamente cubierta por micelio y estructuras reproductivas de Botrytis (derecha).
 
@@ -1240,7 +1176,7 @@ Esta especie tiene dos etapas en que no debe haber malezas para evitar pérdidas
 
 <!-- image -->
 
-Fechasdelimpieza
+Fechas de limpieza
 
 Figura 7.4. Efecto de períodos con y sin malezas en etapa no productiva en el rendimiento relativo de arándano 'O'Neal'. Chillán 2009-2010.
 
@@ -1408,206 +1344,3 @@ Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: T
 Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Fluazifop butil, Producto comercial: Hache Uno 2000 175 EC, Grupo químico: Fenoxipropio- nato, Mecanismo de acción: Inhibidor enzima ACCasa, Modo de acción: Sistémico, selectivo, controla gramíneas.
 Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Diquat, Producto comercial: Reglone, Grupo químico: Bipiridilios, Mecanismo de acción: Inhibidor fotosíntesis I, Modo de acción: Contacto, no selectivo; controla gramíneas y hoja ancha.
 Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Paraquat, Producto comercial: Kazaro 276 SL15-03-2013 Nuquat; Paraquat 276 SL; Paraquat 27,6 SL Agrospec; Roaster; Gramoxone Super; Paraquat 276, Grupo químico: Bipiridilios, Mecanismo de acción: Inhibidor fotosíntesis I, Modo de acción: Contacto, no selectivo; controla gramíneas y hoja ancha.
-## Continuación Tabla 7.3.
-
-Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Paraquat/ Diquat, Producto comercial: Farmon, Grupo químico: Bipiridilios, Mecanismo de acción: Inhibidor fotosíntesis I, Modo de acción: Contacto, no selectivo; controla gramíneas y hoja ancha.
-Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Glufosinato de amonio, Producto comercial: Basta 14 SL, Grupo químico: Ácidos fosfí- nicos, Mecanismo de acción: Inhibidor enzima GS, Modo de acción: Contacto, no selectivo; controla gramíneas y hoja ancha.
-Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Pre Emergentes, Producto comercial: Pre Emergentes.
-Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Diclobenilo, Producto comercial: CasoronG, Grupo químico: Benzonitrilo, Mecanismo de acción: Inhibidor pared celular, Modo de acción: Sistémico, residual, controla hoja ancha y gramíneas.
-Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Diuron, Producto comercial: Diuron 80 %WP;Dazzler 50 SC;Dogma800WG, Grupo químico: Ureas, Mecanismo de acción: Inhibidor fotosíntesis II, Modo de acción: Suelo activo; controla hoja ancha y algunas gramíneas.
-Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Oryzalin, Producto comercial: Surflan A.S., Grupo químico: Dinitroanilinas, Mecanismo de acción: Inhibidor división celular, Modo de acción: Suelo activo: controla gramíneas y hoja ancha.
-Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Oxifluorfen, Producto comercial: Goal 2 EC; Tango 24 EC, Grupo químico: Difeniléteres, Mecanismo de acción: Inhibidor enzima PPO, Modo de acción: Contacto, suelo activo; controla gramíneas y hoja ancha.
-Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Pendimetalin, Producto comercial: Spectro 33 EC; Spectro 40 EC, Grupo químico: Dinitroanilinas, Mecanismo de acción: Inhibidor división celular, Modo de acción: Suelo activo; controla gramíneas y algunas de hoja ancha.
-Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Terbutilazina, Producto comercial: Terbutilazina 500 Sc; Click 75 DF, Grupo químico: Triazinas, Mecanismo de acción: Inhibidor fotosíntesis II, Modo de acción: Suelo activo.
-Según Manual de Arándano (Boletín INIA N° 263) (2013), Ingrediente activo: Simazina, Producto comercial: Simazina 500 SC; Simazina 90WG, Grupo químico: Triazinas, Mecanismo de acción: Inhibidor fotosíntesis II, Modo de acción: Suelo activo.
-Mención de nombre comercial no significa preferencia sobre otro producto de igual ingrediente activo. Preferir productos registrados para el cultivo, a pesar que otro de igual ingrediente activo puede usarse. EPSPS: enzima 5-enolpiruvilshikimato-3-fosfato sintetasa; ACCasa: enzima acetil coenzima A carboxilasa; GS: enzima glutamina sintetasa; PPO: enzima protoporfirinógeno oxidasa.
-
-Como el  control  de  malezas  perennes  se  realiza  principalmente  en  primaveraverano, es factible utilizar productos no selectivos pero aplicados en forma dirigida, ya que si se depositan en alguna parte verde de las plantas de arándano o tejido no lignificado, se pueden producir daños irreversibles (Figura 7.8). Este cuidado también debe tenerse en caso de mezclar un suelo activo con algún herbicida post emergente.
-
-Figura  7.8. Aplicación  de  herbicida  sistémico  no  selectivo  a  plantación  de  arándano  con pantalla.
-
-<!-- image -->
-
-## INTRODUCCIÓN
-
-La asociación insecto-planta de arándano es relativamente nueva en el país desde su  introducción  por  el  INIA  en  la  década  del  80.  El  incremento  sostenido  de  la superficie  cultivada  y  las  nuevas  variedades  han  permitido  la  incorporación  de nuevas zonas y áreas productivas, por ello aún observamos y detectamos nuevas asociaciones. Considerando que la producción y exportación del arándano crece sostenidamente, las medidas de manejo sanitario deben permitir la ausencia de insectos. Actualmente el área de distribución productiva en el país se ha extendido desde la Región de Coquimbo hasta la Región de Los Lagos, asociado a diferentes condiciones edafoclimáticas, agroecológicas y de biodiversidad. El objetivo de este capítulo es entregar información que permita a los usuarios profesionales, técnicos y  agricultores  una  aproximación  a  una  mejor  identificación  de  los  principales problemas entomológicos y acercarnos a la filosofía de una estrategia de manejo integrado de plagas.
-
-## GUSANOS BLANCOS
-
-(Coleoptera: Scarabaeidae) Pololos, pololitos, San Juanes
-
-Figura 8. 1. Gusanos blancos. A) Adultos, B) larvas y raíces dañadas, C) daño en hojas, D) larva de escarabeido.
-
-<!-- image -->
-
-1 INIA La Cruz, Chorrillos 86, Quillota (ecistern@inia.cl).
-
-8
-
-MANUAL DE ARÁNDANO
-
-<!-- image -->
-
-Hylamorpha elegans , Sericoides spp., S. viridis , S. obesa , Brachysternus prasinus , B. spectabilis , Phytholaema herrmanni , P. dilutipes y Tomarus villosus serían las especies más frecuentes que conforman el conjunto de gusanos blancos. La mayoría de las especies desarrolla su ciclo en 1 año. El adulto se alimenta principalmente del follaje de árboles y arbustos nativos y en menor medida del follaje del arándano, salvo las especies de Sericoides que presentan una mayor fagia en el cultivo. La hembra una vez apareada se introduce en el suelo y deposita aproximadamente unos 60 huevos blancos. Las larvas de estas especies se encuentran regularmente en la sobre hilera, junto a las raíces de las plantas y en la entre hilera asociada a la carpeta vegetal. Las larvas se alimentan de raíces y raicillas del arándano sobre la hilera o camellón, lo que produce un debilitamiento general e incluso la muerte de plantas jóvenes. Las heridas producidas por las mordeduras son puerta de ingreso de enfermedades. Las plantas atacadas muestran síntomas de estrés hídrico y menor crecimiento. El mayor daño se observa en plantas recién establecidas y menores de 4 años (Figura 8.1).
-
-Monitoreo. Antes del establecimiento se debe revisar unas 20 muestras de suelo (cubos de 20 × 20 × 30 cm de profundidad) por sector. Durante el cultivo,  a plantas con  síntomas  de  déficit  hídrico,  amarillez  e  incluso  rojizas,  debe  revisarse  su sistema radical y descartar daños radicales y presencia de insectos. La detección temprana de las larvas de este insecto se debe hacer entre fines de verano y otoño a través de la revisión de muestras de suelo de la sobre hilera.
-
-Control cultural. Los gusanos blancos presentes en el suelo deben combatirse antes de la plantación. El laboreo del suelo y la incorporación de insecticidas antes de la plantación reducirán la densidad de larvas antes de la plantación. Si el cultivo presenta una cubierta de plástico, la incidencia será menor en comparación a otro tipo de mulch.
-
-Control natural. Estos insectos son controlados naturalmente por aves, avispas y moscas parasitoides, hongos entomopatógenos y algunos depredadores.
-
-Control biológico. Aplicación preventiva y curativa de hongos entomopatógenos específicos  para  las  especies  detectadas  e  identificadas  correctamente  en  el cultivo.
-
-Control químico. Se deberá aplicar un insecticida de suelo incorporándolo cuando se hayan detectado larvas antes de la plantación. Una medida de control eficaz es aplicar insecticidas registrados respetando los períodos de carencia para el control de los adultos.
-
-BURRITOS (Coleoptera: Curculionidae) Cabrito, burrito, capachito, gorgojo
-
-Figura 8.2. Burritos-Cabritos. A), B) y C) adultos, D) daño por cabrito en ramilla de arándano, E) y F) larvas, G) y H) ataque de curculiónidos, en raíces y plantas, I) daño por burritos en hojas.
-
-<!-- image -->
-
-Aegorhinus superciliosus , Aegorhinus nodipennis , Aegorhinus phaleratus , Otiorhynchus  sulcatus , Otiorhynchus  rugosostriatus , Naupactus  xanthographus , Graphognatus leucoloma y Naupactus cervinus ,  serían  las  principales  especies presentes en el cultivo. Los estados adultos se encuentran en el campo desde fines de primavera hasta principios de otoño según la especie. Las especies O. sulcatus y O. rugosostriatus son de actividad nocturna a diferencia de las otras especies, que son de actividad diurna. Otiorhynchus sulcatus y O.  rugosostriatus pueden invernar  como  adulto  e  iniciar  la  postura  de  huevos  temprano  en  la  temporada siguiente a su emergencia (Figura 8.2).
-
-Sus tamaños, coloridos y formas son variables según la especie, pero fácilmente identificables. La alimentación de los adultos ocurre principalmente en las hojas produciendo características escotaduras en ellas, a diferencia de las especies de Aegorhinus que pueden cortar los pecíolos de hojas y frutos y en menor medida consumir follaje. El estado larval presenta en común la ausencia de patas, siendo el estado del insecto que produce los mayores daños a la planta, ya que consumen y dañan raíces, raicillas y coronas. Por las heridas ingresan patógenos que pueden producir la muerte de la planta. El ciclo de estos insectos es anual y en algunos su desarrollo supera 15 meses. La emergencia de los adultos comienza a fines de primavera, concentrándose en los meses de verano.
-
-Monitoreo. Antes  del  establecimiento  se  deben  revisar  unas  20  muestras  de suelo (cubos de 20 × 20 × 30 cm de profundidad) por sector. Durante el cultivo deben revisarse plantas con síntomas de déficit hídrico, amarillez e incluso rojizas, descartar daños radicales y presencia de insectos.
-
-Control  cultural. Los  burritos  deben  combatirse  antes  de  la  plantación.  La sanidad de las plantas en origen y procedencia en relación a los burritos es muy importante  ya  que  se  puede  infestar  un  huerto  de  especies  nuevas.  Revisar  el cultivo para detectar adultos provenientes de bordes boscosos. No usar suelos con infestaciones comprobadas sin hacer rotaciones largas.
-
-Control natural. Grillos, moscas parasitoides, avispas parasitoides, aves silvestres, hongos entomopatógenos.
-
-Control  biológico. Hongos  entomopatógenos  específicos  para  algunas  de  las especies.
-
-Control  químico. Se  deberá  aplicar  un  insecticida  de  suelo  incorporándolo cuando se hayan detectado larvas. El combate de los adultos se debe realizar con insecticidas registrados y respetando los períodos de carencia.
-
-TRIPS
-
-(Thysanoptera: Thripidae) Trips, trips de las flores, trips de la cebolla, trips negro de las flores
-
-Figura 8.3. Adulto de trips Frankliniella occidentalis .
-
-<!-- image -->
-
-Frankliniella occidentalis , Thrips tabaci ,  y Frankliniella australis serían las principales especies asociadas al cultivo. Estos insectos son de muy pequeño tamaño y de apariencia frágil, al estado adulto pueden variar entre 0,8 y 2 mm, presentan dos pares de alas membranosas delgadas y pilosas. Cuerpo cilíndrico de apariencia frágil. Algunas de estas especies no son fáciles de distinguir a nivel de campo. De reproducción sexual y por partenogénesis, las hembras insertan los huevos ovoides,  brillantes  y  transparentes  bajo  los  tejidos  vegetales,  encastrados  en ramillas tiernas de crecimiento estacional, estructuras florales, pedúnculos y frutos. De ellos emerge la larva o ninfa I de color blanco hialino tornándose posteriormente amarillento. La larva o ninfa II es amarillenta que luego muda y da origen a una prepupa que luego de un breve período da origen a una pupa, las cuales no se alimentan y luego de una semana emerge un nuevo adulto muy activo. El ciclo de vida se puede completar en 15 a 20 días y dependiendo de las condiciones climáticas  pueden mantenerse activos todo el año o hibernar como adulto. Las larvas y los adultos son los estados que se alimentan de los tejidos tiernos a través de su estilete, son vectores de enfermedades ya que pueden transportar hongos, bacterias y virus. Los adultos también se alimentan de polen. Los daños cosméticos causados por la ovipostura y/o por efecto de la alimentación de las larvas y adultos, producirá russet y puntuaciones en frutos (Figura 8.3).
-
-Monitoreo. Para detectar presencia y determinar densidades se deben tomar 100 flores por hectárea, sacudirlas sobre una superficie negra y plana y contar el número
-
-de individuos. Este monitoreo se puede repetir cada 10 ó 15 días, dependiendo de las poblaciones y época del año. Se desconoce umbral de control.
-
-Control cultural. Mantener el huerto con una reducida presencia de malezas o plantas hospederas tales como correhuela, yuyo, rábano, diente de león, etc., para reducir poblaciones y mantener enemigos naturales.
-
-Control natural. Otros trips depredadores, crisopas, chinches y ácaros.
-
-Control biológico. Orius spp.
-
-Control químico. Aplicar productos registrados en las dosis y épocas de ataque.
-
-## CUNCUNILLAS NEGRAS
-
-(Lepidoptera: Hepialidae) Polillas fantasmas
-
-Figura 8.4. A) Cuncunilla negra y B) daño a nivel de cuello en planta de arándano.
-
-<!-- image -->
-
-<!-- image -->
-
-Dalaca pallens y D. variabilis son especies nativas que presentan una generación al año. Los adultos son mariposas de vuelo crepuscular y nocturno. Ellas ponen entre 1000 y 2000 huevos sobre el suelo. Al cabo de 28 días eclosionan cuncunillas de 1 mm que en un período de 9 a 10 meses alcanzan largos de 5 a 6 cm. La larva o cuncunilla vive en el suelo donde construye una galería que ocupa durante el día. En la noche las cuncunillas salen de su galería y se alimentan a nivel del cuello de las plantas herbáceas y arbustivas. El daño característico más severo es el anillado del cuello de las plantas a ras y hasta 3 cm sobre el suelo, produciéndose en el área cortada callos de gran tamaño. Plantas menores de 3 años y ramillas nuevas de  plantas  mayores  anilladas  mueren  tras  el  ataque  (Figura  8.4).  Los  ataques
-
-regularmente ocurren tarde en la temporada cuando las cuncunillas migran desde la entre hilera y se establecen bajo la plantas. La presencia de malezas en el cuello y camellón favorecerán su incidencia. Ataques a plantaciones mayores de 4 años producen sólo la pérdida de ramas productivas que cambian de color (amarillo a rojizo). Los ataques se inician en el verano con el establecimiento del insecto en la entre y sobre hilera bajo la cobertura vegetal o rastrojos.
-
-Monitoreo. Revisar unas 20 muestras de suelo (cubos de 20 × 20 × 20 cm de profundidad) por cuartel o sector tomadas en la entre hilera desde fines de Mayo a comienzos de Julio. Aplicar medidas de control cuando la densidad de la plaga supere las 20 larvas/m 2 . Las plantas pequeñas o menores de 3 años serían las más susceptibles a la plaga.
-
-Control cultural. El manejo del suelo y pre-cultivo antes de la plantación permitirán una baja presencia o ausencia de la plaga.
-
-Control natural. Aves silvestres, insectos carábidos, hongos entomopatógenos, virus y nematodos entomoparásitos.
-
-Control biológico: Hongo entomopatógeno BioINIA.
-
-Control  químico. Diversos  productos  químicos  registrados  del  grupo  de  los piretroides.
-
-## GUSANOS CORTADORES
-
-(Lepidoptera: Noctuidae) Polillas nocturnas
-
-Figura 8.5. A) Larvas de gusanos cortadores y B) larva en cuello de planta de arándano.
-
-<!-- image -->
-
-<!-- image -->
-
-Agrotis ipsilon y Peridroma saucia presentan entre una y tres generaciones al año. Los adultos son mariposas de vuelo crepuscular y nocturno con una alta capacidad de dispersión. Presentan una gran capacidad de adaptación a diversas condiciones y hospederos. Las mariposas viven entre 1 y 2 semanas, período en el cual ponen entre 1000 y 2000 huevos esféricos estriados, en pequeños grupos o aislados, sobre las hojas del cultivo y malezas generalmente en el envés, además sobre la hojarasca o en el suelo. Cuando las larvas son pequeñas se alimentan sobre el follaje; pero cuando crecen se ocultan en el suelo entre 5 y 10 cm de profundidad. Durante la noche son muy activas desplazándose y alimentándose del cuello de las  plantas  (Figura  8.5).  Regularmente los daños de los gusanos cortadores se localizan  en  el  cuello  de  las  plantas  a  ras  y  bajo  el  suelo  (anillado),  siendo  las plantas recién establecidas las que presentan mayores daños. Cuando las plantas son mayores (3 a 4 años) los daños son mínimos.
-
-Monitoreo. Revisar unas 20 muestras de suelo (cubos de 20 × 20 × 20 cm de profundidad) por cuartel o sector tomadas en la sobre hilera durante otoño, invierno y primavera. Aplicar medidas de control cuando la densidad de la plaga supere 0,2  larvas/planta  Las  plantas  pequeñas  o  menores  de  3  años  serían  las  más susceptibles a la plaga.
-
-Control cultural. Antes de la plantación el manejo del suelo y pre-cultivo permitirán una baja presencia o ausencia de la plaga. Controlar las malezas.
-
-Control  natural. Aves  silvestres,  insectos  carábidos,  parasitoides  y  nematodos entomoparásitos.
-
-Control biológico. Parasitoides  bracónidos y taquínidos de larvas. Los huevos son atacados por microavispas del género Trichogramma . Las larvas pueden ser controladas con productos comerciales en base a Bacillus thuringiensis .
-
-Control  químico. Diversos  productos  químicos  registrados  del  grupo  de  los piretroides.
-
-Figura 8.6. A) Adultos de pulgones en flor de arándano y B) racimo de frutos infestado.
-
-<!-- image -->
-
-Aphis  gossypii y Macrosiphum spp. Aphis  gossypii tiene  muchas  generaciones durante 1 año. Dependiendo de las temperaturas puede completar una generación en 8 días. Estos pequeños insectos de cuerpo blando forman colonias entre los racimos desde floración hasta término de cosecha y posteriormente entre los tejidos tiernos y flores de remonta. La colonización del huerto se inicia en la primavera con la llegada de hembras aladas, éstas son vivíparas y depositan sus crías (60) entre las ramillas y flores, formando densas colonias en muy poco tiempo; cuando ello ocurre, los individuos alados migran hacia otras plantas (Figura 8.6). Este tipo de insecto  constituye  un  grupo  de  significancia  económica.  El  daño  más  relevante dice relación con el manchado de la fruta con mielecilla exudada y fumagina, así como la transmisión de virus. Ataques intensos pueden producir la caída de flores y reducción del crecimiento de brotes nuevos.
-
-Monitoreo. Los ataques de pulgones son rápidos y dinámicos dependiendo de la época. El monitoreo deberá realizarse previo a la floración y sobre brotes tiernos desde fines de invierno y primavera. Tomar 100 ramilletes florales/ha al inicio de la brotación en primavera, tomar medidas de control si la presencia de pulgones supera 10%.
-
-Control cultural . No sobre fertilizar con nitrógeno.
-
-Control  natural .  Varios  son  los  agentes  de  control  natural  que  regulan  las poblaciones  de  los  pulgones  (chinitas,  avispas  parasitoides,  sírfidos,  hongos
-
-entomopatógenos, etc.) Se estima que cuando sobre 30% de los pulgones está parasitado y además hay presencia de otros enemigos naturales, se deben respetar estos  agentes  no  aplicando  insecticidas  de  amplio  espectro  o  seleccionando insecticidas que respeten los enemigos naturales.
-
-Control biológico .  Existen varios agentes de control natural como parasitoides ( Aphidius spp.) y depredadores que sobrepasan el 90% de control a mediados de primavera en la zona central. Estos agentes pueden ser multiplicados en laboratorio para el control de pulgones, pero deben ser solicitados a las empresas productoras de controladores biológicos con antelación a las épocas de liberación.
-
-Control químico .  Aplicar insecticidas sistémicos principalmente, respetando dosis, épocas, registro y carencias.
-
-## ENROLLADOR DE LAS HOJAS
-
-(Lepidoptera: Tortricidae) Eulias, Proeulias
-
-Figura 8.7. A) Larva de Proeulia en fruto y B) en hoja de arándano.
-
-<!-- image -->
-
-<!-- image -->
-
-Proeulia spp. Estas especies de mariposas nativas tendrían a lo menos dos a tres generaciones al año, las que podrían ser alternadas en distintos hospederos. La mayor relevancia es su condición cuarentenaria. Su incidencia sobre el cultivo ha sido regularmente baja, sin embargo la tasa de rechazos es alta. Se estima que son varias las  especies  asociadas  al  cultivo.  Estas  mariposillas  nocturnas  de  2 cm de expansión alar presentan vistosos colores ocres, dorados, café y naranjo con algunas bandas blancas y grises. Las hembras ponen sus huevos blancos en grupos sobre las hojas, a medida que transcurren los días los huevos se tornan
-
-amarillentos, anaranjados y algo negruzcos previo a la eclosión. Entre los 10 y 12 días eclosionan larvitas de 1,5 mm que en su desarrollo máximo alcanzan entre 2 y 2,5 cm. Las pupas se encuentran entre las hojas enrolladas. En la primavera y verano es posible encontrar hojas enrolladas y frutos dañados externamente por larvas (Figura 8.7).
-
-Monitoreo. A fines de otoño se han detectado larvas de primeros estadios atacando yemas. Desde inicio de primavera y a través de un análisis visual de 100 brotes por cuartel, cuantificar la presencia de daños en el follaje y/o detección de larvas en los racimos de fruta.
-
-Control cultural. Retirar material de poda del huerto.
-
-Control natural. Regularmente larvas y pupas se encuentran parasitadas, siendo avispas bracónidos y moscas taquínidos las más comunes.
-
-Control biológico. Aplicación curativa de Bacillus thuringiensis (comercial).
-
-Control  químico. Aplicar  insecticidas  registrados  respetando  los  períodos  de carencia es una medida de control eficaz para el control de larvas cuando más de 2% de los brotes presenta daños en follaje.
-
-## CHANCHITOS BLANCOS
-
-(Hemiptera: Pseudococcidae)
-
-Figura 8.8. A) Adultos y ninfas de chanchito blanco sobre planta  y bajo la corteza y B) sobre fruto de arándano.
-
-<!-- image -->
-
-<!-- image -->
-
-Pseudococcus viburni , P. calceolariae , P. longispinus y P. cribata . Durante el año se producen entre 3 y 4 generaciones. La dificultad de identificación de los estados inmaduros de estas especies los hace particularmente cuarentenarios. Su cuerpo es  de  consistencia  blanda,  oval  y  aplanada.  Se  encuentran  cubiertos  de  cera blanquecina que a veces deja ver la coloración rosada o grisácea del cuerpo. En el contorno presentan filamentos de cera que son de mayor tamaño en la parte posterior.  Los  huevos  (200  a  300)  de  color  amarillo-anaranjado  se  protegen  en masas algodonosas de cera (ovisaco). Las ninfas móviles que eclosionan de los huevos se distribuyen hacia distintas partes de la planta. Durante el invierno los insectos adultos y juveniles se ubican principalmente bajo el suelo, entre las raíces de las plantas y en la base del tronco bajo la corteza. Durante la primavera y verano colonizan los racimos y la fruta (Figura 8.8).
-
-Monitoreo. Las trampas de cartón corrugado puestas en el tronco son una muy buena herramienta para su monitoreo y detección. Las malezas son importantes fuentes de infestación natural. Se deben analizar 20 trampas por cuartel desde inicio de primavera. Cuantificar la presencia en el cuello, follaje y detección en los racimos de fruta, según la época.
-
-Control cultural . Retirar material de poda del huerto. Controlar malezas en cuello, camellón y borde de camellón. Combatir las hormigas.
-
-Control  natural. Varios  agentes  de  control  natural  producen  una  muy  buena regulación de las especies, conformada por parasitoides y depredadores.
-
-Control biológico. Liberación de parasitoides y depredadores según las especies determinadas en el huerto. Aplicación de hongos entomopatógenos seleccionados BioINIA. El control de hormigas es fundamental para la eficacia de los enemigos naturales y controladores biológicos.
-
-Control  químico. Una  medida  de  control  eficaz  para  el  control  de  la  plaga  es aplicar insecticidas registrados respetando los períodos de carencia cuando más de 2% de las plantas presenta el insecto plaga.
