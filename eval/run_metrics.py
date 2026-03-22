@@ -1,3 +1,14 @@
+"""
+run_metrics.py — Recalculador de Métricas Offline
+
+Re-evalúa respuestas previamente guardadas en CSV/JSON del motor RAG para
+calcular métricas de `Faithfulness` (Fidelidad) y `Context Relevance` 
+sin necesidad de volver a interactuar con los modelos de generación.
+
+Uso:
+    uv run python eval/run_metrics.py
+"""
+
 import pandas as pd
 import asyncio
 from pathlib import Path

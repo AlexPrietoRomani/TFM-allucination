@@ -1,3 +1,22 @@
+"""
+run_matrix_eval.py — Evaluador de Matriz de Rendimiento
+
+Prueba múltiples combinaciones de Embeddings + Estrategia de Fragmentación +
+DB Motor (FAISS/Qdrant) contra varios Generadores LLM (Ollama, Gemini, OpenRouter),
+guardando latencias y puntuación de alucinación para auditoría matricial en `eval/results/Matrix`.
+
+Uso:
+    uv run python eval/run_matrix_eval.py [OPCIONES]
+
+Opciones:
+    --limit N             Limitar número de preguntas del banco a evaluar.
+    --embedding EMB       Filtrar por un modelo de embedding específico (ej: mxbai-embed-large).
+    --chunk-strategy CHK  Filtrar por estrategia de fragmentación (500, 1000, semantic).
+    --db-motor DB         Filtrar por motor de base de datos (faiss, qdrant_local).
+    --generator GEN       Filtrar por modelo de generación de respuesta (ej: qwen2.5:3b).
+    --judge JUDGE         Definir el modelo LLM que actuará como juez evaluator (ej: llama3.1).
+"""
+
 import argparse
 import asyncio
 import time
@@ -8,8 +27,11 @@ from datetime import datetime
 from langchain_community.vectorstores import FAISS
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
-from langchain_ollama import OllamaEmbeddings
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaEmbeddings, OllamaLLM
+
+import sys
+# Asegurar que el directorio raíz esté en el PYTHONPATH
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from src.core.config.settings import settings
 from src.chat.rag import RAGEngine
@@ -59,36 +81,51 @@ def get_vector_store(db_motor: str, e_model: str, c_strat: str, embeddings):
     else:
         raise ValueError(f"Motor DB '{db_motor}' no soportado.")
 
-async def run_evaluation(limit: int = 0):
+async def run_evaluation(args):
     print("═══ ORQUESTADOR DE EVALUACIÓN DE MATRIZ ═══")
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     
     # 1. Carga de Preguntas
     df = load_questions()
-    if limit > 0:
-        df = df.head(limit)
+    if args.limit > 0:
+        df = df.head(args.limit)
     print(f"Cargadas {len(df)} preguntas para evaluación.")
 
     output_file = RESULTS_DIR / "eval_results_matrix.jsonl"
     print(f"Resultados se guardarán en: {output_file}")
 
+    # Filtrar parámetros de la matriz según argumentos
+    embedding_models = [args.embedding] if args.embedding else EMBEDDING_MODELS
+    chunk_strategies = [int(args.chunk_strategy) if args.chunk_strategy.isdigit() else args.chunk_strategy] if args.chunk_strategy else CHUNK_STRATEGIES
+    db_motors = [args.db_motor] if args.db_motor else DB_MOTORS
+    generators = [args.generator] if args.generator else GENERATORS
+    judge_model = args.judge if args.judge else JUDGE_MODEL
+
+    # Validación de parámetros introducidos por el usuario
+    for e in embedding_models:
+        if e not in EMBEDDING_MODELS:
+            print(f"⚠️ Alerta: '{e}' no está pre-configurado en EMBEDDING_MODELS.")
+    for c in chunk_strategies:
+        if c not in CHUNK_STRATEGIES:
+            print(f"⚠️ Alerta: '{c}' no está pre-configurado en CHUNK_STRATEGIES.")
+
     # 2. Inicializar Métricas (Juez Único)
-    print(f"Inicializando métricas con Juez: {JUDGE_MODEL}")
-    faithfulness_metric = FaithfulnessMetric(provider="ollama", model_id=JUDGE_MODEL)
-    relevance_metric = ContextRelevanceMetric(provider="ollama", model_id=JUDGE_MODEL)
-    precision_metric = ContextPrecisionMetric(provider="ollama", model_id=JUDGE_MODEL)
-    answer_rel_metric = AnswerRelevancyMetric(provider="ollama", model_id=JUDGE_MODEL)
+    print(f"Inicializando métricas con Juez: {judge_model}")
+    faithfulness_metric = FaithfulnessMetric(provider="ollama", model_id=judge_model)
+    relevance_metric = ContextRelevanceMetric(provider="ollama", model_id=judge_model)
+    precision_metric = ContextPrecisionMetric(provider="ollama", model_id=judge_model)
+    answer_rel_metric = AnswerRelevancyMetric(provider="ollama", model_id=judge_model)
 
     # 3. Bucles de la Matriz de Permutaciones
-    for gen_model in GENERATORS:
-        print(f"\n🚀 Iniciando Evaluación con Generador: [{gen_model.upper()}]")
+    for gen_model in generators:
+        print(f"\n🚀 Iniciando Evaluación con Generador: [{gen_model.upper()}] | Juez: [{judge_model.upper()}]")
         try:
-            llm = Ollama(model=gen_model, base_url=settings.ollama_base_url)
+            llm = OllamaLLM(model=gen_model, base_url=settings.ollama_base_url)
         except Exception as e:
             print(f"❌ Error al cargar generador {gen_model}. Saltando... ({e})")
             continue
 
-        for e_model in EMBEDDING_MODELS:
+        for e_model in embedding_models:
             print(f"  🔋 Procesando Embedding: [{e_model.upper()}]")
             try:
                 embeddings = OllamaEmbeddings(model=e_model, base_url=settings.ollama_base_url)
@@ -97,10 +134,10 @@ async def run_evaluation(limit: int = 0):
                 print(f"  ❌ Embedding {e_model} no cargado. Saltando... ({e})")
                 continue
 
-            for c_strat in CHUNK_STRATEGIES:
-                for db_motor in DB_MOTORS:
+            for c_strat in chunk_strategies:
+                for db_motor in db_motors:
                     comb_id = f"{e_model.replace(':', '_')}_{c_strat}_{db_motor}"
-                    print(f"    🗄 Evaluando: [{e_model} | {c_strat} | {db_motor}]")
+                    print(f"    🗄 Evaluando Matriz Celda: [{e_model} | {c_strat} | {db_motor}]")
 
                     try:
                         # 3.1 Cargar Vector Store
@@ -112,7 +149,7 @@ async def run_evaluation(limit: int = 0):
                         for _, row in df.iterrows():
                             q_id = row['id']
                             question = row['question']
-                            print(f"      - Evaluando Q{q_id}...", end=" ", flush=True)
+                            print(f"      - [Q{q_id}] Gen: {gen_model} | Juez: {judge_model} | Emb: {e_model} | Chunk: {c_strat} | DB: {db_motor}...", end=" ", flush=True)
 
                             # Medir telemetría de recuperación
                             start_retrieval = time.time()
@@ -168,7 +205,7 @@ async def run_evaluation(limit: int = 0):
                             with open(output_file, "a", encoding="utf-8") as f:
                                 f.write(json.dumps(result_data, ensure_ascii=False) + "\n")
 
-                            print(f"Fid: {result_data['faithfulness_score']} | Rel: {result_data['relevance_score']} | Prec: {result_data['context_precision_score']} | AnsRel: {result_data['answer_relevancy_score']}")
+                            print(f"Fid: {result_data['faithfulness_score']} | Rel: {result_data['relevance_score']} | Prec: {result_data['context_precision_score']}")
 
                     except Exception as e:
                         print(f"    ❌ Error procesando combinación {comb_id}: {str(e)}")
@@ -180,6 +217,11 @@ async def run_evaluation(limit: int = 0):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Correr Evaluación de la Matriz de Experimentos")
     parser.add_argument("--limit", type=int, default=0, help="Limitar número de preguntas (0 para todas)")
+    parser.add_argument("--embedding", type=str, default="", help="Filtrar por modelo de embedding (ej: mxbai-embed-large)")
+    parser.add_argument("--chunk-strategy", type=str, default="", help="Filtrar por estrategia chunking (500, 1000, semantic)")
+    parser.add_argument("--db-motor", type=str, default="", help="Filtrar por db motor (faiss, qdrant_local)")
+    parser.add_argument("--generator", type=str, default="", help="Filtrar por modelo generador (ej: qwen2.5:3b)")
+    parser.add_argument("--judge", type=str, default="", help="Modelo usado como Juez evaluador (ej: llama3.1)")
     args = parser.parse_args()
     
-    asyncio.run(run_evaluation(limit=args.limit))
+    asyncio.run(run_evaluation(args))

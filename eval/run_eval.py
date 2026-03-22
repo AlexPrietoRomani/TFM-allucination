@@ -1,3 +1,17 @@
+"""
+run_eval.py — Evaluador de RAG v1 (Comparativa)
+
+Carga un banco de preguntas (`question_bank_v1.csv`) y las envía al motor 
+RAG clásico para generar respuestas e indexar tiempos de respuesta, 
+guardando la comparativa en bruto en `eval/results/Comparison`.
+
+Uso:
+    uv run python eval/run_eval.py [OPCIONES]
+
+Opciones:
+    --limit N        Procesar un número máximo fijo de N preguntas del banco.
+"""
+
 import argparse
 import asyncio
 import pandas as pd
@@ -6,6 +20,12 @@ import os
 from pathlib import Path
 from datetime import datetime
 from src.core.providers.factory import ProviderFactory
+from pathlib import Path
+import sys
+
+# Asegurar que el directorio raíz esté en el PYTHONPATH
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 from src.core.config.settings import settings
 from src.chat.rag import RAGEngine
 

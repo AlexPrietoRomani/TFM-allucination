@@ -1,3 +1,14 @@
+"""
+run_factscore.py — Evaluador de Hechos Atómicos (FactScore)
+
+Calcula la fidelidad de las respuestas generadas por el motor RAG
+descomponiendo las oraciones en afirmaciones atómicas discretas (`FactScoreMetric`)
+y verificando su apoyo en los documentos recuperados.
+
+Uso:
+    uv run python eval/run_factscore.py
+"""
+
 import pandas as pd
 import asyncio
 from pathlib import Path

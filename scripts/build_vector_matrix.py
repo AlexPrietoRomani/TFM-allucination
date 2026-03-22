@@ -6,7 +6,11 @@ en bases de datos vectoriales (Qdrant / FAISS), iterando por cada combinación
 de Embeddings y Estrategia de Fragmentación configurada en la Matriz.
 
 Uso:
-    uv run python scripts/build_vector_matrix.py [--limit N] [--only-embedding MODEL]
+    uv run python scripts/build_vector_matrix.py [OPCIONES]
+
+Opciones:
+    --limit N             Limitar número de documentos a procesar (para pruebas rápidas).
+    --only-embedding EMB  Procesar solo un modelo de embedding específico (ej: mxbai-embed-large).
 """
 
 import os

@@ -1,8 +1,30 @@
+"""
+run_eval_v2.py — Evaluador del Agente Autónomo (V2)
+
+Itera sobre el banco de preguntas utilizando el Agente de LangGraph (AgentGraph),
+el cual ya posee su propio sistema de scoring y replanteamiento crítico (autocorrección),
+guardando los reportes de rendimiento y respuestas en `eval/results/V2`.
+
+Uso:
+    uv run python eval/run_eval_v2.py [OPCIONES]
+
+Opciones:
+    --provider PROV  Proveedor de LLM (ej: gemini, ollama, openrouter).
+    --model MODEL    Nombre del modelo (ej: gemini-1.5-pro, llama3.2).
+    --limit N        Procesar un número máximo fijo de N preguntas del banco.
+"""
+
 import pandas as pd
 import asyncio
 import json
 import time
 from pathlib import Path
+from pathlib import Path
+import sys
+
+# Asegurar que el directorio raíz esté en el PYTHONPATH
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 from src.agent.graph import AgentGraph
 
 import argparse
