@@ -15,13 +15,15 @@ El sistema implementa y compara tres enfoques:
 | **V1** | RAG | Retrieval-Augmented Generation con base vectorial |
 | **V2** | Agente Autónomo | Sistema con LangGraph, auto-corrección y ciclos de razonamiento |
 
-### Métricas de Calidad
+### Métricas de Calidad (Framework RAGAS y FactScore)
 
 | Métrica | Descripción | Rango |
 |---------|-------------|-------|
-| **⚖️ Fidelidad** | Mide si la respuesta se deriva exclusivamente del contexto proporcionado, sin inventar datos | 0.0 – 1.0 |
-| **🎯 Relevancia** | Mide si los documentos recuperados contienen la información necesaria para responder la pregunta | 0.0 – 1.0 |
+| **⚖️ Fidelidad** | (**Faithfulness**) Mide si la respuesta se deriva exclusivamente del contexto, sin inventar datos | 0.0 – 1.0 |
+| **🎯 Relevancia (Contexto)** | (**Context Relevance**) Verifica si los documentos recuperados contienen la información necesaria | 0.0 – 1.0 |
 | **🔬 FactScore** | Descompone la respuesta en hechos atómicos y verifica cada uno contra el contexto | 0.0 – 1.0 |
+| **🧪 Precisión (Contexto)** | (**Context Precision**) Proporción de fragmentos recuperados que flotan útiles al inicio del ranking | 0.0 – 1.0 |
+| **💬 Relevancia (Respuesta)** | (**Answer Relevancy**) Evalúa si la respuesta generada aborda directamente la pregunta | 0.0 – 1.0 |
 
 ---
 
