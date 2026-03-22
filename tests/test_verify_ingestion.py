@@ -1,11 +1,11 @@
 """
-verify_ingestion.py — Verificador de Cargadores de Documentos
+test_verify_ingestion.py — Verificador de Cargadores de Documentos
 
 Mide la legibilidad y fragmentación de los documentos de corpus/raw/
 empleando los cargadores locales (`DocumentLoader`) antes de indexarlos en vectorstores.
 
 Uso:
-    uv run python scripts/verify_ingestion.py
+    uv run python tests/test_verify_ingestion.py
 """
 
 import argparse

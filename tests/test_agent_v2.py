@@ -5,7 +5,7 @@ Inicia el grafo del agente (AgentGraph) y dispara un listado de preguntas
 de prueba para observar las respuestas generadas y sus scores de alucinación.
 
 Uso:
-    uv run python scripts/test_agent_v2.py
+    uv run python tests/test_agent_v2.py
 """
 
 import asyncio
