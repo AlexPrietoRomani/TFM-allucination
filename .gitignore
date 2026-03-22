@@ -73,6 +73,7 @@ instance/
 docs/_build/
 corpus/raw
 data/vector_matrix
+eval/results
 
 # PyBuilder
 target/
