@@ -15,6 +15,7 @@ Opciones:
     --no-flatten    Conservar tablas en formato Markdown puro (sin aplanar a oraciones).
     --force         Forzar el reprocesamiento de archivos aunque ya existan en corpus/parsed/.
     --only-ids ID   Procesar solo IDs específicos separados por coma (ej: --only-ids id1,id2).
+    --limit N       Procesar un número máximo fijo de N documentos.
 """
 
 import argparse
@@ -147,6 +148,12 @@ def main():
         help="Procesar solo estos IDs separados por coma"
     )
     arg_parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Límite máximo de documentos a procesar"
+    )
+    arg_parser.add_argument(
         "--force",
         action="store_true",
         help="Forzar reprocesamiento incluso si el archivo ya existe"
@@ -170,7 +177,13 @@ def main():
 
     # Filtrar solo PDFs (Docling no procesa XLSX/DOCX)
     pdf_docs = [d for d in documents if d.get("type", "pdf") == "pdf"]
-    logger.info(f"Documentos PDF a procesar: {len(pdf_docs)} de {len(documents)} total")
+    
+    # Aplicar límite si se especifica
+    if args.limit:
+        pdf_docs = pdf_docs[:args.limit]
+        logger.info(f"Límite aplicado: Se procesarán sólo {len(pdf_docs)} documentos")
+    else:
+        logger.info(f"Documentos PDF a procesar: {len(pdf_docs)} de {len(documents)} total")
 
     # Inicializar parser
     logger.info("Inicializando Docling Parser...")

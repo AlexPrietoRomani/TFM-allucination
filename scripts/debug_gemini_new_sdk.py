@@ -1,3 +1,10 @@
+"""
+debug_gemini_new_sdk.py — Debug con SDK Nativo de Google GenAI
+
+Prueba de conexión con el nuevo cliente `google-genai` para enviar instrucciones
+al modelo de forma directa sin dependencias de terceros (como LangChain).
+"""
+
 import os
 from google import genai
 from dotenv import load_dotenv

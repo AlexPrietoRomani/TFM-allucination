@@ -1,3 +1,13 @@
+"""
+test_agent_v2.py — Test de Preguntas del Agente LangGraph (V2)
+
+Inicia el grafo del agente (AgentGraph) y dispara un listado de preguntas 
+de prueba para observar las respuestas generadas y sus scores de alucinación.
+
+Uso:
+    uv run python scripts/test_agent_v2.py
+"""
+
 import asyncio
 from src.agent.graph import AgentGraph
 

@@ -1,3 +1,14 @@
+"""
+build_vector_matrix.py — Constructor de la Matriz Vectorial
+
+Lee los documentos pre-procesados de corpus/parsed/ y los indexa masivamente
+en bases de datos vectoriales (Qdrant / FAISS), iterando por cada combinación
+de Embeddings y Estrategia de Fragmentación configurada en la Matriz.
+
+Uso:
+    uv run python scripts/build_vector_matrix.py [--limit N]
+"""
+
 import os
 import yaml
 import time

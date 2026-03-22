@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+"""
+check_count.py — Conteo de Vectores en Qdrant
+
+Script de diagnóstico corto que consulta el cliente Qdrant y cuenta
+cuántos puntos (chunks vectoriales) se encuentran indexados en la colección activa.
+
+Uso:
+    uv run python scripts/check_count.py
+"""
+
 import sys
 from pathlib import Path
 

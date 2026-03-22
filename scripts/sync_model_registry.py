@@ -1,3 +1,14 @@
+"""
+sync_model_registry.py — Sincronizador de Registro de Modelos
+
+Consulta la API de OpenRouter (y el bundle estático de Gemini) para actualizar
+la lista de modelos y precios disponibles en `model_registry.json`,
+utilizado por la interfaz gráfica.
+
+Uso:
+    uv run python scripts/sync_model_registry.py
+"""
+
 import asyncio
 import json
 import os

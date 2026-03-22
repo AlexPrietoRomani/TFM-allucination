@@ -1,3 +1,14 @@
+"""
+acquire_corpus.py — Descargador del Corpus
+
+Lee el archivo corpus/registry.yaml, descarga cada PDF listado hacia
+corpus/raw/ (omitiendo SSL si es necesario para ciertos dominios institucionales)
+y calcula/actualiza el checksum SHA256 en el registro.
+
+Uso:
+    uv run python scripts/acquire_corpus.py
+"""
+
 import yaml
 import httpx
 import hashlib
