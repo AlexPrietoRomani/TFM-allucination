@@ -193,18 +193,20 @@ uv run eval/run_matrix_eval.py
 | 🧠 **V0 (Baseline)** | Chat directo con el LLM sin contexto |
 | 📚 **V1 (RAG)** | Chat con documentos + métricas de calidad |
 | 🤖 **V2 (Agente)** | Agente autónomo con pasos de razonamiento + métricas |
-| 📊 **Matriz de Experimentos** | Tablero visual con Boxplots, Pareto y Desglose de Latencia interactivo |
-| 📊 **Reportes** | Benchmarks automáticos y generación de informes |
+| 📊 **Matriz de Experimentos** | Tablero visual con Boxplots, Pareto, y visualización/agrupación avanzada de tablas con subfiltros |
+| 📊 **Reportes** | Benchmarks automáticos y visualizadores de métricas agregadas |
 
 ### Métricas en la UI
 
-Cuando activas **"📊 Calcular Métricas"** en la barra lateral, cada respuesta de V1 y V2 se evalúa con:
+Cuando activas **"📊 Calcular Métricas"** en la barra lateral (o ejecutas la Matriz), el sistema evalúa:
 
-- **⚖️ Fidelidad (Faithfulness):** LLM-as-a-Judge evalúa si cada afirmación de la respuesta está soportada por el contexto. Score 1.0 = cero alucinaciones.
-- **🎯 Relevancia (Context Relevance):** Evalúa si los documentos recuperados contienen la información necesaria. Score 1.0 = contexto perfecto.
-- **🔬 FactScore:** Descompone la respuesta en hechos atómicos individuales y verifica cada uno contra el contexto. Muestra desglose: ✅ Soportado / ❌ Contradicho / ⚠️ No verificado.
+- **⚖️ Fidelidad (Faithfulness):** Evalúa si cada afirmación de la respuesta está soportada por el contexto. Score 1.0 = cero alucinaciones.
+- **🎯 Relevancia del Contexto (Context Relevance):** Evalúa si los documentos recuperados contienen la información necesaria. Score 1.0 = contexto perfecto.
+- **🔬 FactScore:** Descompone la respuesta en hechos atómicos y verifica cada uno contra el contexto. Muestra desglose: ✅ Soportado / ❌ Contradicho / ⚠️ No verificado.
+- **🧪 Precisión del Contexto (Context Precision):** Proporción de chunks de contexto recuperados que son verdaderamente relevantes para la consulta.
+- **💬 Relevancia de la Respuesta (Answer Relevancy):** Evalúa si la respuesta generada aborda de manera directa y concisa la pregunta original del usuario.
 
-> **Nota:** Las métricas usan Ollama (`qwen2.5:3b`) como juez evaluador. Es más lento pero funciona 100% offline y sin cuota de API.
+> **Nota:** Las métricas se ejecutan por defecto con Ollama (`llama3.1`) como juez evaluador para garantizar que sean 100% offline y reproducibles sin costos de API externos.
 
 ---
 
