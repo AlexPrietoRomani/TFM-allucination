@@ -28,15 +28,72 @@ def render_tab_matrix():
     # Banner de Juez Estático
     st.warning("⚖️ **Juez Evaluador Único:** `llama3.1` (Ollama)")
 
+    # --- 🛠️ 1. LANZAR EVALUACIÓN DESDE LA UI ---
+    with st.expander("▶️ Iniciar Evaluación / Ejecutar Benchmark", expanded=False):
+        st.markdown("Configura los parámetros para correr `eval/run_matrix_eval.py` desde esta interfaz:")
+        
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            sel_emb = st.selectbox("Embedding", ["Cualquiera", "mxbai-embed-large", "nomic-embed-text-v2-moe", "qwen3-embedding"])
+            sel_chunk = st.selectbox("Fragmentación (Chunking)", ["Cualquiera", "500", "1000", "semantic"])
+        with c2:
+            sel_db = st.selectbox("Motor DB", ["Cualquiera", "faiss", "qdrant_local"])
+            sel_gen = st.selectbox("Generador", ["Cualquiera", "gemini-3.1-pro-preview", "gemini-3-flash-preview", "gemini-3.1-flash-lite-preview", "deepseek-r1:8b", "qwen3:8b", "gpt-oss:20b"])
+        with c3:
+            sel_arch = st.selectbox("Arquitectura", ["Cualquiera", "v0", "v1", "v2"])
+            limit_q = st.number_input("Límite de Preguntas (0 = Todas)", min_value=0, max_value=128, value=1)
+            
+        overwrite_check = st.checkbox("Sobrescribir Resultados previos para esta combinación (--overwrite)", value=False)
+        
+        # 1. Construir Comando (Fuera del botón para que sea visible siempre)
+        args_list = []
+        if sel_emb != "Cualquiera": args_list.append(f"--embedding {sel_emb}")
+        if sel_chunk != "Cualquiera": args_list.append(f"--chunk-strategy {sel_chunk}")
+        if sel_db != "Cualquiera": args_list.append(f"--db-motor {sel_db}")
+        if sel_gen != "Cualquiera": args_list.append(f"--generator {sel_gen}")
+        if sel_arch != "Cualquiera": args_list.append(f"--architecture {sel_arch}")
+        if limit_q > 0: args_list.append(f"--limit {limit_q}")
+        if overwrite_check: args_list.append("--overwrite")
+        
+        cmd = f"uv run python eval/run_matrix_eval.py " + " ".join(args_list)
+
+        st.markdown("📋 **Comando de Consola Generado:**")
+        st.code(cmd, language="bash")
+        
+        if st.button("🚀 Iniciar Ejecución en Background"):
+            import subprocess
+            
+            log_area = st.empty()
+            full_log = ""
+            
+            try:
+                import os
+                # Forzar encoding UTF-8 para evitar caídas en Windows Subprocess (Especialmente Emojis)
+                env_exec = {**os.environ, "PYTHONIOENCODING": "utf-8"}
+                
+                # Abrir subprocess leyendo stdout en tiempo real
+                p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, env=env_exec)
+                for line in p.stdout:
+                    full_log += line
+                    # Limitar un poco el buffer si es muy masivo
+                    log_area.code(full_log[-10000:])
+                p.wait()
+                if p.returncode == 0:
+                    st.success("✅ Evaluación Completada con Éxito. Los gráficos se actualizarán al recargar o filtrar.")
+                else:
+                    st.error(f"❌ Falló con código {p.returncode}")
+            except Exception as e:
+                st.error(f"⚠️ Error al lanzar el proceso: {e}")
+
+    st.divider()
+
     df = load_data()
 
     if df is None or df.empty:
         st.info("⚠️ **No se encontraron datos de evaluación de matriz.**")
         st.markdown(
             """
-            Para generar datos, sigue estos pasos en la terminal:
-            1. `$env:PYTHONPATH="."; python scripts/build_vector_matrix.py` *(Construye las bases de datos)*
-            2. `$env:PYTHONPATH="."; python eval/run_matrix_eval.py --limit 3` *(Corre la evaluación en un subset rápido)*
+            Para generar datos, puedes expandir el bloque de arriba y configurar una corrida.
             """
         )
         return
@@ -44,32 +101,86 @@ def render_tab_matrix():
     # --- Filtros de Datos ---
     st.sidebar.markdown("---")
     st.sidebar.markdown("🎯 **Filtros de Matriz**")
-    generators = ["Todos"] + list(df['generator'].unique())
-    selected_gen = st.sidebar.selectbox("Seleccionar Generador", generators, index=0)
+    
+    # 1. Embedding
+    embeddings_list = ["Todos"] + list(df['embedding'].unique() if 'embedding' in df.columns else [])
+    sel_emb_filter = st.sidebar.selectbox("Filtrar Embedding", embeddings_list, index=0)
 
-    # Filtrado
+    # 2. Chunk Strategy
+    chunks_list = ["Todos"] + list(df['chunk_strategy'].astype(str).unique() if 'chunk_strategy' in df.columns else [])
+    sel_chunk_filter = st.sidebar.selectbox("Filtrar Chunking", chunks_list, index=0)
+
+    # 3. Motor DB
+    dbs_list = ["Todos"] + list(df['db_motor'].unique() if 'db_motor' in df.columns else [])
+    sel_db_filter = st.sidebar.selectbox("Filtrar Motor DB", dbs_list, index=0)
+
+    # 4. Generador
+    generators_list = ["Todos"] + list(df['generator'].unique() if 'generator' in df.columns else [])
+    selected_gen = st.sidebar.selectbox("Filtrar Generador", generators_list, index=0)
+
+    # 5. Arquitectura
+    architectures_list = ["Todos"] + list(df['architecture'].unique() if 'architecture' in df.columns else [])
+    selected_arch = st.sidebar.selectbox("Filtrar Arquitectura", architectures_list, index=0)
+
+    # Aplicar Filtrado
     filtered_df = df.copy()
-    if selected_gen != "Todos":
+    if 'embedding' in filtered_df.columns and sel_emb_filter != "Todos":
+        filtered_df = filtered_df[filtered_df['embedding'] == sel_emb_filter]
+        
+    if 'chunk_strategy' in filtered_df.columns and sel_chunk_filter != "Todos":
+        filtered_df = filtered_df[filtered_df['chunk_strategy'].astype(str) == sel_chunk_filter]
+        
+    if 'db_motor' in filtered_df.columns and sel_db_filter != "Todos":
+        filtered_df = filtered_df[filtered_df['db_motor'] == sel_db_filter]
+        
+    if 'generator' in filtered_df.columns and selected_gen != "Todos":
         filtered_df = filtered_df[filtered_df['generator'] == selected_gen]
+        
+    if 'architecture' in filtered_df.columns and selected_arch != "Todos":
+        filtered_df = filtered_df[filtered_df['architecture'] == selected_arch]
 
     # --- KPI Overview ---
-    avg_faith = filtered_df['faithfulness_score'].mean()
-    avg_rel = filtered_df['relevance_score'].mean()
+    metrics_list = ["faithfulness_score", "relevance_score", "context_precision_score", "answer_relevancy_score", "factscore_score"]
+    available_top_metrics = [m for m in metrics_list if m in filtered_df.columns]
+
+    kpi_values = {m: filtered_df[m].mean() for m in available_top_metrics}
     avg_latency = filtered_df['total_latency_seg'].mean()
 
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Fidelidad Promedio (Faithfulness)", f"{avg_faith:.2f}")
-    c2.metric("Relevancia Promedio (Context)", f"{avg_rel:.2f}")
-    c3.metric("Latencia Promedio (Ret + Gen)", f"{avg_latency:.2f} s")
+    labels_map = {
+        "faithfulness_score": "Fidelidad",
+        "relevance_score": "Rel. Contexto",
+        "context_precision_score": "Prec. Contexto",
+        "answer_relevancy_score": "Rel. Respuesta",
+        "factscore_score": "FactScore"
+    }
+
+    cols = st.columns(len(available_top_metrics) + 1)
+    for i, m in enumerate(available_top_metrics):
+        cols[i].metric(labels_map.get(m, m), f"{kpi_values[m]:.2f}")
+    cols[-1].metric("Latencia", f"{avg_latency:.2f} s")
 
     st.divider()
 
     # --- DATA TABLE & EXPORT ---
     st.markdown("### 📋 Tabla de Resultados")
-    st.dataframe(filtered_df[[
-        "question_id", "generator", "embedding", "chunk_strategy", "db_motor", 
-        "faithfulness_score", "relevance_score", "total_latency_seg"
-    ]], use_container_width=True)
+    
+    st.write("🔧 **Opciones de Agrupación**")
+    group_cols = st.multiselect("Promediar métricas agrupando por:", ["architecture", "generator", "embedding", "chunk_strategy", "db_motor"], default=[], key="table_group_cols")
+
+    table_base = ["question_id", "generator", "embedding", "chunk_strategy", "db_motor", "total_latency_seg"]
+    if 'architecture' in filtered_df.columns:
+        table_base.insert(2, "architecture")
+    table_cols = table_base + available_top_metrics
+
+    # Vista agrupada o vista plana
+    if group_cols:
+        # Calcular medias sobre las columnas numéricas (métricas y latencia)
+        numeric_cols = available_top_metrics + ["total_latency_seg"]
+        # .groupby() con reset_index() para aplanar
+        df_grouped = filtered_df.groupby(group_cols)[numeric_cols].mean().reset_index()
+        st.dataframe(df_grouped, use_container_width=True)
+    else:
+        st.dataframe(filtered_df[table_cols], use_container_width=True)
 
     csv = filtered_df.to_csv(index=False).encode('utf-8')
     st.download_button(
@@ -89,15 +200,59 @@ def render_tab_matrix():
     ])
 
     with tab_box:
-        st.write("#### 📦 Distribución de Fidelidad por Estrategia")
+        st.write("#### 📦 Distribución de Métricas por Estrategia")
+        
+        metrics_dict = {
+            "faithfulness_score": {
+                "label": "Fidelidad (Faithfulness)",
+                "desc": "Evalúa si la respuesta del asistente se basa estrictamente en el contexto proporcionado, penalizando información inventada o alucinaciones."
+            },
+            "relevance_score": {
+                "label": "Relevancia del Contexto (Context Relevance)",
+                "desc": "Mide qué tan útil y pertinente fue la información recuperada de la base de datos para responder a la pregunta."
+            },
+            "context_precision_score": {
+                "label": "Precisión del Contexto (Context Precision)",
+                "desc": "Analiza si la información crucial del contexto recuperado está en las primeras posiciones de los resultados de búsqueda."
+            },
+            "answer_relevancy_score": {
+                "label": "Relevancia de la Respuesta (Answer Relevancy)",
+                "desc": "Evalúa si la respuesta generada por el LLM responde directamente y de forma completa a la pregunta original."
+            },
+            "factscore_score": {
+                "label": "FactScore",
+                "desc": "Cuantifica la proporción de afirmaciones atómicas (hechos individuales) en la respuesta que están sustentados rigurosamente por el contexto."
+            }
+        }
+
+        # Filtrar métricas por si alguna no está en el dataframe
+        available_metrics = {k: v for k, v in metrics_dict.items() if k in filtered_df.columns}
+        
+        selected_metric_key = st.selectbox(
+            "Seleccionar Métrica de Evaluación",
+            options=list(available_metrics.keys()),
+            format_func=lambda x: available_metrics[x]["label"]
+        )
+        
+        selected_metric = available_metrics[selected_metric_key]
+        st.info(f"💡 **Explicación:** {selected_metric['desc']}")
+        
+        st.markdown("---")
+        st.write("🔧 **Configuración de Agrupación para el Gráfico**")
+        c_box1, c_box2 = st.columns(2)
+        with c_box1:
+            group_x = st.selectbox("Eje X (Agrupar por)", ["embedding", "chunk_strategy", "db_motor", "generator", "architecture"], index=0, key="box_grp_x")
+        with c_box2:
+            group_color = st.selectbox("Color (Separar por)", ["chunk_strategy", "embedding", "db_motor", "generator", "architecture"], index=0, key="box_grp_hue")
+
         fig_box = px.box(
             filtered_df, 
-            x="embedding", 
-            y="faithfulness_score", 
-            color="chunk_strategy",
+            x=group_x, 
+            y=selected_metric_key, 
+            color=group_color,
             points="all",
-            labels={"embedding": "Modelo de Embedding", "faithfulness_score": "Puntuación de Fidelidad"},
-            title="Fidelidad vs Embedding y Tamaño de Chunk"
+            labels={group_x: group_x.capitalize(), selected_metric_key: f"{selected_metric['label']}"},
+            title=f"Distribución de {selected_metric['label']} vs {group_x.upper()} (Agrupado por {group_color.upper()})"
         )
         st.plotly_chart(fig_box, use_container_width=True)
 

@@ -9,12 +9,12 @@ from src.metrics.faithfulness import FaithfulnessMetric
 from src.core.config.settings import settings
 
 class AgentNodes:
-    def __init__(self, provider: str = None, model_id: str = None, force_local: bool = False):
+    def __init__(self, provider: str = None, model_id: str = None, force_local: bool = False, vector_store=None):
         # Inicializar componentes
         # Usamos el provider configurado dinámicamente o por defecto
         
         self.llm = ProviderFactory.get_provider(provider, model_id, force_local=force_local)
-        self.rag_engine = RAGEngine()
+        self.rag_engine = RAGEngine(vector_store=vector_store)
         self.grader = FaithfulnessMetric(provider=provider, model_id=model_id) # Usa su propio juez en base al UI
 
         # Prompt de Generación V2 (más estricto y detallado)
