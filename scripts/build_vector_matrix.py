@@ -6,7 +6,7 @@ en bases de datos vectoriales (Qdrant / FAISS), iterando por cada combinación
 de Embeddings y Estrategia de Fragmentación configurada en la Matriz.
 
 Uso:
-    uv run python scripts/build_vector_matrix.py [--limit N]
+    uv run python scripts/build_vector_matrix.py [--limit N] [--only-embedding MODEL]
 """
 
 import os
@@ -170,6 +170,7 @@ def create_qdrant_collection(chunks, embeddings, collection_name: str, client: Q
 def main():
     parser = argparse.ArgumentParser(description="Construye la Matriz de Bases de Datos Vectoriales")
     parser.add_argument("--limit", type=int, default=0, help="Limitar número de documentos a procesar (para pruebas rápidas)")
+    parser.add_argument("--only-embedding", type=str, default="", help="Procesar solo un modelo de embedding específico (ej: mxbai-embed-large)")
     args = parser.parse_args()
 
     print("═══ CONSTRUCCIÓN DE LA MATRIZ DE EXPERIMENTOS VECTORIALES ═══")
@@ -184,8 +185,18 @@ def main():
         print("No hay documentos que indexar.")
         return
 
+    # Filtrar embedding si se solicita
+    embedding_list = EMBEDDING_MODELS
+    if args.only_embedding:
+        if args.only_embedding in EMBEDDING_MODELS:
+            embedding_list = [args.only_embedding]
+        else:
+            print(f"⚠️ El modelo de embedding '{args.only_embedding}' no está en la matriz configurada.")
+            print(f"Modelos disponibles: {EMBEDDING_MODELS}")
+            return
+
     # Bucles de la Matriz
-    for emb_model in EMBEDDING_MODELS:
+    for emb_model in embedding_list:
         print(f"\n🔋 Iniciando con Embedding: [{emb_model.upper()}]")
         try:
             embeddings = OllamaEmbeddings(
