@@ -10,13 +10,14 @@ Dependencias:
     pip install docling  (o uv add docling)
 """
 
+import torch
+import ollama
 import re
 import logging
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 
 logger = logging.getLogger(__name__)
-
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # 1. DoclingParser — PDF → Markdown estructurado
@@ -34,17 +35,17 @@ class DoclingParser:
         try:
             from docling.document_converter import DocumentConverter, PdfFormatOption
             from docling.datamodel.pipeline_options import PdfPipelineOptions, AcceleratorOptions, AcceleratorDevice
-            import torch
             
             # 1. Configurar el Acelerador (GPU si está disponible, sino CPU)
             device = AcceleratorDevice.CUDA if torch.cuda.is_available() else AcceleratorDevice.CPU
+            
             accel_options = AcceleratorOptions(
-                num_threads=8, # Aumentar hilos para pre-procesamiento
+                num_threads=8,
                 device=device
             )
             
             options = PdfPipelineOptions()
-            options.accelerator_options = accel_options # <- INYECCIÓN CRÍTICA
+            options.accelerator_options = accel_options
             options.do_formula_enrichment = True
             options.generate_picture_images = True
             
@@ -233,81 +234,52 @@ class ImageFilter:
 
     SYSTEM_PROMPT = (
         "Eres un analista experto en extracción de datos científicos. "
-        "Analiza esta imagen extraída de un documento. "
-        "REGLAS ESTRICTAS:\n"
-        "1. Describe de forma concisa qué representa la imagen (gráfico de líneas, diagrama, foto) y su tendencia o conclusión principal.\n"
-        "2. NO inventes datos, números ni nombres que no sean legibles.\n"
-        "3. NO repitas la misma palabra múltiples veces.\n"
-        "4. Si la imagen es un logotipo, un adorno, o texto borroso ilegible, responde EXACTAMENTE con la palabra: DESCARTAR."
+        "Describe en un único párrafo corto y directo qué representa esta imagen "
+        "(por ejemplo: 'Gráfico de líneas mostrando...', 'Diagrama de flujo de...'). "
+        "Ignora cualquier texto que no puedas leer claramente. "
+        "Si la imagen es solo un logotipo, un adorno, o texto borroso ilegible, "
+        "debes responder EXACTAMENTE y ÚNICAMENTE con la palabra: DESCARTAR."
     )
 
-    def __init__(
-        self,
-        model: str = "llama3.2-vision",
-        ollama_base_url: str = "http://localhost:11434"
-    ):
-        self.model = model
-        self.base_url = ollama_base_url
+    def __init__(self, model_name: str = "llama3.2-vision", base_url: str = "http://localhost:11434"):
+        self.model = model_name
+        self.base_url = base_url
 
-    def analyze(self, image_input: Optional[Any] = None) -> Optional[str]:
-        """Analiza una imagen y retorna su descripción o None si es decorativa.
-
-        Args:
-            image_input: Ruta a la imagen (Path, str) o bytes de la imagen.
-
-        Returns:
-            Descripción textual de la imagen, o None si debe descartarse.
-        """
-        try:
-            import ollama
-        except ImportError:
-            logger.warning("ollama SDK no instalado. Omitiendo análisis de imagen.")
-            return None
-
-        if image_input is None:
-            return None
-
-        # Resolver payload
-        img_payload = image_input
-        img_name = "Imagen"
-        
-        if isinstance(image_input, (str, Path)):
-            image_path = Path(image_input)
-            if not image_path.exists():
-                logger.warning(f"Imagen no encontrada: {image_path}")
-                return None
-            img_payload = str(image_path)
+    def analyze(self, image_path: Path) -> str | None:
+        """Devuelve la descripción de la imagen o None si debe descartarse."""
+        img_name = "imagen_memoria"
+        if hasattr(image_path, 'name'):
             img_name = image_path.name
 
         try:
             client = ollama.Client(host=self.base_url)
+            
             response = client.chat(
                 model=self.model,
                 messages=[{
                     "role": "user",
                     "content": self.SYSTEM_PROMPT,
-                    "images": [img_payload]
+                    "images": [str(image_path)]
                 }],
                 options={
-                    "num_predict": 250,      # Limitar la longitud máxima
-                    "temperature": 0.0,      # Eliminamos la creatividad (determinismo total)
-                    "top_p": 0.5,            # Reduce el espacio de tokens probables
-                    "repeat_penalty": 1.1,   # Penalización suave, suficiente para evitar bucles de palabras normales
+                    "num_predict": 150,
+                    "temperature": 0.1,
+                    "top_p": 0.9,
+                    "repeat_penalty": 1.0,
+                    "stop": ["\n\n", "Fuente:"]
                 }
             )
 
             text = response["message"]["content"].strip()
-            logger.info(f"DEBUG: VLM {img_name} response raw text = {repr(text)}")
+            logger.debug(f"VLM raw text = {repr(text)}")
 
-            # Limpieza contra alucinaciones de tokens invisibles y bucles
-            import re
-            text = text.replace('\xa0', ' ').replace('\xad', '') # Limpiar caracteres invisibles
-            text = re.sub(r'([.…] ?){3,}', '...', text) # Colapsar múltiples puntos
-            text = re.sub(r'(\s){2,}', ' ', text) # Colapsar múltiples espacios
-            text = re.sub(r'(.{5,}?)\1+', r'\1', text) # Detectar y colapsar n-gramas repetidos en bucle
+            # Limpieza agresiva de caracteres invisibles
+            text = text.replace('\xa0', ' ').replace('\xad', '')
+            text = re.sub(r'([.…] ?){3,}', '...', text)
+            text = re.sub(r'(\s){2,}', ' ', text)
             text = text.strip()
 
-            if "DESCARTAR" in text.upper():
+            if "DESCARTAR" in text.upper() or len(text) < 10:
                 logger.info(f"  → {img_name} descartada")
                 return None
 
@@ -315,5 +287,5 @@ class ImageFilter:
             return text
 
         except Exception as e:
-            logger.warning(f"Error analizando {img_name}: {e}")
+            logger.warning(f"  → Fallo en VLM para {img_name}: {e}")
             return None
