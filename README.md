@@ -167,12 +167,19 @@ Este script indexa los documentos en la colección Qdrant correspondiente al pro
 - `tfm_allucination_gemini` (Embeddings Gemini 3072d, modo cloud)
 
 ### Paso 7: Iniciar la Aplicación
-
 ```bash
 uv run streamlit run app.py
 ```
 
 👉 Abrir **http://localhost:8501**
+
+### Paso 8: Correr la Matriz de Experimentos *(Opcional)*
+Para correr el benchmark de permutaciones (Embeddings, Chunking, Modelos, Arquitecturas) y comparar rendimientos de forma masiva:
+
+```bash
+# Correr permutaciones para preguntas pendientes
+uv run eval/run_matrix_eval.py
+```
 
 ---
 

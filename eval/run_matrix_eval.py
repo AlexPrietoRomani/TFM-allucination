@@ -169,7 +169,27 @@ async def run_evaluation(args):
     answer_rel_metric = AnswerRelevancyMetric(provider="ollama", model_id=judge_model)
     factscore_metric = FactScoreMetric(provider="ollama", model_id=judge_model)
 
-    # 3. Bucles de la Matriz de Permutaciones
+    # 3. Calcular Total de Pruebas Restantes (Barra de Progreso)
+    total_samples = 0
+    for gen_model in generators:
+        for e_model in embedding_models:
+            for c_strat in chunk_strategies:
+                for db_motor in db_motors:
+                    for _, row in df.iterrows():
+                        for arch in architectures:
+                            if arch == "v0" and (e_model != embedding_models[0] or c_strat != chunk_strategies[0] or db_motor != db_motors[0]):
+                                continue
+                            match_e = e_model if arch != "v0" else "N/A"
+                            match_c = str(c_strat) if arch != "v0" else "N/A"
+                            match_db = db_motor if arch != "v0" else "N/A"
+                            key = (str(row['id']), arch, gen_model, match_e, match_c, match_db)
+                            if key not in executed_keys:
+                                total_samples += 1
+
+    print(f"\n📊 Total de sub-pruebas pendientes a ejecutar: {total_samples}")
+    current_count = 0
+
+    # 4. Bucles de la Matriz de Permutaciones
     for gen_model in generators:
         print(f"\n🚀 Iniciando Evaluación con Generador: [{gen_model.upper()}] | Juez: [{judge_model.upper()}]")
         try:
@@ -196,7 +216,9 @@ async def run_evaluation(args):
             for c_strat in chunk_strategies:
                 for db_motor in db_motors:
                     comb_id = f"{e_model.replace(':', '_')}_{c_strat}_{db_motor}"
-                    print(f"    🗄 Evaluando Matriz Celda: [{e_model} | {c_strat} | {db_motor}]")
+                    print("\n" + "="*80)
+                    print(f"🗄️ INICIANDO CELDA: [{e_model.upper()} | {str(c_strat).upper()} | {db_motor.upper()}]")
+                    print("="*80)
 
                     try:
                         # 3.1 Cargar Vector Store
@@ -222,7 +244,9 @@ async def run_evaluation(args):
                                 if key in executed_keys:
                                     continue
 
-                                print(f"      - [Q{q_id}] Arch: {arch} | Gen: {gen_model} | Juez: {judge_model} | Emb: {e_model}...", end=" ", flush=True)
+                                current_count += 1
+                                progress_pct = (current_count / total_samples) * 100 if total_samples > 0 else 0
+                                print(f"👉 [{current_count}/{total_samples}] ({progress_pct:.1f}%) - [Q{q_id}] {arch.upper()} | Gen: {gen_model}...", end=" ", flush=True)
 
                                 # Medir telemetría de recuperación
                                 start_retrieval = time.time()
@@ -312,6 +336,7 @@ async def run_evaluation(args):
                                     vector_store.client.close()
                             except Exception:
                                 pass
+                        print(f"🏁 CELDA COMPLETADA: [{e_model.upper()} | {str(c_strat).upper()} | {db_motor.upper()}]\n")
 
                     time.sleep(2) # Respiro para Ollama
 

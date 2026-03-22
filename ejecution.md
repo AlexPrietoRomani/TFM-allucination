@@ -193,15 +193,27 @@ uv run scripts/build_vector_matrix.py
 ```
 
 ### 2. Ejecutar la Evaluación Matricial
-Calcula fidelidad y relevancia en preguntas dinámicas, guardando la telemetría (latencia, costes).
+Calcula métricas de Fidelidad, Relevancia y Precisión para las permutaciones del banco de preguntas. Soporta filtros específicos y un modo **Skip (Continuar)** por defecto para ahorrar procesamiento.
 
 ```bash
-# --limit 1 procesará 1 pregunta para verificar que la red local funciona
-uv run eval/run_matrix_eval.py --limit 3
+# Ejecución estándar (procesará preguntas pendientes de los 6 generadores por defecto)
+uv run eval/run_matrix_eval.py
+
+# --limit N para correr solo N preguntas fijas (Prueba rápida)
+uv run eval/run_matrix_eval.py --limit 1
+
+# Filtrar permutación específica para inspección ágil
+uv run eval/run_matrix_eval.py --embedding mxbai-embed-large --chunk-strategy 500 --db-motor faiss --generator deepseek-r1:8b
+
+# Usar el flag --overwrite si deseas recalcular y forzar el reemplazo de filas en el JSONL
+uv run eval/run_matrix_eval.py --overwrite
 ```
 
-### 3. Visualizar
-Los resultados se consolidan automáticamente y puedes abrirlos en la pestaña especializada de la UI en **http://localhost:8501**, que renderizará los datos instantáneamente.
+### 3. Visualizar en la UI (Matriz de Experimentos)
+Los resultados se consolidan incrementalmente en `eval/results/Matrix/eval_results_matrix.jsonl`. Puedes interactuar con la pestaña **Matriz de Experimentos** en la UI (**http://localhost:8501**), donde podrás:
+* **Lanzar pruebas en Background** e inspeccionar logs en tiempo real.
+* **Filtrar gráficos de BoxPlots** por cualquier eje (`embedding`, `generator`, etc.).
+* **Agrupar la Tabla de Resultados** para extraer promedios de metricas sobre arquitecturas.
 
 ---
 
