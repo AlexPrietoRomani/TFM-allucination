@@ -38,7 +38,7 @@ def render_tab_matrix():
             sel_chunk = st.selectbox("Fragmentación (Chunking)", ["Cualquiera", "500", "1000", "semantic"])
         with c2:
             sel_db = st.selectbox("Motor DB", ["Cualquiera", "faiss", "qdrant_local"])
-            sel_gen = st.selectbox("Generador", ["Cualquiera", "gemini-3.1-pro-preview", "gemini-3-flash-preview", "gemini-3.1-flash-lite-preview", "deepseek-r1:8b", "qwen3:8b", "gpt-oss:20b"])
+            sel_gen = st.selectbox("Generador", ["Cualquiera", "gemini-2.5-flash-lite", "gemini-3-flash-preview", "gemini-3.1-flash-lite-preview", "deepseek-r1:8b", "qwen3:8b", "gpt-oss:20b"])
         with c3:
             sel_arch = st.selectbox("Arquitectura", ["Cualquiera", "v0", "v1", "v2"])
             limit_q = st.number_input("Límite de Preguntas (0 = Todas)", min_value=0, max_value=128, value=1)
