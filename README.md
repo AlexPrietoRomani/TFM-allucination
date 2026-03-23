@@ -266,7 +266,7 @@ Para las evaluaciones se integran LLMs de nube para establecer un límite superi
 
 | Familia | Modelo | Justificación / Por qué se usa |
 | :--- | :--- | :--- |
-| **Nube** | `gemini-3.1-pro-preview` | **Pensador Pesado:** Alto razonamiento lógico, ideal para inferencias agronómicas complejas. |
+| **Nube** | `gemini-2.5-flash-lite` | **Eficiente:** Modelo rápido y con cuotas óptimas para la ejecución de la matriz. |
 | **Nube** | `gemini-3-flash-preview` | **Equilibrio:** Modelo rápido y balanceado con gran tolerancia a ventanas gigantes de contexto. |
 | **Nube** | `gemini-3.1-flash-lite-preview`| **Métrica Límite:** Mide si un RAG perfecto puede compensar a un modelo generativo débil. |
 | **Local** | `deepseek-r1:8b` | **Razonamiento Profundo:** Destaca por su arquitectura orientada a la cadena de pensamiento profundo (CoT). |
