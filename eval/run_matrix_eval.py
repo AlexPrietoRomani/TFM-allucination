@@ -55,7 +55,7 @@ CHUNK_STRATEGIES = [500, 1000, "semantic"]
 DB_MOTORS = ["faiss", "qdrant_local"]
 GENERATORS = [
     "deepseek-r1:8b", "qwen3:8b", "gpt-oss:20b", 
-    "gemini-3-flash-preview", "gemini-3.1-pro-preview", "gemini-3.1-flash-lite-preview"
+    "gemini-3-flash-preview", "gemini-2.5-flash-lite", "gemini-3.1-flash-lite-preview"
 ]  # Modelos de generación de respuestas de la matriz
 JUDGE_MODEL = "llama3.1"  # Único juez para todas las evaluaciones
 
@@ -200,6 +200,14 @@ async def run_evaluation(args):
                 llm = ProviderFactory.get_provider("gemini", gen_model)
             else:
                 llm = OllamaLLM(model=gen_model, base_url=settings.ollama_base_url)
+                
+            delay_between_questions = 0
+            if gen_model.startswith("gemini"):
+                if "flash-lite" in gen_model.lower():
+                    delay_between_questions = 4.0  # 15 RPM (60s / 15)
+                elif "flash" in gen_model.lower():
+                    delay_between_questions = 12.0 # 5 RPM (60s / 5)
+                    
         except Exception as e:
             print(f"❌ Error al cargar generador {gen_model}. Saltando... ({e})")
             continue
@@ -324,6 +332,10 @@ async def run_evaluation(args):
                                     f.write(json.dumps(result_data, ensure_ascii=False) + "\n")
 
                                 print(f"Fid: {result_data['faithfulness_score']} | Rel: {result_data['relevance_score']} | Prec: {result_data['context_precision_score']} | AnRel: {result_data['answer_relevancy_score']} | Fact: {result_data['factscore_score']}")
+                                
+                                # Rate limit para modelos Cloud (Gemini)
+                                if delay_between_questions > 0:
+                                    time.sleep(delay_between_questions)
 
                     except Exception as e:
                         print(f"    ❌ Error procesando combinación {comb_id}: {str(e)}")
