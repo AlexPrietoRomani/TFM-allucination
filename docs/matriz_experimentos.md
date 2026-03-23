@@ -9,7 +9,7 @@ Para que el TFM tenga validez científica, cada combinación aislará variables 
 ### A. Modelos de Lenguaje (Generadores y Evaluadores)
 
 *   **Nube (Familia Gemini 3):**
-    *   `gemini-3.1-pro-preview`: Modelo "pensador" pesado. Alto razonamiento lógico, ideal para inferencias agronómicas complejas.
+    *   `gemini-2.5-flash-lite`: Modelo rápido y eficiente con cuotas estables para la ejecución de la matriz.
     *   `gemini-3-flash-preview`: Modelo rápido y balanceado.
     *   `gemini-3.1-flash-lite-preview`: Modelo ultraligero. Útil para medir si arquitecturas RAG perfectas compensan a un modelo generativo débil.
 *   **Locales (Pesos Abiertos vía Ollama):**
