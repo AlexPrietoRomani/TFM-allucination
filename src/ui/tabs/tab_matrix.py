@@ -143,8 +143,16 @@ def render_tab_matrix():
     metrics_list = ["faithfulness_score", "relevance_score", "context_precision_score", "answer_relevancy_score", "factscore_score"]
     available_top_metrics = [m for m in metrics_list if m in filtered_df.columns]
 
+    # Convertir métricas y latencia a numérico por si el JSON contiene strings (como N/A)
+    for m in available_top_metrics:
+        if m in filtered_df.columns:
+            filtered_df[m] = pd.to_numeric(filtered_df[m], errors='coerce')
+    
+    if 'total_latency_seg' in filtered_df.columns:
+        filtered_df['total_latency_seg'] = pd.to_numeric(filtered_df['total_latency_seg'], errors='coerce')
+
     kpi_values = {m: filtered_df[m].mean() for m in available_top_metrics}
-    avg_latency = filtered_df['total_latency_seg'].mean()
+    avg_latency = filtered_df['total_latency_seg'].mean() if 'total_latency_seg' in filtered_df.columns else 0.0
 
     labels_map = {
         "faithfulness_score": "Fidelidad",
