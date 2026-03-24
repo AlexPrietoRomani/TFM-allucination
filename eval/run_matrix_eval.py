@@ -59,6 +59,10 @@ GENERATORS = [
 ]  # Modelos de generación de respuestas de la matriz
 JUDGE_MODEL = "llama3.1"  # Único juez para todas las evaluaciones
 
+class QuotaExceededError(Exception):
+    """Excepción para detener la evaluación si se agotan las cuotas Cloud (429/Resource Exhausted)."""
+    pass
+
 def load_questions():
     if not INPUT_FILE.exists():
         raise FileNotFoundError(f"Banco de preguntas no encontrado en {INPUT_FILE}")
@@ -292,6 +296,10 @@ async def run_evaluation(args):
                                 except Exception as e:
                                     response = f"Error generación: {e}"
                                     latency_generation = 0.0
+                                    error_msg = str(e).upper()
+                                    if "RESOURCE_EXHAUSTED" in error_msg or "429" in error_msg:
+                                        print(f"\n🚨 [CRÍTICO] Cuota excedida para {gen_model}. Parando ejecución del modelo.")
+                                        raise QuotaExceededError(str(e))
 
                                 # 3.3 Calcular Métricas
                                 faith_res = faithfulness_metric.evaluate(response, docs)
@@ -337,6 +345,9 @@ async def run_evaluation(args):
                                 if delay_between_questions > 0:
                                     time.sleep(delay_between_questions)
 
+                    except QuotaExceededError as qe:
+                        print(f"    🚨 [CRÍTICO] Abortando ejecuciones para el modelo {gen_model} debido a límite de cuota.")
+                        raise qe
                     except Exception as e:
                         print(f"    ❌ Error procesando combinación {comb_id}: {str(e)}")
 
@@ -366,4 +377,7 @@ if __name__ == "__main__":
     parser.add_argument("--overwrite", action="store_true", help="Sobrescribir resultados de estas combinaciones en lugar de acumular")
     args = parser.parse_args()
     
-    asyncio.run(run_evaluation(args))
+    try:
+        asyncio.run(run_evaluation(args))
+    except QuotaExceededError:
+        print("\n🛑 EJECUCIÓN ABORTADA: Se ha agotado la cuota diaria/minuto para los modelos Cloud. Deteniendo el script para no corromper métricas.")
