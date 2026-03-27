@@ -54,7 +54,7 @@ EMBEDDING_MODELS = ["mxbai-embed-large", "nomic-embed-text-v2-moe", "qwen3-embed
 CHUNK_STRATEGIES = [500, 1000, "semantic"]
 DB_MOTORS = ["faiss", "qdrant_local"]
 GENERATORS = [
-    "deepseek-r1:8b", "qwen3:8b", "gpt-oss:20b", 
+    "deepseek-r1:8b", "qwen3:8b", "qwen2.5:3b", "gpt-oss:20b", 
     "gemini-3-flash-preview", "gemini-2.5-flash-lite", "gemini-3.1-flash-lite-preview"
 ]  # Modelos de generación de respuestas de la matriz
 JUDGE_MODEL = "llama3.1"  # Único juez para todas las evaluaciones
@@ -364,6 +364,26 @@ async def run_evaluation(args):
                     time.sleep(2) # Respiro para Ollama
 
     print(f"\n✅ Evaluación de Matriz Completada. Resultados en {output_file}")
+
+    # ── Análisis Estadístico Automático ─────────────────────────────────────
+    # Al finalizar la evaluación, ejecutar automáticamente el pipeline estadístico
+    # (Kruskal-Wallis para RAGAS, ANOVA para latencia/costo) y generar CSVs + .md
+    print("\n📊 Ejecutando análisis estadístico automático...")
+    try:
+        from eval.stat_engine import run_statistical_analysis
+        target_eval_models = ["deepseek-r1:8b", "qwen2.5:3b", "gpt-oss:20b"]
+        result = run_statistical_analysis(
+            str(output_file),
+            str(RESULTS_DIR),
+            target_eval_models
+        )
+        if result:
+            print("✅ Análisis estadístico completado. CSVs y Markdown generados.")
+        else:
+            print("⚠️ Análisis estadístico no produjo resultados (posiblemente datos insuficientes).")
+    except Exception as e:
+        print(f"⚠️ Error en análisis estadístico automático: {e}")
+        print("   Puedes ejecutarlo manualmente con: uv run python eval/statistical_analysis.py")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Correr Evaluación de la Matriz de Experimentos")
