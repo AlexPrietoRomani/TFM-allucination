@@ -30,6 +30,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import kruskal, mannwhitneyu
+import scikit_posthocs as sp
 import warnings
 
 # Ignorar warnings de seaborn/matplotlib que puedan ensuciar la consola
@@ -108,6 +109,41 @@ def analyze_factor(df, factor_name, metric_name):
         })
         
     summary_df = pd.DataFrame(summary).sort_values(by='Mean', ascending=False)
+    
+    # -----------------------------
+    # Dunn's Test Post-Hoc & CLD
+    # -----------------------------
+    try:
+        tmp_df = df[[factor_name, metric_name]].dropna()
+        if len(summary_df) > 1:
+            p_mat = sp.posthoc_dunn(tmp_df, val_col=metric_name, group_col=factor_name, p_adjust='fdr_bh')
+            ordered_labels = summary_df['Factor_Value'].tolist()
+            p_mat = p_mat.loc[ordered_labels, ordered_labels]
+            
+            from string import ascii_lowercase
+            n = len(ordered_labels)
+            letters = [''] * n
+            current_letter_idx = 0
+            for i in range(n):
+                if not letters[i]:
+                    letter = ascii_lowercase[current_letter_idx]
+                    letters[i] += letter
+                    current_letter_idx += 1
+                    for j in range(i + 1, n):
+                        can_share = True
+                        for k in range(n):
+                            if letter in letters[k]:
+                                if p_mat.iloc[j, k] < 0.05:
+                                    can_share = False
+                                    break
+                        if can_share:
+                            letters[j] += letter
+            summary_df['Dunn_CLD'] = letters
+        else:
+            summary_df['Dunn_CLD'] = ['a'] * len(summary_df)
+    except Exception as e:
+        summary_df['Dunn_CLD'] = 'Error'
+    # -----------------------------
     
     posthoc = []
     if len(summary_df) > 1:
@@ -332,8 +368,11 @@ def generate_markdown_report(final_df, metrics, factors, total_rows, target_mode
             ])
             
             # Tabla de Rendimiento
-            ranking_df = factor_df[['Factor_Value', 'Count', 'Mean', 'Median']].copy()
-            ranking_df.rename(columns={'Factor_Value': 'Factor'}, inplace=True)
+            if 'Dunn_CLD' in factor_df.columns:
+                ranking_df = factor_df[['Factor_Value', 'Count', 'Mean', 'Median', 'Dunn_CLD']].copy()
+            else:
+                ranking_df = factor_df[['Factor_Value', 'Count', 'Mean', 'Median']].copy()
+            ranking_df.rename(columns={'Factor_Value': 'Factor', 'Dunn_CLD': 'CLD (Dunn)'}, inplace=True)
             md_lines.append(ranking_df.to_markdown(index=False))
             md_lines.append("")
             
@@ -364,8 +403,11 @@ def generate_markdown_report(final_df, metrics, factors, total_rows, target_mode
                 "**Top 5 Combinaciones (por Media):**"
             ])
             
-            top5_df = comb_df[['Factor_Value', 'Count', 'Mean', 'Median']].head(5).copy()
-            top5_df.rename(columns={'Factor_Value': 'Factor'}, inplace=True)
+            if 'Dunn_CLD' in comb_df.columns:
+                top5_df = comb_df[['Factor_Value', 'Count', 'Mean', 'Median', 'Dunn_CLD']].head(5).copy()
+            else:
+                top5_df = comb_df[['Factor_Value', 'Count', 'Mean', 'Median']].head(5).copy()
+            top5_df.rename(columns={'Factor_Value': 'Factor', 'Dunn_CLD': 'CLD (Dunn)'}, inplace=True)
             md_lines.append(top5_df.to_markdown(index=False))
             md_lines.append("")
             
