@@ -19,7 +19,7 @@ import pandas as pd
 import json
 import os
 import numpy as np
-from scipy.stats import kruskal, mannwhitneyu, f_oneway, ttest_ind
+from scipy.stats import kruskal, mannwhitneyu, f_oneway, ttest_ind, pearsonr, spearmanr
 import scikit_posthocs as sp
 
 # Métricas que reciben pipeline paramétrico (ANOVA + T-Test)
@@ -167,7 +167,34 @@ def analyze_factor(df, factor_name, metric_name, is_parametric=False):
     return summary_df, None
 
 
-def generate_markdown_report(final_df, metrics, factors, total_rows, target_models, output_file, parametric_metrics):
+def calculate_correlations(df, metrics, output_dir):
+    """
+    Calcula matrices de correlación Pearson (lineal) y Spearman (monotónica) 
+    entre todas las métricas disponibles.
+    """
+    # Filtrar solo las columnas de métricas y eliminar filas con NaNs en esas columnas
+    corr_df = df[metrics].dropna()
+    
+    if corr_df.empty:
+        print("⚠️ No hay suficientes datos numéricos para calcular correlaciones.")
+        return None, None
+
+    # Calcular matrices
+    pearson_matrix = corr_df.corr(method='pearson')
+    spearman_matrix = corr_df.corr(method='spearman')
+
+    # Guardar en CSV
+    pearson_csv = os.path.join(output_dir, 'correlation_pearson.csv')
+    spearman_csv = os.path.join(output_dir, 'correlation_spearman.csv')
+    
+    pearson_matrix.to_csv(pearson_csv)
+    spearman_matrix.to_csv(spearman_csv)
+    
+    print(f"✅ Matrices de correlación generadas: {pearson_csv}, {spearman_csv}")
+    return pearson_matrix, spearman_matrix
+
+
+def generate_markdown_report(final_df, metrics, factors, total_rows, target_models, output_file, parametric_metrics, pearson_corr=None):
     """Genera un archivo Markdown con los resultados del análisis estadístico detallado."""
     md_lines = [
         "# 📈 Informe de Análisis Estadístico del RAG",
@@ -294,6 +321,20 @@ def generate_markdown_report(final_df, metrics, factors, total_rows, target_mode
                 
         md_lines.extend(["---", ""])
         
+    # 3. Sección de Correlaciones (si están disponibles)
+    if pearson_corr is not None:
+        md_lines.extend([
+            "## 🔗 3. Análisis de Correlación Inter-Métrica",
+            "Este análisis identifica cómo se relacionan las métricas entre sí (ej. ¿a mayor latencia, mayor calidad?).",
+            "",
+            "**Matriz de Correlación de Pearson (Tendencias Lineales):**",
+            "",
+            pearson_corr.round(3).to_markdown(),
+            "",
+            "---",
+            ""
+        ])
+
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write("\n".join(md_lines))
 
@@ -405,9 +446,13 @@ def run_statistical_analysis(file_path, output_dir, target_models):
         best_df.to_csv(best_csv, index=False, encoding='utf-8-sig')
         print(f"   - {best_csv}")
 
+        # Análisis de Correlación
+        print("🔗 Calculando matrices de correlación...")
+        pearson_mat, spearman_mat = calculate_correlations(df, metrics, output_dir)
+
         # Generar Reporte Markdown
         md_file = os.path.join(output_dir, 'statistical_results.md')
-        generate_markdown_report(final_df, metrics, factors, len(df), target_models, md_file, parametric_metrics)
+        generate_markdown_report(final_df, metrics, factors, len(df), target_models, md_file, parametric_metrics, pearson_mat)
         print(f"   - {md_file}")
 
     return {
@@ -418,4 +463,6 @@ def run_statistical_analysis(file_path, output_dir, target_models):
         'factors': factors,
         'metric_summaries_by_metric': metric_summaries_by_metric,
         'target_models': target_models,
+        'pearson_matrix': pearson_mat if 'pearson_mat' in locals() else None,
+        'spearman_matrix': spearman_mat if 'spearman_mat' in locals() else None
     }

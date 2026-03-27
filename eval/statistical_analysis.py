@@ -347,6 +347,34 @@ def plot_boxplots(df, metric, output_dir, metric_summaries_dict=None, is_paramet
     plt.close(fig)
 
 
+def plot_correlation_matrix(corr_matrix, title, save_path):
+    """Genera un mapa de calor (Heatmap) para la matriz de correlación."""
+    if corr_matrix is None:
+        return
+
+    # Usar etiquetas legibles si están disponibles en LABEL_MAP
+    # Filtrar solo métricas que existan en el mapa de etiquetas o con formato score
+    labels = [LABEL_MAP.get(col, col.replace('_score', '').capitalize()) for col in corr_matrix.columns]
+    
+    fig, ax = plt.subplots(figsize=(10, 8), facecolor='white')
+    
+    # Crear máscara para la mitad superior (opcional, pero profesional)
+    mask = np.triu(np.ones_like(corr_matrix, dtype=bool))
+    
+    sns.heatmap(corr_matrix, mask=mask, annot=True, fmt=".2f", cmap='RdBu_r', 
+                vmin=-1, vmax=1, center=0, square=True, linewidths=.5, 
+                cbar_kws={"shrink": .8, "label": "Coeficiente de Correlación"},
+                xticklabels=labels, yticklabels=labels, ax=ax)
+    
+    ax.set_title(title, fontsize=14, fontweight='bold', pad=20, fontfamily='serif')
+    plt.xticks(rotation=45, ha='right')
+    plt.yticks(rotation=0)
+    
+    fig.tight_layout()
+    fig.savefig(save_path, dpi=300, bbox_inches='tight', facecolor='white')
+    plt.close(fig)
+
+
 
 def main():
     file_path = 'eval/results/Matrix/eval_results_matrix.jsonl'
@@ -365,6 +393,8 @@ def main():
     metrics = result['metrics']
     parametric_metrics = result['parametric_metrics']
     metric_summaries_by_metric = result['metric_summaries_by_metric']
+    pearson_matrix = result.get('pearson_matrix')
+    spearman_matrix = result.get('spearman_matrix')
 
     # ── 2. Generar Boxplots con letras CLD ──────────────────────────────────
     for metric in metrics:
@@ -406,6 +436,14 @@ def main():
         plot_radar_chart(df_radar, radar_metrics, f"Desempeño Global por {fact_title}", 
                          os.path.join(image_dir, f'radar_{fact_col}.png'), 
                          group_col=fact_col, top_n=10)
+
+    # ── 5. Generar Correlaciones (Heatmaps) ──────────────────────────────
+    if pearson_matrix is not None:
+        print("\n🔗 Generando Matrices de Correlación (Pearson y Spearman)...")
+        plot_correlation_matrix(pearson_matrix, "Correlación de Pearson (Rendimiento Paramétrico)", 
+                                os.path.join(image_dir, 'correlation_pearson_heatmap.png'))
+        plot_correlation_matrix(spearman_matrix, "Correlación de Spearman (Calidad No Paramétrica)", 
+                                os.path.join(image_dir, 'correlation_spearman_heatmap.png'))
 
     print("\n🚀 Análisis estadístico e imágenes generadas completadas correctamente.")
 

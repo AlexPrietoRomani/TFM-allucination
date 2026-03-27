@@ -113,31 +113,53 @@ Implementamos la comparación de pares mediante el **T-Test de Student para mues
 #### B. T-Test de Comparación Directa vs. El Líder
 Como validación final de "mínimo valor viable", se realiza un T-Test de una cola comparando a todos contra el componente con **mínima latencia/costo**. Si un modelo ("A") es más caro que el líder ("B") pero el p-value de su comparación directa es $\ge 0.05$, ambos se consideran **Estadísticamente Equivalentes**. Esto permite al analista elegir un modelo basándose en otros criterios cualitativos sin comprometer el rendimiento estadístico objetivo.
 
----
-
-## ⚙️ Estructura del Resultado (`statistical_results.md`)
-Cada vez que se ejecuta el análisis estadístico `uv run python eval/statistical_analysis.py`, el bloque genera lo siguiente de métrica por métrica:
-
-1. El resultado global `P-value` (Kruskal-Wallis para RAGAS, ANOVA para latencia/costo).
-2. Un ranking por media real (`Count, Mean, Median`).
-3. La columna **CLD** (`a`, `ab`, `c`...). Puedes encontrar aquí que si tienes herramientas tecnológicas similares, tendrán la misma letra.
-4. La tabla de las combinaciones enteras que pelean por destronar o empatar al Pipeline "Líder" gracias al Mann-Whitney U (RAGAS) o T-Test (latencia/costo).
 
 ---
 
-## 📚 Bibliografía
+## 3. Análisis de Correlación Inter-Métrica
 
-### Métricas No Paramétricas (RAGAS)
+Para una evaluación holística, no basta con saber qué componente es mejor individualmente; es crucial entender cómo interactúan las métricas entre sí (ej. ¿sacrificamos latencia para obtener mayor precisión?). El sistema implementa un análisis de correlación dual:
 
-1. **Kruskal-Wallis (1952)**: Kruskal, W. H., & Wallis, W. A. (1952). *Use of ranks in one-criterion variance analysis*. Journal of the American Statistical Association, 47(260), 583–621. [DOI: 10.1080/01621459.1952.10483441](https://doi.org/10.1080/01621459.1952.10483441)
-2. **Dunn (1964)**: Dunn, O. J. (1964). *Multiple comparisons using rank sums*. Technometrics, 6(3), 241–252. [DOI: 10.1080/00401706.1964.10490181](https://doi.org/10.1080/00401706.1964.10490181)
-3. **Mann-Whitney U (1947)**: Mann, H. B., & Whitney, D. R. (1947). *On a test of whether one of two random variables is stochastically larger than the other*. The Annals of Mathematical Statistics, 18(1), 50–60. [DOI: 10.1214/aoms/1177730491](https://doi.org/10.1214/aoms/1177730491)
-4. **Pohlert (2014)**: Pohlert, T. (2014). *The Pairwise Multiple Comparison of Mean Ranks Package (PMCMR)*. R package documentation. [Documentación en CRAN](https://CRAN.R-project.org/package=PMCMR). (Base metodológica para el cálculo de comparaciones múltiples y niveles de significancia).
-5. **Eshel (2010)**: Eshel, G. (2010). *Rank-Based Nonparametric Statistical Tests*. Bard College. [Material de Curso/Notas Técnicas]. (Referencia para la lógica de ranking y el algoritmo de Compact Letter Display (CLD) en contextos no paramétricos).
+### 3.1. Coeficiente de Correlación de Pearson ($r$)
+Utilizado para las variables de rendimiento (Latencia y Costo). Propuesto por **Karl Pearson (1895)**, mide la fuerza y dirección de una relación lineal entre dos variables continuas.
 
-### Métricas Paramétricas (Latencia y Costo)
+*   **Aplicación:** Identificar si existe una relación proporcional directa (ej. a mayor tamaño de chunk, ¿aumenta linealmente el costo?).
+*   **Supuestos:** Requiere que las variables sigan una distribución aproximadamente normal y que la relación sea lineal.
 
-1. **Fisher (1925)**: Fisher, R. A. (1925). *Statistical Methods for Research Workers*. Edinburgh: Oliver & Boyd. [DOI: 10.1038/116815a0](https://doi.org/10.1038/116815a0). (Obra fundacional del ANOVA de un factor y el estadístico F).
-2. **Student [Gosset] (1908)**: Student [W. S. Gosset]. (1908). *The Probable Error of a Mean*. Biometrika, 6(1), 1–25. [DOI: 10.1093/biomet/6.1.1](https://doi.org/10.1093/biomet/6.1.1). (Origen del T-Test para comparación de medias).
-3. **Tukey (1949)**: Tukey, J. W. (1949). *Comparing Individual Means in the Analysis of Variance*. Biometrics, 5(2), 99-114. [DOI: 10.2307/3001913](https://doi.org/10.2307/3001913). (Referencia base para el Honestly Significant Difference - HSD).
-4. **Benjamini-Hochberg (1995)**: Benjamini, Y., & Hochberg, Y. (1995). *Controlling the false discovery rate: A practical and powerful approach to multiple testing*. Journal of the Royal Statistical Society: Series B (Methodological), 57(1), 289–300. [DOI: 10.1111/j.2517-6161.1995.tb02031.x](https://doi.org/10.1111/j.2517-6161.1995.tb02031.x). (Fundamental para la corrección FDR en comparaciones múltiples de ambas familias).
+![Infografía: Correlación de Pearson](assets/pearson_correlation_infographic.png)
+
+### 3.2. Coeficiente de Correlación de Spearman ($\rho$)
+Utilizado para las métricas de calidad RAGAS y comparaciones cruzadas. Propuesto por **Charles Spearman (1904)**, es una medida no paramétrica que evalúa la relación utilizando el ranking de los datos en lugar de sus valores brutos.
+
+*   **Aplicación:** Fundamental para las métricas RAGAS, ya que detecta relaciones monotónicas (si una variable crece, la otra también, aunque no sea de forma lineal). Es robusto ante valores atípicos (outliers) y distribuciones no normales.
+
+![Infografía: Correlación de Spearman](assets/spearman_correlation_infographic.png)
+
+---
+
+## 4. ⚙️ Estructura del Resultado (`statistical_results.md`)
+Cada vez que se ejecuta el análisis estadístico, el motor genera un informe detallado en `@eval/results/Matrix/` que incluye:
+1.  **Resumen Metodológico:** Tipo de pipeline aplicado según la métrica.
+2.  **Pruebas Ómnibus:** Valor-p global para detectar diferencias significativas.
+3.  **Ranking con CLD:** Agrupamiento estadístico mediante letras.
+4.  **Análisis de Equivalencia:** Identificación de componentes intercambiables con el líder.
+5.  **Matriz de Correlación:** Mapa de calor con la relación entre todas las métricas.
+
+---
+
+## 5. 📚 Bibliografía y Referencias Técnicas
+
+### 5.1. Fundamentos No Paramétricos
+1.  **Kruskal-Wallis (1952)**: Kruskal, W. H., & Wallis, W. A. (1952). *Use of ranks in one-criterion variance analysis*. Journal of the American Statistical Association, 47(260), 583–621. [DOI: 10.1080/01621459.1952.10483441](https://doi.org/10.1080/01621459.1952.10483441).
+2.  **Dunn (1964)**: Dunn, O. J. (1964). *Multiple comparisons using rank sums*. Technometrics, 6(3), 241–252. [DOI: 10.1080/00401706.1964.10490181](https://doi.org/10.1080/00401706.1964.10490181).
+3.  **Mann-Whitney (1947)**: Mann, H. B., & Whitney, D. R. (1947). *On a test of whether one of two random variables is stochastically larger than the other*. The Annals of Mathematical Statistics, 18(1), 50–60. [DOI: 10.1214/aoms/1177730491](https://doi.org/10.1214/aoms/1177730491).
+4.  **Spearman (1904)**: Spearman, C. (1904). *The proof and measurement of association between two things*. American Journal of Psychology, 15(1), 72–101. [DOI: 10.2307/1412159](https://doi.org/10.2307/1412159).
+5. **Pohlert (2014)**: Pohlert, T. (2014). *The Pairwise Multiple Comparison of Mean Ranks Package (PMCMR)*. R package documentation. [Documentación en CRAN](https://CRAN.R-project.org/package=PMCMR). (Base metodológica para el cálculo de comparaciones múltiples y niveles de significancia).
+6. **Eshel (2010)**: Eshel, G. (2010). *Rank-Based Nonparametric Statistical Tests*. Bard College. [Material de Curso/Notas Técnicas]. (Referencia para la lógica de ranking y el algoritmo de Compact Letter Display (CLD) en contextos no paramétricos).
+
+### 5.2. Fundamentos Paramétricos
+1.  **Fisher (1925)**: Fisher, R. A. (1925). *Statistical Methods for Research Workers*. Edinburgh: Oliver & Boyd. [DOI: 10.1038/116815a0](https://doi.org/10.1038/116815a0).
+2.  **Student [Gosset] (1908)**: Student [W. S. Gosset]. (1908). *The Probable Error of a Mean*. Biometrika, 6(1), 1–25. [DOI: 10.1093/biomet/6.1.1](https://doi.org/10.1093/biomet/6.1.1).
+3.  **Tukey (1949)**: Tukey, J. W. (1949). *Comparing Individual Means in the Analysis of Variance*. Biometrics, 5(2), 99-114. [DOI: 10.2307/3001913](https://doi.org/10.2307/3001913).
+4.  **Pearson (1895)**: Pearson, K. (1895). *Notes on regression and inheritance in the case of two variables*. Proceedings of the Royal Society of London, 58, 240–242.
+5.  **Benjamini-Hochberg (1995)**: Benjamini, Y., & Hochberg, Y. (1995). *Controlling the false discovery rate: A practical and powerful approach to multiple testing*. Journal of the Royal Statistical Society: Series B (Methodological), 57(1), 289–300. [DOI: 10.1111/j.2517-6161.1995.tb02031.x](https://doi.org/10.1111/j.2517-6161.1995.tb02031.x).
