@@ -117,7 +117,8 @@ def plot_radar_chart(df, metrics, title, save_path, group_col='Combination', top
         values = row[metrics].tolist()
         values += values[:1]
         raw_label = str(row[group_col])
-        label = f"({i+1}) {raw_label[:60]}{'...' if len(raw_label) > 60 else ''}"
+        # Aumentamos el límite de caracteres para que se vea mejor el pipeline
+        label = f"({i+1}) {raw_label[:85]}{'...' if len(raw_label) > 85 else ''}"
         c_idx = i % len(colors)
         ax.plot(angles, values, linewidth=1.5, linestyle='-',
                 marker=markers[c_idx], markersize=5,
@@ -127,11 +128,17 @@ def plot_radar_chart(df, metrics, title, save_path, group_col='Combination', top
     ax.set_title(title, fontsize=14, fontfamily='serif',
                  fontweight='bold', pad=35)
     
+    # Ajuste dinámico de la leyenda según el número de elementos
+    # Si es el Top 5, lo acercamos más al gráfico como pidió el usuario
+    legend_y_anchor = -0.10 if top_n == 5 else -0.18
     n_cols = 1 if top_n <= 5 else 2
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15),
+    
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, legend_y_anchor),
              ncol=n_cols, frameon=True, fancybox=False,
-             edgecolor='#cccccc', fontsize=9, title="Ranking de Desempeño", 
-             title_fontsize=10)
+             edgecolor='#333333', fontsize=9, 
+             title="RANKING DE DESEMPEÑO", 
+             title_fontproperties={'family': 'serif', 'weight': 'bold', 'size': 10},
+             borderpad=1, labelspacing=1)
 
     fig.savefig(save_path, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close(fig)
