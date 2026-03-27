@@ -50,3 +50,13 @@ Cada vez que se ejecuta la prueba `uv run python eval/statistical_analysis.py`, 
 2. Un ranking por media real (`Count, Mean, Median`).
 3. La columna **CLD (Dunn)** (`a`, `ab`, `c`...). Puedes encontrar aquí que si tienes herramientas tecnológicas similares, tendrán la misma letra.
 4. La tabla de las combinaciones enteras que pelean por destronar o empatar al Pipeline "Líder" gracias al Mann-Whitney U.
+
+---
+
+## 📚 Bibliografía
+
+1. **Kruskal-Wallis (1952)**: Kruskal, W. H., & Wallis, W. A. (1952). *Use of ranks in one-criterion variance analysis*. Journal of the American Statistical Association, 47(260), 583–621. [DOI: 10.1080/01621459.1952.10483441](https://doi.org/10.1080/01621459.1952.10483441)
+2. **Dunn (1964)**: Dunn, O. J. (1964). *Multiple comparisons using rank sums*. Technometrics, 6(3), 241–252. [DOI: 10.1080/00401706.1964.10490181](https://doi.org/10.1080/00401706.1964.10490181)
+3. **Mann-Whitney U (1947)**: Mann, H. B., & Whitney, D. R. (1947). *On a test of whether one of two random variables is stochastically larger than the other*. The Annals of Mathematical Statistics, 18(1), 50–60. [DOI: 10.1214/aoms/1177730491](https://doi.org/10.1214/aoms/1177730491)
+4. **Pohlert (2014)**: Pohlert, T. (2014). *The Pairwise Multiple Comparison of Mean Ranks Package (PMCMR)*. R package documentation. [Vignette PMCMR](https://cran.r-project.org/web/packages/PMCMR/vignettes/PMCMR.pdf) (Usado para la base lógica de `scikit-posthocs`).
+5. **Eshel (2010)**: Eshel, G. (2010). *Rank-Based Nonparametric Statistical Tests*. En: *Optimal Experimental Design Methods*. (Contexto adicional para la implementación de CLD).
