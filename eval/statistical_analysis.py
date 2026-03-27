@@ -100,30 +100,30 @@ def plot_radar_chart(df, metrics, title, save_path, group_col='Combination', top
     ax.set_facecolor('white')
 
     ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(categories, fontsize=10, fontfamily='serif')
+    ax.set_xticklabels([]) # Desactivamos etiquetas automáticas (que ignoran rotación)
     
-    # Rotación inteligente de etiquetas xtick para seguir el ángulo del radar
-    # Evita que el texto de las métricas se solape con las líneas de datos
-    for label, angle in zip(ax.get_xticklabels(), angles):
+    # Manualmente colocamos cada etiqueta con rotación radial dinámica
+    # Esto asegura que el texto siga el ángulo del eje del radar
+    label_radius = 1.15 # Un poco fuera del límite 1.1 del radar
+    for angle, category in zip(angles[:-1], categories):
         deg = np.rad2deg(angle)
-        # Ajustamos rotación para que el texto no esté invertido (de cabeza) en la izquierda
-        if 90 < deg < 270:
-            label.set_rotation(deg + 180)
-        else:
-            label.set_rotation(deg)
         
-        # Ajustar alineación horizontal y vertical para que no coincidan exacto en la línea
-        # si están en puntos críticos (arriba/abajo)
+        # Cálculo de rotación (letras que miran hacia afuera)
+        # Si está en el lado izquierdo, rotamos 180 para que no esté de cabeza
+        rotation = deg if (deg <= 90 or deg >= 270) else deg + 180
+        
+        # Lógica de alineación para que el texto no toque las líneas
         if 0 <= deg < 10 or 350 <= deg <= 360:
-            label.set_ha('center')
-            label.set_va('bottom')
+            ha, va = 'center', 'bottom'
         elif 170 <= deg <= 190:
-            label.set_ha('center')
-            label.set_va('top')
+            ha, va = 'center', 'top'
         elif 10 < deg < 170:
-            label.set_ha('left')
+            ha, va = 'left', 'center'
         else:
-            label.set_ha('right')
+            ha, va = 'right', 'center'
+            
+        ax.text(angle, label_radius, category, size=10, fontfamily='serif',
+                rotation=rotation, ha=ha, va=va, rotation_mode='anchor')
 
     ax.set_rlabel_position(30)
     ax.set_yticks([0.2, 0.4, 0.6, 0.8, 1.0])
