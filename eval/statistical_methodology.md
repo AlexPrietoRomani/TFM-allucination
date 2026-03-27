@@ -86,29 +86,32 @@ El motor de evaluación implementa un pipeline de tres pasos para facilitar la l
 * **Hipótesis nula ($H_0$):** Todas las medias poblacionales de los grupos son iguales ($\mu_1 = \mu_2 = ... = \mu_k$).
 * Si el **Valor-p (P-value) < 0.05**, rechazamos $H_0$, confirmando que al menos un componente exhibe una latencia o costo significativamente distinto al resto.
 
-### 2.2. Pruebas Post-Hoc Paramétricas
+### 2.2. Pruebas Post-Hoc Paramétricas (Análisis de Pares)
 
-#### A. T-Test pareado con corrección FDR (Benjamini-Hochberg) y CLD
+Tras rechazar la hipótesis nula en el ANOVA, es imperativo realizar un análisis de comparaciones múltiples para identificar qué componentes específicos son los más eficientes.
 
-**¿Por qué T-Test con FDR en lugar de Tukey HSD?**
+#### A. T-Test de Student con corrección FDR (Benjamini-Hochberg) y CLD
 
-La prueba de Tukey HSD (Honestly Significant Difference) es la elección clásica tras un ANOVA significativo. Sin embargo, su implementación en `scikit-posthocs` (`sp.posthoc_tukey`) requiere la construcción de una matriz de distribución estudentizada del rango (*Studentized Range Distribution*), cuya complejidad computacional escala cuadráticamente con el número de grupos. En nuestro diseño factorial completo, las combinaciones de la matriz (Arquitectura × Embedding × Chunking × DB × Generador) generan **decenas de grupos únicos**, lo que produce una sobrecarga computacional inviable para Tukey.
+**El dilema: ¿Por qué no usamos Tukey HSD?**
+La prueba de **HSD de Tukey (1949)** (*Honestly Significant Difference*) es el estándar de oro tradicional. Sin embargo, su diseño para controlar la tasa de error por familia (FWER) basándose en la distribución estudentizada del rango presenta desafíos en este TFM:
 
-La alternativa adoptada es el **T-Test de Student para muestras independientes** (`sp.posthoc_ttest`) con corrección de **Benjamini-Hochberg (FDR)** para comparaciones múltiples. Este enfoque:
+1.  **Escalabilidad Exponencial:** En nuestra matriz, al evaluar combinaciones de 5 factores, generamos frecuentemente más de 20 grupos únicos. La computación de la matriz de Tukey para tal número de grupos es ineficiente y propensa a errores de memoria en librerías estándar.
+2.  **Poder Estadístico vs. Conservadurismo:** Tukey es extremadamente conservador. En evaluaciones RAG con mucha variabilidad por el no-determinismo de los LLMs, el control estricto de FWER puede ocultar diferencias reales incipientes.
 
-1. **Rendimiento computacional:** Ejecuta comparaciones en tiempo lineal respecto al número de pares, permitiendo procesar cientos de combinaciones en segundos.
-2. **Control de error estadístico:** La corrección FDR de Benjamini-Hochberg (1995) controla la proporción esperada de falsos positivos entre todos los descubrimientos significativos, lo cual es más potente (menos conservador) que las correcciones clásicas tipo Bonferroni, manteniendo una tasa de error aceptable.
-3. **Equivalencia formal:** Bajo supuestos de normalidad (validados por el Teorema del Límite Central) y homocedasticidad, el T-Test pareado con corrección FDR produce inferencias estadísticas equivalentes a Tukey HSD con mayor escalabilidad.
+**La Solución Adoptada: T-Test Pareado + FDR (Benjamini-Hochberg, 1995)**
+Implementamos la comparación de pares mediante el **T-Test de Student para muestras independientes** (`ttest_ind`), complementado con la **Corrección de FDR de Benjamini-Hochberg** en el motor estadístico de `@eval/stat_engine.py`. Este enfoque se justifica por:
 
-**Proceso:**
-* Se ejecuta `sp.posthoc_ttest()` con `p_adjust='fdr_bh'` para obtener la matriz de p-values ajustados.
-* Se aplica el mismo algoritmo de **Compact Letter Display (CLD)** descrito para el pipeline no paramétrico, asignando letras de agrupamiento homogéneo.
-* **Interpretación invertida:** Para latencia y costo, el **"mejor"** es el grupo con la **media más baja** (menor latencia = mayor eficiencia). El ranking se ordena de forma ascendente.
+*   **Robustez por N=32:** Según el **Teorema del Límite Central**, con 32 preguntas por combinación, la distribución de la media muestral tiende a la normalidad independientemente de la forma de la población original (Fisher, 1925), validando el uso del T-Test.
+*   **Gestión del FDR:** La corrección BH controla la proporción esperada de falsos descubrimientos entre todos los resultados rechazados. Es el estándar moderno en campos con grandes volúmenes de datos donde interesa no perder potencia estadística frente a un control excesivamente rígido del error tipo I.
 
-#### B. T-Test de Student (Comparación Uno a Uno vs. El Líder)
-Análogo al Mann-Whitney U del pipeline no paramétrico, se utiliza el **T-Test para muestras independientes** (`scipy.stats.ttest_ind`) para comparar cada grupo contra el líder (el de menor latencia/costo medio).
+**Proceso de Visualización y CLD:**
+*   Al igual que en el pipeline no paramétrico, generamos etiquetas de **Letras (CLD)**.
+*   **Nota Crítica:** En latencia y costo, el **ranking es ascendente**. El componente con la letra "a" y la media más baja es el ganador en eficiencia.
 
-* Si el **p-value ≥ 0.05**, el grupo es marcado como **"SÍ"** en `Stat_Equivalent_to_Best`, indicando que su diferencia de rendimiento en términos de tiempo/costo no es estadísticamente significativa.
+![Infografía: Comparativa T-Test + FDR vs. Tukey HSD](assets/ttest_fdr_vs_tukey_infographic.png)
+
+#### B. T-Test de Comparación Directa vs. El Líder
+Como validación final de "mínimo valor viable", se realiza un T-Test de una cola comparando a todos contra el componente con **mínima latencia/costo**. Si un modelo ("A") es más caro que el líder ("B") pero el p-value de su comparación directa es $\ge 0.05$, ambos se consideran **Estadísticamente Equivalentes**. Esto permite al analista elegir un modelo basándose en otros criterios cualitativos sin comprometer el rendimiento estadístico objetivo.
 
 ---
 
@@ -136,4 +139,5 @@ Cada vez que se ejecuta el análisis estadístico `uv run python eval/statistica
 
 1. **Fisher (1925)**: Fisher, R. A. (1925). *Statistical Methods for Research Workers*. Edinburgh: Oliver & Boyd. [DOI: 10.1038/116815a0](https://doi.org/10.1038/116815a0). (Obra fundacional del ANOVA de un factor y el estadístico F).
 2. **Student [Gosset] (1908)**: Student [W. S. Gosset]. (1908). *The Probable Error of a Mean*. Biometrika, 6(1), 1–25. [DOI: 10.1093/biomet/6.1.1](https://doi.org/10.1093/biomet/6.1.1). (Origen del T-Test para comparación de medias).
-3. **Benjamini-Hochberg (1995)**: Benjamini, Y., & Hochberg, Y. (1995). *Controlling the false discovery rate: A practical and powerful approach to multiple testing*. Journal of the Royal Statistical Society: Series B (Methodological), 57(1), 289–300. [DOI: 10.1111/j.2517-6161.1995.tb02031.x](https://doi.org/10.1111/j.2517-6161.1995.tb02031.x). (Fundamental para la corrección FDR en comparaciones múltiples de ambas familias).
+3. **Tukey (1949)**: Tukey, J. W. (1949). *Comparing Individual Means in the Analysis of Variance*. Biometrics, 5(2), 99-114. [DOI: 10.2307/3001913](https://doi.org/10.2307/3001913). (Referencia base para el Honestly Significant Difference - HSD).
+4. **Benjamini-Hochberg (1995)**: Benjamini, Y., & Hochberg, Y. (1995). *Controlling the false discovery rate: A practical and powerful approach to multiple testing*. Journal of the Royal Statistical Society: Series B (Methodological), 57(1), 289–300. [DOI: 10.1111/j.2517-6161.1995.tb02031.x](https://doi.org/10.1111/j.2517-6161.1995.tb02031.x). (Fundamental para la corrección FDR en comparaciones múltiples de ambas familias).
