@@ -23,17 +23,28 @@ El pipeline estadístico implementado en `run_matrix_eval.py` diferencia dos fam
 
 ### 1.2. Pruebas Post-Hoc No Paramétricas
 
-#### A. Prueba de Dunn con Compact Letter Display (CLD)
-Dado que Kruskal-Wallis clasifica las puntuaciones en rangos, el examen apropiado es la prueba post-hoc de Dunn (*Dunn, 1964*). Históricamente utilizada como el equivalente de Tukey para análisis no paramétricos. 
+#### A. Prueba Post-hoc de Dunn con Compact Letter Display (CLD)
 
-**Proceso:**
-* Utilizando las tablas de Dunn (a través del paquete `scikit-posthocs`), la función genera una matriz cruzada comprobando la diferencia de rango medio contra _todos_.
-* **Corrección de falsos descubrimientos:** Para evitar errores falsos-positivos al hacer muchas comparaciones iterativas, aplicamos la corrección FDR (False Discovery Rate) de **Benjamini-Hochberg (bh)** al cálculo del p-value.
-* **Letters (CLD):** Un sistema recursivo asigna **Letras (a, b, c...)** a cada grupo:
-    - Componentes que comparten la misma letra (ej. ambos tienen la 'a' o 'ab') **no son estadísticamente diferentes entre sí**.
-    - Componentes puramente aislados (uno 'a', el otro 'b') afirman firmemente que el primero es objetivamente superior al segundo.
-* **Referencia literaria:** 
-  > Pohlert, T. (2016). *The Pairwise Multiple Comparison of Mean Ranks Package (PMCMR)*. R project.
+Dado que la prueba de Kruskal-Wallis es un análisis ómnibus que solo indica que *al menos un* grupo es diferente, el motor estadístico en `@eval/stat_engine.py` utiliza la **Prueba de Dunn (1964)** (*"Multiple comparisons using rank sums"*) para identificar específicamente cuáles son esas parejas discordantes.
+
+**Fundamento Teórico y Algoritmo:**
+Históricamente, Dunn propuso utilizar las sumas de rangos obtenidas en Kruskal-Wallis para realizar comparaciones uno a uno. La diferencia absoluta entre el rango medio de dos grupos ($|\bar{R}_i - \bar{R}_j|$) se escala mediante el error estándar de la diferencia para obtener un estadístico $z$.
+
+En nuestro pipeline, este proceso se refuerza con:
+1.  **Corrección de Benjamini-Hochberg (FDR-BH):** Aunque Dunn sugirió originalmente la corrección de Bonferroni, implementamos FDR-BH por su mayor potencia estadística. Esta corrección ajusta los p-values para controlar la tasa de falsos descubrimientos al realizar hasta 15 comparaciones cruzadas por factor.
+2.  **Compact Letter Display (CLD):** Es un algoritmo de agrupación recursiva diseñado para simplificar la lectura de la matriz de p-values.
+
+**¿Cómo interpretar las Letras (CLD)?**
+El algoritmo asigna etiquetas de letras minúsculas (`a`, `b`, `c`...) basándose en el post-hoc:
+*   **Grupos que comparten letras:** Si dos componentes comparten al menos una letra (ej. "a" y "ab"), **no hay diferencia significativa** entre ellos ($p \ge 0.05$). Son estadísticamente indistinguibles.
+*   **Grupos sin letras en común:** Si un componente es "a" y otro es "b", la diferencia es **significativa** ($p < 0.05$). El que está posicionado más arriba en el ranking del informe es superior.
+
+> [!TIP]
+> **Ventaja Práctica:** El CLD permite visualizar clústeres de rendimiento. Si todas las estrategias de chunking terminan con la letra "a", significa que la elección de estrategia es irrelevante para esa métrica específica; si solo una tiene "a" y el resto "b", esa estrategia es la ganadora indiscutible.
+
+![Infografía: Proceso de Prueba de Dunn y CLD](assets/dunn_cld_infographic.png)
+
+---
 
 #### B. Análisis de Robustez: Prueba U de Mann-Whitney (Wilcoxon Rank-Sum)
 
@@ -58,7 +69,7 @@ El motor de evaluación implementa un pipeline de tres pasos para facilitar la l
 > [!IMPORTANT]
 > **Impacto en Producción:** Esta métrica es la más valiosa para el TFM. Si un modelo es estadísticamente equivalente al líder pero tiene un **costo 50% menor** o una **latencia inferior**, la metodología respalda la selección del modelo "equivalente" como la opción óptima para el despliegue.
 
-![Infografía: Análisis de Equivalencia Estadística](file:///c:/Users/ALEX/Github/TFM-allucination/eval/assets/mann_whitney_infographic.png)
+![Infografía: Análisis de Equivalencia Estadística](assets/mann_whitney_infographic.png)
 
 ---
 
