@@ -1,0 +1,110 @@
+[
+  {
+    "question_id": "1",
+    "question": "En arándanos, ¿qué tipo de daño provoca la larva de Proeulia spp. en el fruto y en qué zona del fruto se observa principalmente?",
+    "response": "En el arándano la larva de **Proeulia spp.** provoca un **daño externo al fruto** que se manifiesta como:\n\n* **Ablandamiento y pérdida de firmeza**  \n* **Tonificación opaca** de la superficie  \n* **Liberación de jugo** y, con el tiempo, **deshidratación** del fruto\n\nEl daño se observa **principalmente en la zona externa de la fruta** – sobre la piel, sobre la cara más expuesta al insecto – donde la larva se alimenta y deja su huella.",
+    "latency": 20.033762216567993,
+    "faithfulness_score": 0.85,
+    "retries": 0,
+    "model": "Agente V2"
+  },
+  {
+    "question_id": "2",
+    "question": "Para calcular el requerimiento hídrico usando ETc = ET0 × Kc × Fc, ¿cómo se define/calcúla Fc a partir de Pc (incluyendo la relación Pc = X/Eh) y cuáles son los valores de Kc recomendados para: (i) junio–agosto, (ii) septiembre, (iii) octubre–noviembre y (iv) diciembre–febrero?",
+    "response": "**Cálculo de Fc a partir de Pc**\n\n1. **Determinar el porcentaje de cobertura (Pc)**  \n   \\[\n   \\text{Pc} = \\frac{X}{E_h}\n   \\]\n   - *X* = área sombreada o ancho de follaje (m)  \n   - *Eh* = espaciamiento entre hileras (m)  \n\n2. **Convertir Pc a Fc**  \n   \\[\n   \\text{Fc} = 0,92 \\times \\text{Pc} + 0,187\n   \\]\n   Esta ecuación representa el factor de cobertura del follaje (o porcentaje de área sombreada) y se obtuvo a partir de un promedio de varias formas de estimación.\n\n---\n\n### Coeficiente de cultivo (Kc) recomendado para la zona central de Chile\n\n| Periodo | Valor de Kc |\n|---------|-------------|\n| **Junio‑Agosto** | **0,7** (el mismo valor que se indica para agosto) |\n| **Septiembre** | **0,7** |\n| **Octubre‑Noviembre** | **0,8** (octubre) → **0,9** (noviembre) |\n| **Diciembre‑Febrero** | **1,0** (el mismo valor que se indica para diciembre, enero y febrero) |\n\n> **Nota:** Los valores provienen del Cuadro 5.1 del manual de arándano, donde se presentan los Kc por mes para la zona central de Chile.  \n\nCon estos datos puedes calcular la evapotranspiración del cultivo (ETc) usando la fórmula:\n\n\\[\n\\text{ETc} = \\text{ET}_0 \\times K_c \\times F_c\n\\]\n\ndonde **ET₀** es la evapotranspiración de referencia, **Kc** el coeficiente de cultivo correspondiente al mes y **Fc** el factor de cobertura calculado a partir de Pc.",
+    "latency": 20.791678428649902,
+    "faithfulness_score": 0.8,
+    "retries": 0,
+    "model": "Agente V2"
+  },
+  {
+    "question_id": "3",
+    "question": "Si en un envío de arándanos para China se requiere aplicar tratamiento de frío por riesgo/detección de mosca de la fruta, ¿cuáles son los regímenes aceptados (temperatura objetivo y número de días) que se deben cumplir?",
+    "response": "**Respuesta (basada únicamente en el fragmento de contexto que me proporcionaste):**\n\nEl contexto que has compartido indica que el tratamiento de frío debe cumplir con lo establecido en el “PROTOCOLO DE REQUISITOS FITOSANITARIOS PARA LA EXPORTACIÓN DE ARÁNDANOS DESDE CHILE A CHINA”, pero **no incluye los valores exactos de temperatura objetivo ni el número de días requeridos**.  \n\nEn otras palabras:\n\n- **No hay datos numéricos (temperatura y duración) explícitos** en el fragmento que me diste.\n- El protocolo completo sí especifica los regímenes aceptados, pero esa información no está presente aquí.\n\nSi necesitas los valores concretos, lo ideal sería consultar el documento oficial del protocolo (o la normativa de la Agencia de Inspección de Calidad y Cuarentena de China, AQSIQ, y del SENASA). En ese documento encontrarás los regímenes exactos de temperatura y tiempo que deben cumplirse para la eliminación de la mosca de la fruta.",
+    "latency": 20.47222638130188,
+    "faithfulness_score": 0.33,
+    "retries": 1,
+    "model": "Agente V2"
+  },
+  {
+    "question_id": "4",
+    "question": "En un programa oficial de vigilancia de mosca de la fruta para exportación, ¿qué tipo de trampas y atrayentes se emplean para Ceratitis capitata y para Anastrepha fraterculus, y con qué periodicidad se inspeccionan estas trampas?",
+    "response": "Para la vigilancia oficial de la mosca de la fruta (Ceratitis capitata y Anastrepha fraterculus) se emplean:\n\n| Plaga | Tipo de trampa | Cebo/atraente |\n|-------|----------------|---------------|\n| Ceratitis capitata | Trampa Jackson | Trimedlure |\n| Anastrepha fraterculus | Trampa McPhail | Proteína hidrolizada (o un cebo equivalente) |\n\nLa inspección de todas estas trampas debe realizarse **cada 7 días**.",
+    "latency": 10.036081075668335,
+    "faithfulness_score": 1.0,
+    "retries": 0,
+    "model": "Agente V2"
+  },
+  {
+    "question_id": "5",
+    "question": "En un plan de monitoreo para cumplir requisitos de exportación a China, ¿cada cuánto se debe monitorear (a) Lobesia botrana y Drosophila suzukii, y (b) Botryosphaeria dothidea y Phomopsis vaccinii, y durante qué periodo del ciclo (desde qué etapa hasta cuándo)?",
+    "response": "**Respuesta basada únicamente en el contexto proporcionado**\n\nEn el material de referencia que compartiste no se menciona ninguna recomendación específica sobre:\n\n- **Lobesia botrana**  \n- **Drosophila suzukii**  \n- **Botryosphaeria dothidea**  \n- **Phomopsis vaccinii**  \n\nPor lo tanto, el contexto no indica con qué frecuencia se deben monitorear estos organismos ni el periodo exacto del ciclo de cultivo (desde qué etapa hasta cuándo) que se debe observar.  \n\nSi necesitas esa información, deberías consultar la normativa o el protocolo de monitoreo específico que incluya a esas especies.",
+    "latency": 11.30913233757019,
+    "faithfulness_score": 1.0,
+    "retries": 0,
+    "model": "Agente V2"
+  },
+  {
+    "question_id": "6",
+    "question": "Para el embalaje y trazabilidad de arándanos destinados a China, ¿cuál es el tamaño máximo permitido de perforación del material usado para cubrir pallets y qué información obligatoria debe incluir el etiquetado en inglés de las cajas (incluyendo los códigos del lugar de producción y del packing)?",
+    "response": "- **Tamaño máximo de perforación permitido**  \n  - Los materiales de cobertura de pallets (mallas, bolsas micro‑perforadas, etc.) no deben contener orificios mayores a **1,6 mm**.  \n\n- **Información obligatoria en el etiquetado inglés de cada caja**  \n  1. **Especie** (p. ej. *Vaccinium corymbosum* – arándano de alta fruta)  \n  2. **Región** (provincia chilena)  \n  3. **Comuna** (lugar exacto dentro de la región)  \n  4. **País** (Chile)  \n  5. **Código SAG del huerto** (CSG) – número de registro del lugar de producción  \n  6. **Código SAG del packing** (CSP) – número de registro de la empacadora  \n  7. Opcional (pero recomendado) **nombre del huerto** y **nombre de la empacadora** tal como aparecen en el Sistema de Registro Agrícola (SRA).  \n\nEstos datos deben estar claramente visibles en inglés en cada caja, junto con el texto obligatorio en chino: “输往中华人民共和国” (Exportado a la República Popular de China).",
+    "latency": 11.469498634338379,
+    "faithfulness_score": 1.0,
+    "retries": 0,
+    "model": "Agente V2"
+  },
+  {
+    "question_id": "7",
+    "question": "Para solicitar la certificación del Lugar de Producción ante SENASA, ¿qué documento/plan debe presentar el productor, qué anexo/formato oficial debe usarse y qué exigencia de registro y archivo aplica durante la campaña?",
+    "response": "**Documento/plan que debe presentar el productor**\n\n- **Plan de Manejo Fitosanitario del cultivo** (plan de trabajo de control de plagas).  \n  - El plan debe especificar los productos químicos y/o biológicos a aplicar, las medidas de control cultural, etológico y biológico que se emplearán, y debe estar redactado según el **formato “Plan de Manejo Fitosanitario para el control de plagas”** establecido en el **Anexo 1.2** de los Lineamientos del MIP.\n\n**Anexo / formato oficial a usar**\n\n- **Anexo 1.2**: “Plan de Manejo Fitosanitario para el control de plagas”.  \n  - Este es el único formato oficial que el productor debe usar. En el mismo formato, en blanco, se irán registrando las aplicaciones y las medidas de control a medida que avance la campaña.\n\n**Exigencia de registro y archivo durante la campaña**\n\n1. **Registro ante SENASA (y AQSIQ)**\n   - Todos los huertos que deseen exportar arándanos deben estar **registrados por SENASA** y aprobados por **AQSIQ**.  \n   - El registro incluye nombre, dirección y código del huerto, y debe enviarse al AQSIQ **antes del inicio de la temporada de exportación**.  \n   - Este registro debe mantenerse actualizado y estar disponible para la verificación del SAG/SENASA.\n\n2. **Archivo y disponibilidad para auditorías**\n   - El plan de manejo fitosanitario (en formato Anexo 1.2) y todas las registraciones de aplicaciones y medidas de control deben conservarse en **archivo permanente**.  \n   - El archivo debe estar **a disposición** para auditorías de SENASA en cualquier momento de la campaña.\n\nEn resumen, el productor presenta el **Plan de Manejo Fitosanitario** en el formato del **Anexo 1.2**, mantiene dicho documento archivado y lo pone a disposición de SENASA, y asegura que el huerto esté **registrado ante SENASA y AQSIQ** antes de comenzar la temporada de exportación.",
+    "latency": 27.372234106063843,
+    "faithfulness_score": 0.97,
+    "retries": 0,
+    "model": "Agente V2"
+  },
+  {
+    "question_id": "8",
+    "question": "En control cultural/mecánico para cultivos hospedantes de moscas de la fruta, ¿con qué frecuencia mínima debe realizarse el recojo de fruta caída y a qué profundidad debe enterrarse?",
+    "response": "En el manejo cultural/mecánico para los cultivos hospedantes de moscas de la fruta, el recojo y entierro de fruta caída debe realizarse **como mínimo cada 7 días**, y los frutos deben ser enterrados a una profundidad de **debajo de 20 cm** de la superficie del suelo.",
+    "latency": 7.439613342285156,
+    "faithfulness_score": 1.0,
+    "retries": 0,
+    "model": "Agente V2"
+  },
+  {
+    "question_id": "9",
+    "question": "Para el control de 'mummy berry' en etapa de infección por flor (blossom infection stage), ¿qué dosis por acre, REI y PHI se indican para Indar 2F y cuál es el límite anual (máximo de aplicaciones y/o volumen por acre) permitido?",
+    "response": "**Control de “mummy berry” (fase de infección por flor – bloom)**  \n\n| **Fungicida** | **Dosis por acre** | **REI** | **PHI** | **Límite anual** |\n|----------------|--------------------|---------|---------|------------------|\n| **Indar 2 F** (0,38 lb a.i.) | **6,0 fl oz** por aplicación (≈ 0,095 lb a.i./acre) | **12 h** | **30 días** | Máximo **4 aplicaciones** por temporada **o** **24 fl oz** (≈ 0,38 lb a.i.) por acre por año |\n\n> *Recomendaciones adicionales:*  \n> - La aplicación debe realizarse durante la fase de floración (bloom) y en combinación con captán (tank‑mix) para prevenir la aparición de rot de “ripe rot” y otros patógenos.  \n> - Se aconseja alternar con fungicidas de clases distintas (por ejemplo, propiconazol, metconazol, prothioconazol) para evitar resistencia.  \n> - Se permite la aplicación aérea conforme al etiquetado de Indar 2 F.  \n\nAsí, la dosis recomendada es 6 fl oz por acre, con REI de 12 h y PHI de 30 días, y el límite anual no debe exceder las cuatro aplicaciones ni 24 fl oz (0,38 lb a.i.) por acre.",
+    "latency": 15.858143329620361,
+    "faithfulness_score": 1.0,
+    "retries": 0,
+    "model": "Agente V2"
+  },
+  {
+    "question_id": "10",
+    "question": "Durante aplicaciones en floración, ¿por qué no se recomienda usar Indar 2F solo y cuál es la mezcla en tanque indicada para evitar el aumento de pudriciones (p. ej., antracnosis/ripe rot)?",
+    "response": "**Por qué no usar Indar 2F solo en floración**\n\nIndar 2F (fenbuconazol) pertenece a la clase DMI (sterol‑demetilación inhibitor). Cuando se aplica únicamente durante la fase de floración, se observa que aumenta la incidencia de pudriciones fúngicas, especialmente la antracnosis/ripe rot, en lugar de controlarlas. Este efecto adverso se debe a la forma en que el fungicida afecta el equilibrio de microorganismos en la superficie de la fruta, favoreciendo el desarrollo de estos patógenos.\n\n**Mezcla recomendada en tanque para evitar la pudrición**\n\nPara evitar el aumento de rots, la etiqueta indica que **Indar 2F debe mezclarse con captan** (un fungicida con acción diferente, clasificado en la clase d‑mercaptoanilida) durante las aplicaciones de floración. El tanque‑mix típico es:\n\n- **Indar 2F**: hasta 6 fl oz (0.38 lb a.i.) por acre por aplicación, con un máximo de 24 fl oz (0.38 lb a.i.) por acre por año y no más de cuatro aplicaciones por año.\n- **Captan**: la cantidad recomendada por la etiqueta del captan que se utiliza en la mezcla (por lo general 6 – 10 fl oz por acre, según la concentración del producto).\n\nEsta combinación reduce la probabilidad de que aparezcan antracnosis y otras pudriciones durante la floración, manteniendo la eficacia del control de enfermedades.  \n\n**Nota adicional**: alternar Indar 2F con fungicidas de otras clases (por ejemplo, azoxystrobin + propiconazole “Quilt Xcel”, pyraclostrobin + boscalid “Pristine”, etc.) es recomendable para evitar resistencia y mantener un manejo integrado de enfermedades.",
+    "latency": 22.657673358917236,
+    "faithfulness_score": 0.73,
+    "retries": 1,
+    "model": "Agente V2"
+  },
+  {
+    "question_id": "11",
+    "question": "En un estudio de enfermedades fungosas en arándano (Trujillo), ¿qué agente causal se asocia a la enfermedad 'muerte regresiva' según las características culturales y microscópicas reportadas?",
+    "response": "En el estudio de Trujillo, la enfermedad **muerte regresiva** está asociada al agente causal **Phomopsis vaccinii** (fase asexuada: *Diaporthe vaccinii*).",
+    "latency": 15.886940002441406,
+    "faithfulness_score": 0.5,
+    "retries": 1,
+    "model": "Agente V2"
+  },
+  {
+    "question_id": "12",
+    "question": "En pruebas de patogenicidad, para Pestalotia sp. en plántulas de arándano: ¿a cuántos días se reporta necrosis tras la inoculación y qué proporción aproximada de la planta se indica afectada a los 42 días?",
+    "response": "En las pruebas de patogenicidad con *Pestalotia sp.* en plántulas de arándano, la necrosis se observa a partir de **8 días después de la inoculación**.  \n\nA los **42 días** tras la inoculación, la necrosis cubre aproximadamente el **10 % de la planta**.",
+    "latency": 7.695059299468994,
+    "faithfulness_score": 1.0,
+    "retries": 0,
+    "model": "Agente V2"
+  }
+]

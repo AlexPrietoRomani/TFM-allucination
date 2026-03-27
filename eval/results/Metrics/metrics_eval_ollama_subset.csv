@@ -1,0 +1,20 @@
+question_id,question,response,context_snippet,faithfulness_score,faithfulness_reason,relevance_score,relevance_reason
+2,"En los Lineamientos MIP de SENASA (Control cultural/mecánico), ¿cada cuántos días como mínimo debe realizarse el recojo de frutos caídos y a qué profundidad (cm) deben enterrarse, específicamente para cultivos hospedantes de moscas de la fruta?","Según los Lineamientos del Manejo Integrado de Plagas (MIP) de SENASA, en los cultivos hospedantes de moscas de la fruta el recojo y entierro de frutos caídos debe realizarse **al menos cada 7 días** y los frutos deben enterrarse **por debajo de 20 cm** de la superficie del suelo.  
+
+*Fuente: Lineamientos del Manejo Integrado de Plagas (MIP) en Lugares de Producción (Anexo 1.1), ID: lineamientos-mip-senasa.*","Los productores deben aplicar el manejo integrado de plagas en sus lugares de producción; el cual, d",1.0,"La respuesta afirma que en cultivos hospedantes de moscas de la fruta el recojo y entierro de frutos caídos debe realizarse al menos cada 7 días y enterrarse por debajo de 20 cm, exactamente lo que indica el apartado de ""Control cultural/mecánico"" en el contexto. No se incluye ninguna afirmación no respaldada por el material proporcionado.",1.0,El contexto recuperado incluye exactamente la información solicitada: se indica que en cultivos hospedantes de moscas de la fruta el recojo de frutos caídos debe hacerse al menos cada 7 días y que los frutos deben enterrarse a una profundidad de 20 cm.
+3,"Según los Lineamientos SAG 2015 para exportación de arándanos a China, ¿cuál es el tamaño máximo permitido de perforaciones en las cajas (mm) y cuál(es) son las dos alternativas explícitas para cubrir los orificios de ventilación?","Según los **Lineamientos SAG 2015 para exportación de arándanos a China**:
+
+- **Tamaño máximo permitido de perforaciones en las cajas:** **1,6 mm**.  
+- **Dos alternativas explícitas para cubrir los orificios de ventilación:**  
+  1. **Cubrirlos con una malla.**  
+  2. **Cubrirlos con una bolsa microperforada** (con perforaciones no mayores a 1,6 mm).  
+
+> Fuente: *Lineamientos para Exportación de Arándanos a China*, ID: lineamientos-sag-china-2015.","realizarse previo al inicio de las exportaciones para su  verificación por 
+parte de SAG. 
+ 
+2.4. Co",1.0,All assertions in the response (maximum perforation size of 1.6 mm and the two covering options: mesh or microperforated bag with perforations ≤1.6 mm) are directly supported by the provided context.,1.0,"El contexto incluye la información solicitada: el tamaño máximo de perforaciones es 1,6 mm y las alternativas explícitas para cubrir los orificios de ventilación son una malla o una bolsa microperforada."
+4,"En los Lineamientos SAG 2015, ¿cada cuántos días debe realizarse el monitoreo para Diaporthe vaccinii, Fusicoccum putrefasciens y Pestalotia vaccinii, y desde qué etapa fenológica hasta cuál debe aplicarse ese monitoreo?","En los Lineamientos SAG 2015, el monitoreo para **Diaporthe vaccinii, Fusicoccum putrefasciens y Pestalotia vaccinii** debe realizarse **cada 15 días** y debe llevarse a cabo **desde la brotación hasta la cosecha** (Fuente: *Lineamientos para Exportación de Arándanos a China*, ID: lineamientos‑sag‑china‑2015).","LINEAMIENTOS PARA EXPORTACIÓN DE ARÁNDANOS A 
+CHINA  
+ 
+ 
+2.1.3.1. Para Asynonychus cervinus ( Panto",1.0,"La respuesta incluye dos afirmaciones: que el monitoreo de Diaporthe vaccinii, Fusicoccum putrefasciens y Pestalotia vaccinii debe hacerse cada 15 días y que se realiza desde la brotación hasta la cosecha. Ambas afirmaciones están exactamente contenidas en el texto del contexto (sección 2.1.3.2). No se presentan hechos no respaldados por el contexto.",1.0,"El contexto recuperado contiene explícitamente la información solicitada: el monitoreo debe realizarse cada 15 días para Diaporthe vaccinii, Fusicoccum putrefasciens y Pestalotia vaccinii, y debe aplicarse desde la brotación hasta la cosecha."
