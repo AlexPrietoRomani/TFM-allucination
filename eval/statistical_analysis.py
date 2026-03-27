@@ -294,6 +294,96 @@ def plot_boxplots(df, metric, output_dir):
                 dpi=300, bbox_inches='tight', facecolor='white')
     plt.close(fig)
 
+def generate_markdown_report(final_df, metrics, factors, total_rows, target_models, output_file):
+    """Genera un archivo Markdown con los resultados del análisis estadístico."""
+    md_lines = [
+        "# 📈 Informe de Análisis Estadístico del RAG",
+        f"Modelos evaluados: {', '.join(target_models)}",
+        f"Total registros analizados: {total_rows}",
+        "",
+        "---",
+        ""
+    ]
+    
+    for metric in metrics:
+        metric_display = metric.replace('_score', '').upper()
+        md_lines.extend([
+            f"## 🎯 Métrica: `{metric_display}`",
+            "",
+            "### 🔍 Análisis por Factor Individual",
+            ""
+        ])
+        
+        # 1. Factores Individuales
+        for factor in factors:
+            factor_df = final_df[(final_df['Metric'] == metric) & (final_df['Factor_Type'] == factor)]
+            if factor_df.empty: continue
+            
+            p_global = factor_df['Kruskal_p_value_global'].iloc[0]
+            diff_stat = "**SÍ**" if p_global < 0.05 else "**NO**"
+            
+            md_lines.extend([
+                f"#### 🔬 {factor.capitalize()}",
+                "**Prueba de Kruskal-Wallis (Global):**",
+                f"- P-Value: `{p_global:.6f}`",
+                f"- Diferencia Estadística: {diff_stat}",
+                "",
+                "**Tabla de Rendimiento (Ranking):**"
+            ])
+            
+            # Tabla de Rendimiento
+            ranking_df = factor_df[['Factor_Value', 'Count', 'Mean', 'Median']].copy()
+            ranking_df.rename(columns={'Factor_Value': 'Factor'}, inplace=True)
+            md_lines.append(ranking_df.to_markdown(index=False))
+            md_lines.append("")
+            
+            # Comparación con el mejor
+            posthoc_df = factor_df[['Factor_Value', 'p_value_vs_best', 'Stat_Equivalent_to_Best']].copy()
+            posthoc_df = posthoc_df[posthoc_df['Stat_Equivalent_to_Best'] != 'Líder']
+            
+            if not posthoc_df.empty:
+                posthoc_df.rename(columns={'Factor_Value': 'Other', 'Stat_Equivalent_to_Best': 'Stat. Equal'}, inplace=True)
+                md_lines.extend([
+                    "**Comparación con el mejor (Mann-Whitney U):**",
+                    posthoc_df.to_markdown(index=False),
+                    ""
+                ])
+                
+        # 2. Combinación Completa
+        comb_df = final_df[(final_df['Metric'] == metric) & (final_df['Factor_Type'] == 'Combination')]
+        if not comb_df.empty:
+            p_global = comb_df['Kruskal_p_value_global'].iloc[0]
+            diff_stat = "**SÍ**" if p_global < 0.05 else "**NO**"
+            
+            md_lines.extend([
+                "### 🧩 Análisis de Combinación Completa",
+                "**Prueba de Kruskal-Wallis (Global Combinatoria):**",
+                f"- P-Value: `{p_global:.6f}`",
+                f"- Diferencias entre combinaciones: {diff_stat}",
+                "",
+                "**Top 5 Combinaciones (por Media):**"
+            ])
+            
+            top5_df = comb_df[['Factor_Value', 'Count', 'Mean', 'Median']].head(5).copy()
+            top5_df.rename(columns={'Factor_Value': 'Factor'}, inplace=True)
+            md_lines.append(top5_df.to_markdown(index=False))
+            md_lines.append("")
+            
+            # Equivalentes
+            equiv_df = comb_df[comb_df['Stat_Equivalent_to_Best'] == 'Sí'][['Factor_Value', 'p_value_vs_best']].copy()
+            if not equiv_df.empty:
+                equiv_df.rename(columns={'Factor_Value': 'Other'}, inplace=True)
+                md_lines.extend([
+                    "**Combinaciones estadísticamente equivalentes al líder:**",
+                    equiv_df.to_markdown(index=False),
+                    ""
+                ])
+                
+        md_lines.extend(["========================================", ""])
+        
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write("\n".join(md_lines))
+
 def main():
     file_path = 'eval/results/Matrix/eval_results_matrix.jsonl'
     output_dir = 'eval/results/Matrix'
@@ -404,6 +494,11 @@ def main():
         best_csv = os.path.join(output_dir, 'best_factors_by_metric.csv')
         best_df.to_csv(best_csv, index=False, encoding='utf-8-sig')
         print(f"   - {best_csv}")
+        
+        # Generar Reporte Markdown
+        md_file = os.path.join(output_dir, 'statistical_results.md')
+        generate_markdown_report(final_df, metrics, factors, len(df), target_models, md_file)
+        print(f"   - {md_file}")
         
     # Gráficos de Radar
     print("\n🕸️ Generando Radar Charts para visualización multidimensional...")
