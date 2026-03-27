@@ -41,7 +41,6 @@ venv.bak/
 # ==========================================
 corpus/raw
 data/vector_matrix
-eval/results
 qdrant_storage/
 ollama_data/
 runs/
