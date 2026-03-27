@@ -168,11 +168,17 @@ def analyze_factor(df, factor_name, metric_name, is_parametric=False):
 
 
 def generate_markdown_report(final_df, metrics, factors, total_rows, target_models, output_file, parametric_metrics):
-    """Genera un archivo Markdown con los resultados del análisis estadístico."""
+    """Genera un archivo Markdown con los resultados del análisis estadístico detallado."""
     md_lines = [
         "# 📈 Informe de Análisis Estadístico del RAG",
-        f"Modelos evaluados: {', '.join(target_models)}",
-        f"Total registros analizados: {total_rows}",
+        f"**Modelos objetivo:** {', '.join(target_models)}",
+        f"**Total de pruebas analizadas:** {total_rows}",
+        "",
+        "---",
+        "## 🛠️ Resumen de Metodología Aplicada",
+        "- **Métricas RAGAS ([0, 1]):** Pipeline No Paramétrico (Kruskal-Wallis → Dunn con corrección FDR-BH).",
+        "- **Métricas de Rendimiento (Latencia/Costo):** Pipeline Paramétrico (ANOVA de una vía → T-Test con corrección FDR-BH).",
+        "- **Interpretación CLD:** Componentes que comparten la misma letra (ej. 'a' y 'ab') son estadísticamente equivalentes.",
         "",
         "---",
         ""
@@ -181,10 +187,25 @@ def generate_markdown_report(final_df, metrics, factors, total_rows, target_mode
     for metric in metrics:
         metric_display = metric.replace('_score', '').upper()
         is_param = metric in parametric_metrics
+        
+        # Metodología específica por tipo de métrica
+        if is_param:
+            tipo_metodologia = "PARAMÉTRICA (ANOVA)"
+            explicacion = "Variable continua y sin límites fijos. Se asume normalidad por TLC (N=32)."
+            criterio = "🔽 **Menor es mejor** (Menor latencia/costo implica mayor eficiencia)"
+        else:
+            tipo_metodologia = "NO PARAMÉTRICA (Kruskal-Wallis)"
+            explicacion = "Variable acotada en [0, 1] con distribuciones frecuentemente asimétricas."
+            criterio = "🔼 **Mayor es mejor** (Mayor puntuación implica mayor calidad RAG)"
+
         md_lines.extend([
             f"## 🎯 Métrica: `{metric_display}`",
+            f"> **Metodología:** {tipo_metodologia}",
+            f"> **Justificación:** {explicacion}",
+            f"> **Criterio de Éxito:** {criterio}",
             "",
-            "### 🔍 Análisis por Factor Individual",
+            "### 🔍 1. Análisis por Factor Individual (Univariante)",
+            "Determina si el cambio de un solo componente genera variaciones estadísticamente significativas.",
             ""
         ])
         
@@ -194,16 +215,15 @@ def generate_markdown_report(final_df, metrics, factors, total_rows, target_mode
             if factor_df.empty: continue
             
             p_global = factor_df['p_value_global'].iloc[0]
-            diff_stat = "**SÍ**" if p_global < 0.05 else "**NO**"
-            test_name = "Prueba de ANOVA (Global):" if is_param else "Prueba de Kruskal-Wallis (Global):"
+            diff_stat = "✅ **SÍ**" if p_global < 0.05 else "❌ **NO**"
+            test_name = "Prueba Ómnibus (ANOVA):" if is_param else "Prueba Ómnibus (Kruskal-Wallis):"
             
             md_lines.extend([
-                f"#### 🔬 {factor.capitalize()}",
-                f"**{test_name}**",
-                f"- P-Value: `{p_global:.6f}`",
-                f"- Diferencia Estadística: {diff_stat}",
+                f"#### 🔬 Factor: `{factor.capitalize()}`",
+                f"- **{test_name}** P-Value = `{p_global:.6f}`",
+                f"- **¿Diferencia Significativa?:** {diff_stat}",
                 "",
-                "**Tabla de Rendimiento (Ranking):**"
+                "**Ranking de Rendimiento con CLD:**"
             ])
             
             # Tabla de Rendimiento
@@ -211,18 +231,30 @@ def generate_markdown_report(final_df, metrics, factors, total_rows, target_mode
                 ranking_df = factor_df[['Factor_Value', 'Count', 'Mean', 'Median', 'CLD_Letter']].copy()
             else:
                 ranking_df = factor_df[['Factor_Value', 'Count', 'Mean', 'Median']].copy()
-            ranking_df.rename(columns={'Factor_Value': 'Factor', 'CLD_Letter': 'CLD'}, inplace=True)
+            
+            ranking_df.rename(columns={
+                'Factor_Value': 'Componente', 
+                'Mean': 'Media', 
+                'Median': 'Mediana',
+                'CLD_Letter': 'CLD (Agrupamiento)'
+            }, inplace=True)
+            
             md_lines.append(ranking_df.to_markdown(index=False))
             md_lines.append("")
             
-            # Comparación con el mejor
+            # Comparación con el líder
             posthoc_df = factor_df[['Factor_Value', 'p_value_vs_best', 'Stat_Equivalent_to_Best']].copy()
             posthoc_df = posthoc_df[posthoc_df['Stat_Equivalent_to_Best'] != 'Líder']
             
             if not posthoc_df.empty:
-                posthoc_df.rename(columns={'Factor_Value': 'Other', 'Stat_Equivalent_to_Best': 'Stat. Equal'}, inplace=True)
+                test_pairwise = "T-Test (FDR-BH)" if is_param else "Mann-Whitney U"
+                posthoc_df.rename(columns={
+                    'Factor_Value': 'Comparativa vs. Líder', 
+                    'p_value_vs_best': 'P-Value',
+                    'Stat_Equivalent_to_Best': 'Equivalente al Mejor'
+                }, inplace=True)
                 md_lines.extend([
-                    f"**Comparación con el mejor ({'T-Test' if is_param else 'Mann-Whitney U'}):**",
+                    f"**Análisis de Equivalencia ({test_pairwise}):**",
                     posthoc_df.to_markdown(index=False),
                     ""
                 ])
@@ -231,37 +263,36 @@ def generate_markdown_report(final_df, metrics, factors, total_rows, target_mode
         comb_df = final_df[(final_df['Metric'] == metric) & (final_df['Factor_Type'] == 'Combination')]
         if not comb_df.empty:
             p_global = comb_df['p_value_global'].iloc[0]
-            diff_stat = "**SÍ**" if p_global < 0.05 else "**NO**"
-            test_name_comb = "Prueba de ANOVA (Global):" if is_param else "Prueba de Kruskal-Wallis (Global Combinatoria):"
+            diff_stat = "✅ **SÍ**" if p_global < 0.05 else "❌ **NO**"
+            test_name_comb = "ANOVA (Cross-tabulation):" if is_param else "Kruskal-Wallis (Combinatorio):"
             
             md_lines.extend([
-                "### 🧩 Análisis de Combinación Completa",
-                f"**{test_name_comb}**",
-                f"- P-Value: `{p_global:.6f}`",
-                f"- Diferencias entre combinaciones: {diff_stat}",
+                "### 🧩 2. Análisis de Combinación Completa (Factorial)",
+                f"- **{test_name_comb}** P-Value = `{p_global:.6f}`",
+                f"- **Diferencias globales:** {diff_stat}",
                 "",
-                "**Top 5 Combinaciones (por Media):**"
+                "**🚀 Top 5 Combinaciones Óptimas (según Media):**"
             ])
             
-            if 'CLD_Letter' in comb_df.columns:
-                top5_df = comb_df[['Factor_Value', 'Count', 'Mean', 'Median', 'CLD_Letter']].head(5).copy()
-            else:
-                top5_df = comb_df[['Factor_Value', 'Count', 'Mean', 'Median']].head(5).copy()
-            top5_df.rename(columns={'Factor_Value': 'Factor', 'CLD_Letter': 'CLD'}, inplace=True)
+            top5_df = comb_df[['Factor_Value', 'Mean', 'Median', 'Stat_Equivalent_to_Best']].head(5).copy()
+            top5_df.rename(columns={
+                'Factor_Value': 'Combinación (Arquitectura | Embed | Chunk | DB | LLM)',
+                'Stat_Equivalent_to_Best': 'Equivalencia'
+            }, inplace=True)
+            
             md_lines.append(top5_df.to_markdown(index=False))
             md_lines.append("")
             
-            # Equivalentes
+            # Equivalentes adicionales
             equiv_df = comb_df[comb_df['Stat_Equivalent_to_Best'] == 'Sí'][['Factor_Value', 'p_value_vs_best']].copy()
             if not equiv_df.empty:
-                equiv_df.rename(columns={'Factor_Value': 'Other'}, inplace=True)
                 md_lines.extend([
-                    "**Combinaciones estadísticamente equivalentes al líder:**",
-                    equiv_df.to_markdown(index=False),
+                    "**Otras combinaciones estadísticamente idénticas al líder:**",
+                    equiv_df.rename(columns={'Factor_Value': 'Combinación'}).head(5).to_markdown(index=False),
                     ""
                 ])
                 
-        md_lines.extend(["========================================", ""])
+        md_lines.extend(["---", ""])
         
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write("\n".join(md_lines))
