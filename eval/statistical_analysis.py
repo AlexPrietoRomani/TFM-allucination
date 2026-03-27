@@ -101,6 +101,30 @@ def plot_radar_chart(df, metrics, title, save_path, group_col='Combination', top
 
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(categories, fontsize=10, fontfamily='serif')
+    
+    # Rotación inteligente de etiquetas xtick para seguir el ángulo del radar
+    # Evita que el texto de las métricas se solape con las líneas de datos
+    for label, angle in zip(ax.get_xticklabels(), angles):
+        deg = np.rad2deg(angle)
+        # Ajustamos rotación para que el texto no esté invertido (de cabeza) en la izquierda
+        if 90 < deg < 270:
+            label.set_rotation(deg + 180)
+        else:
+            label.set_rotation(deg)
+        
+        # Ajustar alineación horizontal y vertical para que no coincidan exacto en la línea
+        # si están en puntos críticos (arriba/abajo)
+        if 0 <= deg < 10 or 350 <= deg <= 360:
+            label.set_ha('center')
+            label.set_va('bottom')
+        elif 170 <= deg <= 190:
+            label.set_ha('center')
+            label.set_va('top')
+        elif 10 < deg < 170:
+            label.set_ha('left')
+        else:
+            label.set_ha('right')
+
     ax.set_rlabel_position(30)
     ax.set_yticks([0.2, 0.4, 0.6, 0.8, 1.0])
     ax.set_yticklabels(['0.2', '0.4', '0.6', '0.8', '1.0'],
