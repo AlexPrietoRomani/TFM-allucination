@@ -1,37 +1,38 @@
 """
-statistical_analysis.py — Analizador Estadístico de Rendimiento RAG
+statistical_analysis.py — Visualizador Estadístico de Rendimiento RAG
 
-Carga los resultados matriciales de `eval_results_matrix.jsonl`, filtra por
-modelos objetivo y ejecuta pruebas estadísticas (Kruskal-Wallis y Mann-Whitney U)
-para determinar qué componentes (Arquitectura, Embedding, Chunking, DB, Generador)
-ofrecen el rendimiento óptimo y libre de alucinaciones.
+Ejecuta el pipeline de análisis estadístico (delegado a `stat_engine.py`) y
+genera las visualizaciones de calidad de artículo científico:
+  - Boxplots con letras CLD por cada métrica y factor.
+  - Radar Charts (Spider plots) para las mejores combinaciones.
+
+El cálculo estadístico puro (Kruskal-Wallis, ANOVA, Dunn, T-Test, CLD,
+Mann-Whitney U) y la generación de CSVs/Markdown está en `stat_engine.py`,
+que también es invocado por `run_matrix_eval.py` al final de cada evaluación.
 
 Uso:
     uv run python eval/statistical_analysis.py
-
-Funcionalidades:
-    - Valida muestra de tests (32 preguntas por combinación).
-    - Analiza métricas RAGAS (Faithfulness, Relevance, Context Precision, etc.).
-    - Identifica líderes estadísticos por factor individual y combinación completa.
-    - Genera diagramas Radar (Spider charts) y Boxplots de distribuciones.
 
 Salidas (`eval/results/Matrix/`):
     - statistical_factors_results.csv      : Métricas agregadas por componente individual.
     - statistical_combinations_results.csv : Métricas por combinación exacta (Pipeline).
     - best_factors_by_metric.csv           : Líderes estadísticos (Ganadores óptimos).
-    - image/radar_top5_combinations.png   : Diagrama Radar para Top 5 combinaciones.
+    - statistical_results.md               : Reporte Markdown detallado.
+    - image/radar_top5_combinations.png    : Diagrama Radar para Top 5 combinaciones.
     - image/boxplot_[metrica].png          : Distribuciones por Generator y Architecture.
 """
 
-import pandas as pd
-import json
 import os
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from scipy.stats import kruskal, mannwhitneyu
-import scikit_posthocs as sp
 import warnings
+
+# Asegurar que el directorio raíz esté en el PYTHONPATH
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+from eval.stat_engine import run_statistical_analysis, PARAMETRIC_METRICS
 
 # Ignorar warnings de seaborn/matplotlib que puedan ensuciar la consola
 warnings.filterwarnings('ignore')
@@ -60,138 +61,30 @@ plt.rcParams.update({
 })
 sns.set_style('whitegrid', {'grid.linestyle': '--', 'grid.alpha': 0.3})
 
-def load_data(file_path):
-    data = []
-    bad_lines = 0
-    with open(file_path, 'r', encoding='utf-8') as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                data.append(json.loads(line))
-            except Exception:
-                bad_lines += 1
-    if bad_lines > 0:
-        print(f"⚠️ Advertencia: {bad_lines} líneas corruptas omitidas en {file_path}")
-    return pd.DataFrame(data)
 
-def analyze_factor(df, factor_name, metric_name):
-    groups = []
-    labels = []
-    
-    for val in df[factor_name].unique():
-        series = df[df[factor_name] == val][metric_name].dropna()
-        if len(series) >= 2:
-            groups.append(series)
-            labels.append(val)
-            
-    if len(groups) < 2:
-        return None, f"Insuficientes grupos ({len(groups)})"
+# ── Mapa de etiquetas legibles ──────────────────────────────────────────────
+LABEL_MAP = {
+    'faithfulness_score':        'Faithfulness',
+    'relevance_score':           'Context Relevance',
+    'context_precision_score':   'Context Precision',
+    'answer_relevancy_score':    'Answer Relevancy',
+    'latency_retrieval_seg':     'Latency Retrieval (s)',
+    'latency_generation_seg':    'Latency Generation (s)',
+    'total_latency_seg':         'Total Latency (s)',
+    'cost_est':                  'Cost (USD)',
+    # Normalizados para Radar
+    'latency_retrieval_seg_norm': 'Retrieval Lat. (Norm)',
+    'latency_generation_seg_norm':'Gen. Lat. (Norm)',
+    'total_latency_seg_norm':    'Total Lat. (Norm)',
+    'cost_est_norm':             'Cost (Norm)',
+}
 
-    try:
-        stat, p_val = kruskal(*groups)
-    except Exception as e:
-        return None, str(e)
-        
-    summary = []
-    for group, label in zip(groups, labels):
-        summary.append({
-            'Factor_Type': factor_name,
-            'Factor_Value': str(label),
-            'Metric': metric_name,
-            'Count': len(group),
-            'Mean': group.mean(),
-            'Median': group.median(),
-            'StdDev': group.std(),
-            'Min': group.min(),
-            'Max': group.max()
-        })
-        
-    summary_df = pd.DataFrame(summary).sort_values(by='Mean', ascending=False)
-    
-    # -----------------------------
-    # Dunn's Test Post-Hoc & CLD
-    # -----------------------------
-    try:
-        tmp_df = df[[factor_name, metric_name]].dropna()
-        if len(summary_df) > 1:
-            p_mat = sp.posthoc_dunn(tmp_df, val_col=metric_name, group_col=factor_name, p_adjust='fdr_bh')
-            ordered_labels = summary_df['Factor_Value'].tolist()
-            p_mat = p_mat.loc[ordered_labels, ordered_labels]
-            
-            from string import ascii_lowercase
-            n = len(ordered_labels)
-            letters = [''] * n
-            current_letter_idx = 0
-            for i in range(n):
-                if not letters[i]:
-                    letter = ascii_lowercase[current_letter_idx]
-                    letters[i] += letter
-                    current_letter_idx += 1
-                    for j in range(i + 1, n):
-                        can_share = True
-                        for k in range(n):
-                            if letter in letters[k]:
-                                if p_mat.iloc[j, k] < 0.05:
-                                    can_share = False
-                                    break
-                        if can_share:
-                            letters[j] += letter
-            summary_df['Dunn_CLD'] = letters
-        else:
-            summary_df['Dunn_CLD'] = ['a'] * len(summary_df)
-    except Exception as e:
-        summary_df['Dunn_CLD'] = 'Error'
-    # -----------------------------
-    
-    posthoc = []
-    if len(summary_df) > 1:
-        best_factor = summary_df.iloc[0]['Factor_Value']
-        best_data = df[df[factor_name] == best_factor][metric_name].dropna()
-        
-        for i in range(len(summary_df)):
-            other_factor = summary_df.iloc[i]['Factor_Value']
-            if other_factor == best_factor:
-                stat_eq = 'Líder'
-                p_u = 1.0
-            else:
-                other_data = df[df[factor_name] == other_factor][metric_name].dropna()
-                try:
-                    stat_u, p_u = mannwhitneyu(best_data, other_data, alternative='two-sided')
-                    stat_eq = 'Sí' if p_u >= 0.05 else 'No'
-                except:
-                    p_u = np.nan
-                    stat_eq = 'Error'
-            posthoc.append({
-                'Factor_Value': other_factor,
-                'p_value_vs_best': p_u,
-                'Stat_Equivalent_to_Best': stat_eq
-            })
-            
-    # Hacemos merge
-    if posthoc:
-        ph_df = pd.DataFrame(posthoc)
-        summary_df = summary_df.merge(ph_df, on='Factor_Value', how='left')
-    else:
-        summary_df['p_value_vs_best'] = np.nan
-        summary_df['Stat_Equivalent_to_Best'] = 'Líder'
-
-    summary_df['Kruskal_p_value_global'] = p_val
-    return summary_df, None
 
 def plot_radar_chart(df, metrics, title, save_path, group_col='Combination', top_n=5):
     """
     Genera un Radar Chart (spider plot) para las top N agrupaciones.
     Estilo: artículo científico (serif, blanco, paleta sobria).
     """
-    LABEL_MAP = {
-        'faithfulness_score':        'Faithfulness',
-        'relevance_score':           'Context Relevance',
-        'context_precision_score':   'Context Precision',
-        'answer_relevancy_score':    'Answer Relevancy',
-    }
-
     grouped = df.groupby(group_col)[metrics].mean().reset_index()
     grouped['Overall_Score'] = grouped[metrics].mean(axis=1)
     top_items = grouped.sort_values(by='Overall_Score', ascending=False).head(top_n)
@@ -202,7 +95,7 @@ def plot_radar_chart(df, metrics, title, save_path, group_col='Combination', top
     angles = [n / float(N) * 2 * np.pi for n in range(N)]
     angles += angles[:1]
 
-    fig, ax = plt.subplots(figsize=(8, 7), subplot_kw=dict(polar=True),
+    fig, ax = plt.subplots(figsize=(9, 10), subplot_kw=dict(polar=True),
                            facecolor='white')
     ax.set_facecolor('white')
 
@@ -212,11 +105,10 @@ def plot_radar_chart(df, metrics, title, save_path, group_col='Combination', top
     ax.set_yticks([0.2, 0.4, 0.6, 0.8, 1.0])
     ax.set_yticklabels(['0.2', '0.4', '0.6', '0.8', '1.0'],
                        color='#555555', fontsize=8)
-    ax.set_ylim(0, 1)
+    ax.set_ylim(0, 1.1)
     ax.spines['polar'].set_color('#cccccc')
     ax.grid(color='#cccccc', linestyle='--', linewidth=0.5, alpha=0.6)
 
-    # Paleta extendida para publicación científica
     colors = ['#2c3e50', '#c0392b', '#2980b9', '#27ae60', '#8e44ad', 
               '#d35400', '#f39c12', '#16a085', '#34495e', '#7f8c8d']
     markers = ['o', 's', '^', 'D', 'v', 'p', '*', 'h', 'H', '+']
@@ -225,31 +117,28 @@ def plot_radar_chart(df, metrics, title, save_path, group_col='Combination', top
         values = row[metrics].tolist()
         values += values[:1]
         raw_label = str(row[group_col])
-        label = f"({i+1}) {raw_label[:45]}"
+        label = f"({i+1}) {raw_label[:60]}{'...' if len(raw_label) > 60 else ''}"
         c_idx = i % len(colors)
         ax.plot(angles, values, linewidth=1.5, linestyle='-',
-                marker=markers[c_idx], markersize=4,
+                marker=markers[c_idx], markersize=5,
                 label=label, color=colors[c_idx])
-        ax.fill(angles, values, alpha=0.06, color=colors[c_idx])
+        ax.fill(angles, values, alpha=0.08, color=colors[c_idx])
 
-    ax.set_title(title, fontsize=13, fontfamily='serif',
-                 fontweight='bold', pad=25)
-    ax.legend(loc='upper left', bbox_to_anchor=(-0.25, -0.08),
-             ncol=1, frameon=True, fancybox=False,
-             edgecolor='#cccccc', fontsize=8)
+    ax.set_title(title, fontsize=14, fontfamily='serif',
+                 fontweight='bold', pad=35)
+    
+    n_cols = 1 if top_n <= 5 else 2
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15),
+             ncol=n_cols, frameon=True, fancybox=False,
+             edgecolor='#cccccc', fontsize=9, title="Ranking de Desempeño", 
+             title_fontsize=10)
 
-    fig.tight_layout()
     fig.savefig(save_path, dpi=300, bbox_inches='tight', facecolor='white')
     plt.close(fig)
 
-def plot_boxplots(df, metric, output_dir):
-    """Genera boxplots con estilo de artículo científico para los 5 componentes principales, de forma individual y combinada."""
-    LABEL_MAP = {
-        'faithfulness_score':        'Faithfulness',
-        'relevance_score':           'Context Relevance',
-        'context_precision_score':   'Context Precision',
-        'answer_relevancy_score':    'Answer Relevancy',
-    }
+
+def plot_boxplots(df, metric, output_dir, metric_summaries_dict=None, is_parametric=False):
+    """Genera boxplots con estilo de artículo científico para los 5 componentes principales."""
     metric_label = LABEL_MAP.get(metric, metric.replace('_score', '').capitalize())
 
     factors = [
@@ -273,12 +162,32 @@ def plot_boxplots(df, metric, output_dir):
         ax_indiv.yaxis.grid(True, linestyle='--', alpha=0.3, color='#999999')
         ax_indiv.xaxis.grid(False)
 
+        order = sorted(df[factor_col].dropna().unique().tolist())
         sns.boxplot(x=factor_col, y=metric, data=df, ax=ax_indiv,
-                    palette="Set2", linewidth=0.8, fliersize=3,
+                    order=order, palette="Set2", linewidth=0.8, fliersize=3,
                     boxprops=dict(edgecolor='#333333'),
                     medianprops=dict(color='#333333', linewidth=1.5),
                     whiskerprops=dict(color='#333333'),
                     capprops=dict(color='#333333'))
+        
+        # Añadir letras CLD
+        y_max_global = df[metric].max()
+        y_min_global = df[metric].min()
+        y_offset = (y_max_global - y_min_global) * 0.05 if y_max_global != y_min_global else 0.05
+        
+        if metric_summaries_dict and factor_col in metric_summaries_dict:
+            summary_df = metric_summaries_dict[factor_col]
+            if 'CLD_Letter' in summary_df.columns:
+                for i, label in enumerate(order):
+                    row = summary_df[summary_df['Factor_Value'] == label]
+                    if not row.empty:
+                        letter = row.iloc[0]['CLD_Letter']
+                        group_max = df[df[factor_col] == label][metric].max()
+                        ax_indiv.text(i, group_max + y_offset, letter, ha='center', va='bottom', 
+                                      color='#333333', fontweight='heavy', fontsize=11, 
+                                      fontstyle='italic', fontfamily='serif')
+
+        ax_indiv.set_ylim(y_min_global - y_offset, y_max_global + y_offset * 3)
         
         ax_indiv.set_title(f'{metric_label} por {factor_title}',
                            fontfamily='serif', fontsize=13, fontweight='bold', pad=15)
@@ -286,7 +195,11 @@ def plot_boxplots(df, metric, output_dir):
         ax_indiv.set_ylabel(metric_label, fontfamily='serif', fontsize=11, labelpad=10)
         ax_indiv.set_xticklabels(ax_indiv.get_xticklabels(), rotation=30, ha='right', fontfamily='serif', fontsize=10)
 
-        fig_indiv.tight_layout()
+        nota_tex = 'Nota: Letras distintas indican diferencias significativas (ANOVA + T-Test, p < 0.05).' if is_parametric else 'Nota: Letras distintas indican diferencias significativas (Kruskal-Wallis + Post-hoc de Dunn, p < 0.05).'
+        fig_indiv.text(0.5, 0.01, nota_tex,
+                       ha='center', fontsize=9, fontstyle='italic', color='#555555', fontfamily='serif')
+
+        fig_indiv.tight_layout(rect=[0, 0.05, 1, 1])
         fig_indiv.savefig(os.path.join(output_dir, f'boxplot_{metric}_{factor_col}.png'),
                           dpi=300, bbox_inches='tight', facecolor='white')
         plt.close(fig_indiv)
@@ -306,245 +219,94 @@ def plot_boxplots(df, metric, output_dir):
         ax.yaxis.grid(True, linestyle='--', alpha=0.3, color='#999999')
         ax.xaxis.grid(False)
 
-        # Paleta sobria ("Set2" de seaborn o paleta por defecto)
+        order = sorted(df[factor_col].dropna().unique().tolist())
         sns.boxplot(x=factor_col, y=metric, data=df, ax=ax,
-                    palette="Set2", linewidth=0.8, fliersize=3,
+                    order=order, palette="Set2", linewidth=0.8, fliersize=3,
                     boxprops=dict(edgecolor='#333333'),
                     medianprops=dict(color='#c0392b', linewidth=1.5),
                     whiskerprops=dict(color='#333333'),
                     capprops=dict(color='#333333'))
         
+        # Añadir letras CLD
+        y_max_global = df[metric].max()
+        y_min_global = df[metric].min()
+        y_offset = (y_max_global - y_min_global) * 0.05 if y_max_global != y_min_global else 0.05
+        
+        if metric_summaries_dict and factor_col in metric_summaries_dict:
+            summary_df = metric_summaries_dict[factor_col]
+            if 'CLD_Letter' in summary_df.columns:
+                for j, label in enumerate(order):
+                    row = summary_df[summary_df['Factor_Value'] == label]
+                    if not row.empty:
+                        letter = row.iloc[0]['CLD_Letter']
+                        group_max = df[df[factor_col] == label][metric].max()
+                        ax.text(j, group_max + y_offset, letter, ha='center', va='bottom', 
+                                color='#333333', fontweight='heavy', fontsize=10, 
+                                fontstyle='italic', fontfamily='serif')
+
+        ax.set_ylim(y_min_global - y_offset, y_max_global + y_offset * 3)
+
         ax.set_title(f'{metric_label} por\n{factor_title}',
                      fontfamily='serif', fontsize=12, fontweight='bold')
         ax.set_xlabel(factor_title, fontfamily='serif', fontsize=10)
         ax.set_ylabel(metric_label, fontfamily='serif', fontsize=10)
-        
-        # Rotar etiquetas para que encajen mejor
         ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
 
-    # Ocultar el sexto subplot que queda vacío
     fig.delaxes(axes[5])
 
-    fig.tight_layout(pad=2.0)
+    fig.tight_layout(pad=2.0, rect=[0, 0.06, 1, 1])
+    nota_tex_comb = 'Nota: Letras distintas indican diferencias significativas (ANOVA + T-Test, p < 0.05).' if is_parametric else 'Nota: Letras distintas indican diferencias significativas (Kruskal-Wallis + Post-hoc de Dunn, p < 0.05).'
+    fig.text(0.5, 0.015, nota_tex_comb,
+             ha='center', fontsize=11, fontstyle='italic', color='#555555', fontfamily='serif')
+    
     fig.savefig(os.path.join(output_dir, f'boxplot_{metric}.png'),
                 dpi=300, bbox_inches='tight', facecolor='white')
     plt.close(fig)
 
-def generate_markdown_report(final_df, metrics, factors, total_rows, target_models, output_file):
-    """Genera un archivo Markdown con los resultados del análisis estadístico."""
-    md_lines = [
-        "# 📈 Informe de Análisis Estadístico del RAG",
-        f"Modelos evaluados: {', '.join(target_models)}",
-        f"Total registros analizados: {total_rows}",
-        "",
-        "---",
-        ""
-    ]
-    
-    for metric in metrics:
-        metric_display = metric.replace('_score', '').upper()
-        md_lines.extend([
-            f"## 🎯 Métrica: `{metric_display}`",
-            "",
-            "### 🔍 Análisis por Factor Individual",
-            ""
-        ])
-        
-        # 1. Factores Individuales
-        for factor in factors:
-            factor_df = final_df[(final_df['Metric'] == metric) & (final_df['Factor_Type'] == factor)]
-            if factor_df.empty: continue
-            
-            p_global = factor_df['Kruskal_p_value_global'].iloc[0]
-            diff_stat = "**SÍ**" if p_global < 0.05 else "**NO**"
-            
-            md_lines.extend([
-                f"#### 🔬 {factor.capitalize()}",
-                "**Prueba de Kruskal-Wallis (Global):**",
-                f"- P-Value: `{p_global:.6f}`",
-                f"- Diferencia Estadística: {diff_stat}",
-                "",
-                "**Tabla de Rendimiento (Ranking):**"
-            ])
-            
-            # Tabla de Rendimiento
-            if 'Dunn_CLD' in factor_df.columns:
-                ranking_df = factor_df[['Factor_Value', 'Count', 'Mean', 'Median', 'Dunn_CLD']].copy()
-            else:
-                ranking_df = factor_df[['Factor_Value', 'Count', 'Mean', 'Median']].copy()
-            ranking_df.rename(columns={'Factor_Value': 'Factor', 'Dunn_CLD': 'CLD (Dunn)'}, inplace=True)
-            md_lines.append(ranking_df.to_markdown(index=False))
-            md_lines.append("")
-            
-            # Comparación con el mejor
-            posthoc_df = factor_df[['Factor_Value', 'p_value_vs_best', 'Stat_Equivalent_to_Best']].copy()
-            posthoc_df = posthoc_df[posthoc_df['Stat_Equivalent_to_Best'] != 'Líder']
-            
-            if not posthoc_df.empty:
-                posthoc_df.rename(columns={'Factor_Value': 'Other', 'Stat_Equivalent_to_Best': 'Stat. Equal'}, inplace=True)
-                md_lines.extend([
-                    "**Comparación con el mejor (Mann-Whitney U):**",
-                    posthoc_df.to_markdown(index=False),
-                    ""
-                ])
-                
-        # 2. Combinación Completa
-        comb_df = final_df[(final_df['Metric'] == metric) & (final_df['Factor_Type'] == 'Combination')]
-        if not comb_df.empty:
-            p_global = comb_df['Kruskal_p_value_global'].iloc[0]
-            diff_stat = "**SÍ**" if p_global < 0.05 else "**NO**"
-            
-            md_lines.extend([
-                "### 🧩 Análisis de Combinación Completa",
-                "**Prueba de Kruskal-Wallis (Global Combinatoria):**",
-                f"- P-Value: `{p_global:.6f}`",
-                f"- Diferencias entre combinaciones: {diff_stat}",
-                "",
-                "**Top 5 Combinaciones (por Media):**"
-            ])
-            
-            if 'Dunn_CLD' in comb_df.columns:
-                top5_df = comb_df[['Factor_Value', 'Count', 'Mean', 'Median', 'Dunn_CLD']].head(5).copy()
-            else:
-                top5_df = comb_df[['Factor_Value', 'Count', 'Mean', 'Median']].head(5).copy()
-            top5_df.rename(columns={'Factor_Value': 'Factor', 'Dunn_CLD': 'CLD (Dunn)'}, inplace=True)
-            md_lines.append(top5_df.to_markdown(index=False))
-            md_lines.append("")
-            
-            # Equivalentes
-            equiv_df = comb_df[comb_df['Stat_Equivalent_to_Best'] == 'Sí'][['Factor_Value', 'p_value_vs_best']].copy()
-            if not equiv_df.empty:
-                equiv_df.rename(columns={'Factor_Value': 'Other'}, inplace=True)
-                md_lines.extend([
-                    "**Combinaciones estadísticamente equivalentes al líder:**",
-                    equiv_df.to_markdown(index=False),
-                    ""
-                ])
-                
-        md_lines.extend(["========================================", ""])
-        
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write("\n".join(md_lines))
 
 def main():
     file_path = 'eval/results/Matrix/eval_results_matrix.jsonl'
     output_dir = 'eval/results/Matrix'
     image_dir = os.path.join(output_dir, 'image')
-    
-    os.makedirs(output_dir, exist_ok=True)
     os.makedirs(image_dir, exist_ok=True)
-    
-    if not os.path.exists(file_path):
-        print(f"❌ Error: Archivo '{file_path}' no encontrado.")
-        return
-        
-    df = load_data(file_path)
-    if df.empty:
-        print("❌ Error: DataFrame vacío.")
-        return
-        
-    # Filtrar modelos
-    target_models = ["deepseek-r1:8b", "qwen2.5:3b", "gpt-oss:20b"]
-    df = df[df['generator'].isin(target_models)].copy()
-    
-    if df.empty:
-        print("❌ Error: Ningún dato coincide con los modelos objetivo.")
-        return
-        
-    # Crear Combinación
-    factors = ['architecture', 'embedding', 'chunk_strategy', 'db_motor', 'generator']
-    
-    # Manejar "N/A" convirtiéndolos en strings si fuera necesario, para que combinen bien
-    for f in factors:
-        df[f] = df[f].fillna("N/A").astype(str)
-        
-    df['Combination'] = df.apply(lambda x: " | ".join([x[f] for f in factors]), axis=1)
-    
-    # VALIDACIÓN: 32 Preguntas por Combinación
-    print("\n🔍 Validando conteo de preguntas por combinación...")
-    combination_counts = df.groupby('Combination').size().reset_index(name='count')
-    validations = []
-    
-    for _, row in combination_counts.iterrows():
-        count = row['count']
-        c = row['Combination']
-        if count != 32:
-            print(f"  ⚠️ Advertencia: La combinación '{c}' tiene {count}/32 pruebas.")
-            validations.append({'Combination': c, 'Count': count, 'Status': 'Incompleto'})
-        else:
-            validations.append({'Combination': c, 'Count': count, 'Status': 'Completo'})
-            
-    val_df = pd.DataFrame(validations)
-    val_df.to_csv(os.path.join(output_dir, 'validation_32_questions.csv'), index=False)
-    print(f"📄 Resultado de validación guardado en validation_32_questions.csv")
 
-    # 4 métricas RAGAS finales (FactScore descartada — ver docs/METRICAS_IMPLEMENTADAS.md §5)
-    metrics = [
-        col for col in df.columns 
-        if col.endswith('_score') and col in [
-            'faithfulness_score',
-            'relevance_score',
-            'context_precision_score',
-            'answer_relevancy_score',
-        ]
-    ]
-    
-    for m in metrics:
-        df[m] = pd.to_numeric(df[m], errors='coerce')
-        
-    # Análisis Estadístico Kruskal-Wallis y Mann-Whitney U
-    all_summaries = []
-    
+    target_models = ["deepseek-r1:8b", "qwen2.5:3b", "gpt-oss:20b"]
+
+    # ── 1. Ejecutar análisis estadístico (CSVs + Markdown) ──────────────────
+    result = run_statistical_analysis(file_path, output_dir, target_models)
+    if result is None:
+        return
+
+    df = result['df']
+    metrics = result['metrics']
+    parametric_metrics = result['parametric_metrics']
+    metric_summaries_by_metric = result['metric_summaries_by_metric']
+
+    # ── 2. Generar Boxplots con letras CLD ──────────────────────────────────
     for metric in metrics:
-        print(f"📊 Analizando métrica: {metric} ...")
-        
-        # Generar Gráficos Boxplot
-        plot_boxplots(df, metric, image_dir)
-        
-        # 1. Por factor individual
-        for factor in factors:
-            res, err = analyze_factor(df, factor, metric)
-            if res is not None:
-                all_summaries.append(res)
-                
-        # 2. Por combinación completa
-        res_comb, err = analyze_factor(df, 'Combination', metric)
-        if res_comb is not None:
-            all_summaries.append(res_comb)
-            
-    # Concatenar todos los resultados y guardar en DataFrames detallados
-    if all_summaries:
-        final_df = pd.concat(all_summaries, ignore_index=True)
-        
-        # Separar factores individuales y combinaciones
-        factor_df = final_df[final_df['Factor_Type'] != 'Combination']
-        comb_df = final_df[final_df['Factor_Type'] == 'Combination']
-        
-        factor_csv = os.path.join(output_dir, 'statistical_factors_results.csv')
-        comb_csv = os.path.join(output_dir, 'statistical_combinations_results.csv')
-        
-        factor_df.to_csv(factor_csv, index=False, encoding='utf-8-sig')
-        comb_df.to_csv(comb_csv, index=False, encoding='utf-8-sig')
-        
-        print("\n✅ Archivos CSV generados:")
-        print(f"   - {factor_csv}")
-        print(f"   - {comb_csv}")
-        
-        # Obtener el MEJOR por cada factor y métrica
-        best_df = factor_df[factor_df['Stat_Equivalent_to_Best'] == 'Líder'].copy()
-        best_df = best_df[['Factor_Type', 'Factor_Value', 'Metric', 'Mean', 'Median']]
-        best_csv = os.path.join(output_dir, 'best_factors_by_metric.csv')
-        best_df.to_csv(best_csv, index=False, encoding='utf-8-sig')
-        print(f"   - {best_csv}")
-        
-        # Generar Reporte Markdown
-        md_file = os.path.join(output_dir, 'statistical_results.md')
-        generate_markdown_report(final_df, metrics, factors, len(df), target_models, md_file)
-        print(f"   - {md_file}")
-        
-    # Gráficos de Radar
+        is_parametric = metric in parametric_metrics
+        metric_summaries_dict = metric_summaries_by_metric.get(metric, {})
+        plot_boxplots(df, metric, image_dir, metric_summaries_dict, is_parametric=is_parametric)
+
+    # ── 3. Preparar Radar: normalización invertida para latencia/costo ──────
+    df_radar = df.copy()
+    radar_metrics = []
+    for m in metrics:
+        if m in parametric_metrics:
+            min_val = df_radar[m].min()
+            max_val = df_radar[m].max()
+            norm_col = f"{m}_norm"
+            if max_val > min_val:
+                df_radar[norm_col] = 1.0 - (df_radar[m] - min_val) / (max_val - min_val)
+            else:
+                df_radar[norm_col] = 1.0
+            radar_metrics.append(norm_col)
+        else:
+            radar_metrics.append(m)
+
+    # ── 4. Generar Radar Charts ─────────────────────────────────────────────
     print("\n🕸️ Generando Radar Charts para visualización multidimensional...")
-    plot_radar_chart(df, metrics, "Top 5 Combinaciones (Desempeño Global RAG)", 
+    plot_radar_chart(df_radar, radar_metrics, "Top 5 Combinaciones (Desempeño Global RAG)", 
                      os.path.join(image_dir, 'radar_top5_combinations.png'), 
                      group_col='Combination', top_n=5)
     
@@ -557,7 +319,7 @@ def main():
     ]
     
     for fact_col, fact_title in radar_factors:
-        plot_radar_chart(df, metrics, f"Desempeño Global por {fact_title}", 
+        plot_radar_chart(df_radar, radar_metrics, f"Desempeño Global por {fact_title}", 
                          os.path.join(image_dir, f'radar_{fact_col}.png'), 
                          group_col=fact_col, top_n=10)
 
