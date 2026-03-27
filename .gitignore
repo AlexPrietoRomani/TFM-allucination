@@ -40,6 +40,7 @@ venv.bak/
 # 📊 3. DATOS, INDICES Y RESULTADOS DEL TFM
 # ==========================================
 corpus/raw
+corpus/parsed/
 data/vector_matrix
 qdrant_storage/
 ollama_data/
