@@ -179,8 +179,8 @@ def plot_radar_chart(df, metrics, title, save_path, group_col='Combination', top
 # --- Límites de Eje Y para mejor visibilidad ---
 Y_LIMITS = {
     'cost_est': 0.05,
-    'latency_generation_seg': 150,
-    'total_latency_seg': 150
+    'latency_generation_seg': 80,
+    'total_latency_seg': 100
 }
 
 def plot_boxplots(df, metric, output_dir, metric_summaries_dict=None, is_parametric=False):
