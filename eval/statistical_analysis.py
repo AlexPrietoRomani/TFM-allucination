@@ -209,35 +209,45 @@ def plot_boxplots(df, metric, output_dir, metric_summaries_dict=None, is_paramet
         ax_indiv.yaxis.grid(True, linestyle='--', alpha=0.3, color='#999999')
         ax_indiv.xaxis.grid(False)
 
-        order = sorted(df[factor_col].dropna().unique().tolist())
+        # SE REORDENA POR MEDIA DESCENDENTE (Mejor a la izquierda)
+        means_factor = df.groupby(factor_col)[metric].mean().sort_values(ascending=False)
+        order = means_factor.index.tolist()
+
         sns.boxplot(x=factor_col, y=metric, data=df, ax=ax_indiv,
                     order=order, palette="Set2", linewidth=0.8, fliersize=3,
                     boxprops=dict(edgecolor='#333333'),
-                    medianprops=dict(color='#333333', linewidth=1.5),
+                    medianprops=dict(color='#333333', linewidth=1.5, alpha=0.5), # Atenuamos mediana
                     whiskerprops=dict(color='#333333'),
                     capprops=dict(color='#333333'))
         
-        # Añadir letras CLD
+        # Añadir letras CLD y MEDIA ROJA
         y_max_global = df[metric].max()
         y_min_global = df[metric].min()
-        
-        # Si hay límite, calculamos el tope para las letras
         display_max = min(y_max_global, y_limit) if y_limit else y_max_global
         y_offset = (display_max - y_min_global) * 0.05 if display_max != y_min_global else 0.05
         
-        if metric_summaries_dict and factor_col in metric_summaries_dict:
-            summary_df = metric_summaries_dict[factor_col]
-            if 'CLD_Letter' in summary_df.columns:
-                for i, label in enumerate(order):
-                    row = summary_df[summary_df['Factor_Value'] == label]
-                    if not row.empty:
-                        letter = row.iloc[0]['CLD_Letter']
-                        actual_max = df[df[factor_col] == label][metric].max()
-                        # Posicionamos la letra siempre dentro del área visible
-                        text_y = min(actual_max, display_max) + y_offset
-                        ax_indiv.text(i, text_y, letter, ha='center', va='bottom', 
-                                      color='#333333', fontweight='heavy', fontsize=11, 
-                                      fontstyle='italic', fontfamily='serif')
+        for i, label in enumerate(order):
+            # 1. Dibujar línea de media (ROJA)
+            m_val = means_factor[label]
+            ax_indiv.hlines(y=m_val, xmin=i-0.25, xmax=i+0.25, 
+                           color='#e74c3c', linestyle='-', linewidth=2, zorder=10)
+            
+            # 2. Texto del valor de la media (ROJO)
+            fmt = f"{m_val:.4f}" if metric == 'cost_est' else f"{m_val:.2f}"
+            ax_indiv.text(i + 0.28, m_val, fmt, color='#e74c3c', fontsize=8, 
+                          fontweight='bold', va='center', fontfamily='serif')
+
+            # 3. Letras CLD
+            if metric_summaries_dict and factor_col in metric_summaries_dict:
+                summary_df = metric_summaries_dict[factor_col]
+                row = summary_df[summary_df['Factor_Value'] == label]
+                if not row.empty and 'CLD_Letter' in summary_df.columns:
+                    letter = row.iloc[0]['CLD_Letter']
+                    actual_max = df[df[factor_col] == label][metric].max()
+                    text_y = min(actual_max, display_max) + y_offset
+                    ax_indiv.text(i, text_y, letter, ha='center', va='bottom', 
+                                  color='#333333', fontweight='heavy', fontsize=11, 
+                                  fontstyle='italic', fontfamily='serif')
 
         # Aplicar límite de eje Y si existe
         if y_limit:
@@ -252,20 +262,21 @@ def plot_boxplots(df, metric, output_dir, metric_summaries_dict=None, is_paramet
         ax_indiv.set_xticklabels(ax_indiv.get_xticklabels(), rotation=30, ha='right', fontfamily='serif', fontsize=10)
 
         nota_tex = 'Nota: Letras distintas indican diferencias significativas (ANOVA + T-Test, p < 0.05).' if is_parametric else 'Nota: Letras distintas indican diferencias significativas (Kruskal-Wallis + Post-hoc de Dunn, p < 0.05).'
+        nota_tex += '\nLínea roja indica la MEDIA aritmética.'
         if y_limit and y_max_global > y_limit:
-            nota_tex += f'\nEje Y truncado a {y_limit} para visibilidad; existen valores atípicos superiores.'
+            nota_tex += f'\nEje Y truncado a {y_limit} para visibilidad.'
 
-        fig_indiv.text(0.5, -0.02, nota_tex,
+        fig_indiv.text(0.5, -0.04, nota_tex,
                        ha='center', fontsize=9, fontstyle='italic', color='#555555', fontfamily='serif',
                        bbox=dict(facecolor='white', alpha=0.8, edgecolor='none', pad=2))
 
-        fig_indiv.tight_layout(rect=[0, 0.05, 1, 1])
+        fig_indiv.tight_layout(rect=[0, 0.07, 1, 1])
         fig_indiv.savefig(os.path.join(output_dir, f'boxplot_{metric}_{factor_col}.png'),
                           dpi=300, bbox_inches='tight', facecolor='white')
         plt.close(fig_indiv)
 
     # --- 2. Gráfico Combinado (Junto) ---
-    fig, axes = plt.subplots(2, 3, figsize=(16, 12), facecolor='white')
+    fig, axes = plt.subplots(2, 3, figsize=(18, 13), facecolor='white')
     axes = axes.flatten()
 
     for i, (factor_col, factor_title) in enumerate(factors):
@@ -278,29 +289,41 @@ def plot_boxplots(df, metric, output_dir, metric_summaries_dict=None, is_paramet
         ax.tick_params(colors='#333333')
         ax.yaxis.grid(True, linestyle='--', alpha=0.3, color='#999999')
         
-        order = sorted(df[factor_col].dropna().unique().tolist())
-        sns.boxplot(x=factor_col, y=metric, data=df, ax=ax, order=order, palette="Set2", linewidth=0.7, fliersize=2)
+        # ORDEN POR MEDIA DESCENDENTE
+        means_comb = df.groupby(factor_col)[metric].mean().sort_values(ascending=False)
+        order_comb = means_comb.index.tolist()
+
+        sns.boxplot(x=factor_col, y=metric, data=df, ax=ax, order=order_comb, palette="Set2", linewidth=0.7, fliersize=2)
         
         ax.set_title(f'{factor_title}', fontsize=12, fontweight='bold', fontfamily='serif')
         ax.set_ylabel(metric_label, fontsize=10, fontfamily='serif')
         ax.set_xlabel('')
         ax.set_xticklabels(ax.get_xticklabels(), rotation=35, ha='right', fontsize=9.5, fontfamily='serif')
         
-        # Letras en el combinado
-        if metric_summaries_dict and factor_col in metric_summaries_dict:
-            summary_df = metric_summaries_dict[factor_col]
-            if 'CLD_Letter' in summary_df.columns:
-                y_max_g = df[metric].max()
-                y_min_g = df[metric].min()
-                disp_max = min(y_max_g, y_limit) if y_limit else y_max_g
-                off = (disp_max - y_min_g) * 0.08 if disp_max != y_min_g else 0.08
-                for j, label in enumerate(order):
-                    row = summary_df[summary_df['Factor_Value'] == label]
-                    if not row.empty:
-                        letter = row.iloc[0]['CLD_Letter']
-                        actual_val_max = df[df[factor_col] == label][metric].max()
-                        ax.text(j, min(actual_val_max, disp_max) + off, letter, ha='center', va='bottom', 
-                                fontsize=9.5, fontfamily='serif', fontweight='bold')
+        # Letras y Medias en el combinado
+        y_max_g = df[metric].max()
+        y_min_g = df[metric].min()
+        disp_max = min(y_max_g, y_limit) if y_limit else y_max_g
+        off = (disp_max - y_min_g) * 0.08 if disp_max != y_min_g else 0.08
+        
+        for j, label in enumerate(order_comb):
+            # Línea de media (ROJA)
+            combined_m = means_comb[label]
+            ax.hlines(y=combined_m, xmin=j-0.2, xmax=j+0.2, color='#e74c3c', linewidth=1.5, zorder=5)
+            
+            # Valor de texto (ROJO)
+            fmt_c = f"{combined_m:.4f}" if metric == 'cost_est' else f"{combined_m:.2f}"
+            ax.text(j + 0.22, combined_m, fmt_c, color='#e74c3c', fontsize=7, fontweight='bold', va='center')
+
+            # Letras CLD
+            if metric_summaries_dict and factor_col in metric_summaries_dict:
+                summary_df = metric_summaries_dict[factor_col]
+                row_c = summary_df[summary_df['Factor_Value'] == label]
+                if not row_c.empty and 'CLD_Letter' in summary_df.columns:
+                    letter = row_c.iloc[0]['CLD_Letter']
+                    actual_val_max = df[df[factor_col] == label][metric].max()
+                    ax.text(j, min(actual_val_max, disp_max) + off, letter, ha='center', va='bottom', 
+                            fontsize=9.5, fontfamily='serif', fontweight='bold')
 
         if y_limit:
             ax.set_ylim(y_min_global, y_limit + (y_limit - y_min_global) * 0.15)
@@ -308,11 +331,12 @@ def plot_boxplots(df, metric, output_dir, metric_summaries_dict=None, is_paramet
             ax.set_ylim(y_min_global - y_offset, y_max_global + y_offset * 3)
 
     fig.delaxes(axes[5])
-    fig.tight_layout(pad=3.0, rect=[0, 0.07, 1, 1])
+    fig.tight_layout(pad=3.5, rect=[0, 0.07, 1, 1])
     
-    nota_tex_comb = 'Nota: Letras distintas indican diferencias significativas (ANOVA + T-Test, p < 0.05).' if is_parametric else 'Nota: Letras distintas indican diferencias significativas (Kruskal-Wallis + Post-hoc de Dunn, p < 0.05).'
+    nota_tex_comb = 'Nota: Letras distintas indican diferencias significativas (Post-hoc, p < 0.05).'
+    nota_tex_comb += '\nLínea roja indica la MEDIA aritmética.'
     if y_limit and df[metric].max() > y_limit:
-        nota_tex_comb += f'\nSectores truncados en el eje Y a {y_limit} para visibilidad de la distribución principal.'
+        nota_tex_comb += f'\nSectores truncados en el eje Y a {y_limit} para visibilidad.'
 
     fig.text(0.5, 0.02, nota_tex_comb,
              ha='center', fontsize=11, fontstyle='italic', color='#555555', fontfamily='serif',
