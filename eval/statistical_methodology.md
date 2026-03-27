@@ -35,13 +35,30 @@ Dado que Kruskal-Wallis clasifica las puntuaciones en rangos, el examen apropiad
 * **Referencia literaria:** 
   > Pohlert, T. (2016). *The Pairwise Multiple Comparison of Mean Ranks Package (PMCMR)*. R project.
 
-#### B. Mann-Whitney U (Comparación Uno a Uno vs. El Líder)
-Con el fin de facilitar la lectura rápida del mejor componente posible para producción, se complementa con la clásica prueba _U de Mann-Whitney_.
+#### B. Análisis de Robustez: Prueba U de Mann-Whitney (Wilcoxon Rank-Sum)
 
-**Proceso:**
-* El script identifica inmediatamente el componente que obtuvo la **Media Absoluta Superior** llamándolo el `Líder`.
-* Toma la muestra de datos crudos del líder y ejecuta simulaciones `mannwhitneyu(Leader, Otro)` para revisar contra el resto de contendientes.
-* Si un "Otro modelo" obtuvo en apariencia peores datos pero el **p-value de Mann-Whitney ≥ 0.05**, se marca con un **"SÍ"** en `Stat_Equivalent_to_Best`. Significa que aunque su media técnica haya sido menor, en la práctica esa diferencia podría deberse a ruido del muestreo y por ende, es _Estadísticamente Equivalente al Líder_ y puede ser desplegado a producción si los costos son más bajos.
+Para complementar la visión global de Kruskal-Wallis y las comparaciones múltiples de Dunn, el motor estadístico en `@eval/stat_engine.py` incorpora una validación binaria de impacto directo en toma de decisiones de negocio, basada en la propuesta seminal de **Mann y Whitney (1947)** (*"On a test of whether one of two random variables is stochastically larger than the other"*).
+
+**Justificación y Fundamento Teórico:**
+A diferencia de las pruebas paramétricas (como el T-Test) que asumen normalidad, la **Prueba U** es una prueba no paramétrica basada en rangos. Su objetivo es determinar si, dadas dos muestras independientes $X$ e $Y$, es más probable que un valor elegido al azar de una población sea mayor que uno de la otra ($P(X > Y) \neq P(Y > X)$). 
+
+En el contexto de RAG, esta prueba es crítica porque:
+1. Las métricas RAGAS (0 a 1) no suelen seguir distribuciones normales (suelen estar sesgadas hacia los extremos).
+2. Permite identificar si la superioridad de una media es un fenómeno real o producto del ruido estadístico en muestras de tamaño $N=32$.
+
+**Implementación del Algoritmo de "Equivalencia al Líder":**
+El motor de evaluación implementa un pipeline de tres pasos para facilitar la lectura del "mejor componente":
+
+1.  **Identificación del Líder:** Se selecciona el componente ($L$) que ostenta la mejor **Media Absoluta**. En métricas RAGAS es la media máxima; en latencia/costo es la media mínima.
+2.  **Comparación Pairwise (Líder vs. Contendientes):** Para cada componente $C_i \neq L$, se ejecuta la función `mannwhitneyu(L_data, Ci_data, alternative='two-sided')`.
+3.  **Detección de Equivalencia:**
+    *   Si **p-value < 0.05**: Existe evidencia estadística suficiente para afirmar que la diferencia es real. El líder es superior al contendiente.
+    *   Si **p-value ≥ 0.05**: No se puede rechazar la hipótesis nula. Aunque el líder tenga una media ligeramente mejor, ambos componentes son **Estadísticamente Equivalentes** (`Stat_Equivalent_to_Best = "SÍ"`).
+
+> [!IMPORTANT]
+> **Impacto en Producción:** Esta métrica es la más valiosa para el TFM. Si un modelo es estadísticamente equivalente al líder pero tiene un **costo 50% menor** o una **latencia inferior**, la metodología respalda la selección del modelo "equivalente" como la opción óptima para el despliegue.
+
+![Infografía: Análisis de Equivalencia Estadística](file:///c:/Users/ALEX/Github/TFM-allucination/eval/assets/mann_whitney_infographic.png)
 
 ---
 
