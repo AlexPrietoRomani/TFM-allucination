@@ -207,7 +207,7 @@ def plot_radar_chart(df, metrics, title, save_path, group_col='Combination', top
     plt.close(fig)
 
 def plot_boxplots(df, metric, output_dir):
-    """Genera boxplots con estilo de artículo científico para los 5 componentes principales."""
+    """Genera boxplots con estilo de artículo científico para los 5 componentes principales, de forma individual y combinada."""
     LABEL_MAP = {
         'faithfulness_score':        'Faithfulness',
         'relevance_score':           'Context Relevance',
@@ -224,6 +224,38 @@ def plot_boxplots(df, metric, output_dir):
         ('chunk_strategy', 'Estrategia Chunking')
     ]
 
+    # --- 1. Gráficos Individuales (uno por factor) ---
+    for factor_col, factor_title in factors:
+        fig_indiv, ax_indiv = plt.subplots(figsize=(7, 5), facecolor='white')
+        
+        ax_indiv.set_facecolor('white')
+        ax_indiv.spines['top'].set_visible(False)
+        ax_indiv.spines['right'].set_visible(False)
+        ax_indiv.spines['left'].set_color('#333333')
+        ax_indiv.spines['bottom'].set_color('#333333')
+        ax_indiv.tick_params(colors='#333333')
+        ax_indiv.yaxis.grid(True, linestyle='--', alpha=0.3, color='#999999')
+        ax_indiv.xaxis.grid(False)
+
+        sns.boxplot(x=factor_col, y=metric, data=df, ax=ax_indiv,
+                    palette="Set2", linewidth=0.8, fliersize=3,
+                    boxprops=dict(edgecolor='#333333'),
+                    medianprops=dict(color='#333333', linewidth=1.5),
+                    whiskerprops=dict(color='#333333'),
+                    capprops=dict(color='#333333'))
+        
+        ax_indiv.set_title(f'{metric_label} por {factor_title}',
+                           fontfamily='serif', fontsize=13, fontweight='bold', pad=15)
+        ax_indiv.set_xlabel(factor_title, fontfamily='serif', fontsize=11, labelpad=10)
+        ax_indiv.set_ylabel(metric_label, fontfamily='serif', fontsize=11, labelpad=10)
+        ax_indiv.set_xticklabels(ax_indiv.get_xticklabels(), rotation=30, ha='right', fontfamily='serif', fontsize=10)
+
+        fig_indiv.tight_layout()
+        fig_indiv.savefig(os.path.join(output_dir, f'boxplot_{metric}_{factor_col}.png'),
+                          dpi=300, bbox_inches='tight', facecolor='white')
+        plt.close(fig_indiv)
+
+    # --- 2. Gráfico Combinado (Junto) ---
     fig, axes = plt.subplots(2, 3, figsize=(16, 10), facecolor='white')
     axes = axes.flatten()
 
