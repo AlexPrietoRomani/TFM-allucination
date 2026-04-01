@@ -46,6 +46,8 @@ qdrant_storage/
 ollama_data/
 runs/
 Documents/
+docs/formato_TFM
+docs/tex_parts
 
 # ==========================================
 # 🧪 4. TESTS Y REPORTES DE COBERTURA
