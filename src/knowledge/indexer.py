@@ -34,7 +34,7 @@ def get_qdrant_client() -> QdrantClient:
     """
     url = settings.active_qdrant_url
     api_key = settings.active_qdrant_api_key
-    print(f"🔗 Conectando a Qdrant ({settings.execution_mode}): {url}")
+    print(f"[Conectando] Qdrant ({settings.execution_mode}): {url}")
     return QdrantClient(url=url, api_key=api_key)
 
 
@@ -104,7 +104,7 @@ RAW_SPLITTER = RecursiveCharacterTextSplitter(
 
 def index_documents():
     # 1. Configurar Embeddings y Cliente
-    print(f"═══ Indexación [{settings.execution_mode.upper()}] ═══")
+    print(f"=== Indexación [{settings.execution_mode.upper()}] ===")
     print("Inicializando componentes...")
     embeddings = EmbeddingFactory.get_embeddings()
 
@@ -204,9 +204,9 @@ def index_documents():
         except Exception as e:
             print(f"ERROR indexando {doc_id}: {e}")
 
-    print(f"\n¡Indexación Completada! Fragmentos totales: {total_chunks}")
-    print(f"  → Docs parsed (Docling):  {parsed_count}")
-    print(f"  → Docs raw (PyPDF/otros): {raw_count}")
+    print(f"\nIndexacion Completada! Fragmentos totales: {total_chunks}")
+    print(f"  -> Docs parsed (Docling):  {parsed_count}")
+    print(f"  -> Docs raw (PyPDF/otros): {raw_count}")
     print(f"Colección: {collection_name}")
 
 if __name__ == "__main__":

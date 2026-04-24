@@ -50,7 +50,7 @@ class EmbeddingFactory:
             )
             # Test rápido de conectividad
             emb.embed_query("test")
-            print(f"☁️ Embeddings: Google Gemini ({model})")
+            print(f"[CLOUD] Embeddings: Google Gemini ({model})")
             return emb
         except Exception as e:
             if settings.is_cloud:
@@ -72,7 +72,7 @@ class EmbeddingFactory:
         else: # Retrocompatibilidad
             model = getattr(settings, "default_embedding_model", "mxbai-embed-large")
         
-        print(f"🏠 Embeddings: Ollama local ({model})")
+        print(f"[LOCAL] Embeddings: Ollama local ({model})")
             
         return OllamaEmbeddings(
             model=model,

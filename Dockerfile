@@ -1,7 +1,7 @@
 # ────────────────────────────────────────────────────────────────────────────
 # TFM-Allucination  ·  Multi-stage Dockerfile
 # ────────────────────────────────────────────────────────────────────────────
-FROM python:3.10-slim AS base
+FROM python:3.11-slim AS base
 
 # Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y --no-install-recommends \

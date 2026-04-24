@@ -13,14 +13,9 @@ services:
       - "6333:6333"
       - "6334:6334"
     volumes:
-      - qdrant_data:/qdrant/storage
+      - ./data/vector_matrix/qdrant_local:/qdrant/storage
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
+
 
   # ─── LLM Local (Ollama) ───────────────────────────────────────────────────
   ollama:
@@ -29,10 +24,10 @@ services:
     ports:
       - "11434:11434"
     volumes:
-      - ollama_data:/root/.ollama
+      - C:\Users\ALEX\.ollama:/root/.ollama
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/"]
+      test: ["CMD", "ollama", "list"]
       interval: 15s
       timeout: 10s
       retries: 5
@@ -55,9 +50,9 @@ services:
       - QDRANT_LOCAL_URL=http://qdrant:6333
     depends_on:
       qdrant:
-        condition: service_healthy
+        condition: service_started
       ollama:
-        condition: service_healthy
+        condition: service_started
     deploy:
       resources:
         reservations:
@@ -74,9 +69,9 @@ services:
       - QDRANT_LOCAL_URL=http://qdrant:6333
     depends_on:
       qdrant:
-        condition: service_healthy
+        condition: service_started
       ollama:
-        condition: service_healthy
+        condition: service_started
     deploy:
       resources:
         reservations:
