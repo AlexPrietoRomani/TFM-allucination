@@ -96,7 +96,7 @@ class DocumentLoader:
         if parsed_dir and doc_id:
             parsed_path = Path(parsed_dir) / f"{doc_id}.md"
             if parsed_path.exists():
-                print(f"  📄 Usando parsed: {parsed_path.name}")
+                print(f"  [DOC] Usando parsed: {parsed_path.name}")
                 docs = DocumentLoader.load_parsed_md(parsed_path, doc_id=doc_id)
                 if extra_metadata:
                     for doc in docs:

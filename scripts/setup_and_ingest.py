@@ -38,13 +38,13 @@ BOLD = "\033[1m"
 RESET = "\033[0m"
 
 def status(msg, ok=True):
-    icon = f"{GREEN}✓{RESET}" if ok else f"{RED}✗{RESET}"
+    icon = f"{GREEN}[OK]{RESET}" if ok else f"{RED}[ERROR]{RESET}"
     print(f"  {icon} {msg}")
 
 def header(msg):
-    print(f"\n{CYAN}{BOLD}{'═' * 60}{RESET}")
+    print(f"\n{CYAN}{BOLD}{'=' * 60}{RESET}")
     print(f"{CYAN}{BOLD}  {msg}{RESET}")
-    print(f"{CYAN}{BOLD}{'═' * 60}{RESET}")
+    print(f"{CYAN}{BOLD}{'=' * 60}{RESET}")
 
 
 def check_qdrant() -> bool:
@@ -84,8 +84,8 @@ def ollama_has_model(url: str, model_name: str) -> bool:
 
 def ollama_pull_model(url: str, model_name: str) -> bool:
     """Descarga un modelo en Ollama (puede tardar varios minutos)."""
-    print(f"\n  {YELLOW}⬇ Descargando modelo '{model_name}' en Ollama...{RESET}")
-    print(f"  {YELLOW}  (Esto puede tardar varios minutos según tu conexión){RESET}")
+    print(f"\n  {YELLOW}[BAJANDO] Descargando modelo '{model_name}' en Ollama...{RESET}")
+    print(f"  {YELLOW}  (Esto puede tardar varios minutos segun tu conexion){RESET}")
     try:
         r = requests.post(
             f"{url}/api/pull",
@@ -118,7 +118,7 @@ def count_corpus_files() -> tuple:
 
 def run_indexer():
     """Ejecuta el indexador de documentos."""
-    print(f"\n  {YELLOW}📚 Indexando documentos en Qdrant...{RESET}")
+    print(f"\n  {YELLOW}[INDEXANDO] Indexando documentos en Qdrant...{RESET}")
     try:
         from src.knowledge.indexer import index_documents
         index_documents()
@@ -143,10 +143,10 @@ def main():
     
     args = parser.parse_args()
 
-    print(f"\n{BOLD}🫐 TFM-Allucination — Setup Inicial v2{RESET}")
-    print(f"{'─' * 50}")
+    print(f"\n{BOLD}TFM-Allucination - Setup Inicial v2{RESET}")
+    print(f"{'-' * 50}")
 
-    # ─── PASO 1: Verificar servicios ─────────────────────────────────────────
+    # --- PASO 1: Verificar servicios ---
     header(f"PASO 1: Verificando servicios (Modo: {settings.execution_mode.upper()})")
 
     # Qdrant
@@ -190,9 +190,9 @@ def main():
             status(f"Ollama NO responde en {args.ollama_url}", ok=False)
             print(f"  {YELLOW}Si usas Gemini/OpenRouter, usa --skip-ollama{RESET}")
     else:
-        print(f"  ⏭ Ollama omitido (--skip-ollama)")
+        print(f"  [OMITIDO] Ollama omitido (--skip-ollama)")
 
-    # ─── PASO 2: Verificar corpus ────────────────────────────────────────────
+    # --- PASO 2: Verificar corpus ---
     header("PASO 2: Verificando corpus de documentos")
 
     total_files, pdfs = count_corpus_files()
@@ -205,14 +205,14 @@ def main():
     else:
         status(f"Encontrados {total_files} archivos ({len(pdfs)} PDFs)")
 
-    # ─── PASO 3: Indexar en Qdrant ───────────────────────────────────────────
+    # --- PASO 3: Indexar en Qdrant ---
     if not args.skip_index:
         header("PASO 3: Indexando documentos en Qdrant")
         run_indexer()
     else:
-        print(f"\n  ⏭ Indexación omitida (--skip-index)")
+        print(f"\n  [OMITIDO] Indexacion omitida (--skip-index)")
 
-    # ─── RESUMEN ─────────────────────────────────────────────────────────────
+    # --- RESUMEN ---
     header("SETUP COMPLETO")
     print(f"  Listo para usar.")
 

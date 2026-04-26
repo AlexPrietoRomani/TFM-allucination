@@ -35,7 +35,7 @@ class EmbeddingFactory:
                     "EXECUTION_MODE=cloud pero GOOGLE_API_KEY no está configurada. "
                     "Configúrala en .env o cambia a EXECUTION_MODE=local."
                 )
-            print("⚠ GOOGLE_API_KEY no configurada. Usando Ollama (fallback).")
+            print("[AVISO] GOOGLE_API_KEY no configurada. Usando Ollama (fallback).")
             return EmbeddingFactory._get_ollama_embeddings()
         try:
             model = getattr(settings, "default_embedding_model_cloud", "models/gemini-embedding-001")
@@ -57,7 +57,7 @@ class EmbeddingFactory:
                 raise RuntimeError(
                     f"Error conectando a Gemini Embeddings en modo cloud: {e}"
                 ) from e
-            print(f"⚠ Fallo con Gemini embeddings: {e}")
+            print(f"[AVISO] Fallo con Gemini embeddings: {e}")
             print("  Usando Ollama (fallback)...")
             return EmbeddingFactory._get_ollama_embeddings()
 

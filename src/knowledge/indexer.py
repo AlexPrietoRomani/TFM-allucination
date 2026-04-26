@@ -21,7 +21,7 @@ PARSED_DIR = Path("corpus/parsed")
 
 
 def get_collection_name() -> str:
-    """Retorna el nombre de la colección según el provider de embeddings (para evitar colisión de dimensiones)."""
+    """Retorna el nombre de la coleccion segun el provider de embeddings (para evitar colision de dimensiones)."""
     provider = settings.active_embedding_provider
     if provider == "gemini":
         return "tfm_allucination_gemini"
@@ -47,14 +47,14 @@ def load_registry():
 
 def recreate_collection(client: QdrantClient, vector_size: int):
     """
-    Recrea la colección con el tamaño de vector correcto.
+    Recrea la coleccion con el tamano de vector correcto.
     """
     collection_name = get_collection_name()
     if client.collection_exists(collection_name):
-        print(f"Eliminando colección existente: {collection_name}")
+        print(f"Eliminando coleccion existente: {collection_name}")
         client.delete_collection(collection_name)
 
-    print(f"Creando colección: {collection_name} (dim={vector_size})")
+    print(f"Creando coleccion: {collection_name} (dim={vector_size})")
     client.create_collection(
         collection_name=collection_name,
         vectors_config=models.VectorParams(
@@ -85,7 +85,7 @@ def _embed_and_add_batched(vector_store, chunks):
         _embed_and_add(vector_store, batch)
 
 
-# ── Splitters ────────────────────────────────────────────────────────────────
+# --- Splitters ---
 
 # Para documentos pre-procesados (Markdown con headers de Docling)
 MD_HEADERS_TO_SPLIT = [
@@ -104,14 +104,14 @@ RAW_SPLITTER = RecursiveCharacterTextSplitter(
 
 def index_documents():
     # 1. Configurar Embeddings y Cliente
-    print(f"=== Indexación [{settings.execution_mode.upper()}] ===")
+    print(f"=== Indexacion [{settings.execution_mode.upper()}] ===")
     print("Inicializando componentes...")
     embeddings = EmbeddingFactory.get_embeddings()
 
-    # Probar embedding para obtener dimensión
+    # Probar embedding para obtener dimension
     test_vec = embeddings.embed_query("test")
     vector_size = len(test_vec)
-    print(f"Dimensión de embedding: {vector_size}")
+    print(f"Dimension de embedding: {vector_size}")
 
     client = get_qdrant_client()
     recreate_collection(client, vector_size)
@@ -139,7 +139,7 @@ def index_documents():
 
     print(f"Indexando {len(docs_metadata)} documentos...")
     if PARSED_DIR.exists():
-        print(f"📁 Directorio parsed detectado: {PARSED_DIR}")
+        print(f"[PARSED] Directorio parsed detectado: {PARSED_DIR}")
 
     for doc_meta in tqdm(docs_metadata):
         doc_id = doc_meta["id"]
@@ -207,7 +207,7 @@ def index_documents():
     print(f"\nIndexacion Completada! Fragmentos totales: {total_chunks}")
     print(f"  -> Docs parsed (Docling):  {parsed_count}")
     print(f"  -> Docs raw (PyPDF/otros): {raw_count}")
-    print(f"Colección: {collection_name}")
+    print(f"Coleccion: {collection_name}")
 
 if __name__ == "__main__":
     index_documents()
