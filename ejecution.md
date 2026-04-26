@@ -60,27 +60,34 @@ docker exec -it tfm-app uv run scripts/setup_and_ingest.py --skip-ollama
 
 Accede a la UI: [http://localhost:8501](http://localhost:8501)
 
-### 1b. Desarrollo Local (UI Local + Servicios Docker)
+### 1b. Desarrollo Local (UI + Ollama en Host / Resto en Docker)
 
-Si modificas el código fuente y quieres hot-reload de Streamlit:
+Esta es la mejor opción para desarrollo activo. Mantiene la infraestructura pesada en Docker pero permite depurar la UI y los modelos con mayor flexibilidad.
 
 ```bash
-# 1. Instalar dependencias
+# 1. Instalar dependencias locales
 uv sync
 
-# 2. Levantar solo los servicios pesados en Docker
-docker compose -f docker-compose.yml -f docker-compose.local.yml up -d qdrant redis ollama
+# 2. Levantar Infraestructura Base en Docker
+# Es OBLIGATORIO para Qdrant (DB), Redis (Cache) y el Worker (Tareas async)
+docker compose -f docker-compose.yml -f docker-compose.local.yml up -d qdrant redis worker
 
-# 3. Descargar modelos en Ollama del host
+# 3. Iniciar Ollama en el Host (Terminal A)
+# Asegúrate de que Ollama esté instalado en tu sistema
+ollama serve
+
+# 4. Descargar modelos y preparar base (Terminal B)
 ollama pull qwen2.5:3b
 ollama pull mxbai-embed-large
-
-# 4. Indexar el corpus
 uv run scripts/setup_and_ingest.py
 
-# 5. Lanzar Streamlit en local
+# 5. Lanzar Streamlit (Terminal B)
 uv run streamlit run app.py
 ```
+
+> [!TIP]
+> **Conectividad Docker-Host:** Si el `worker` (en Docker) tiene problemas para ver a `ollama` (en el Host), asegúrate de cambiar `OLLAMA_BASE_URL` en tu `.env` a `http://host.docker.internal:11434` (en Windows/Mac) para que los contenedores puedan comunicarse con tu máquina local.
+
 
 ---
 
